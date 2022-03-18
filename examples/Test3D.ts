@@ -1,31 +1,31 @@
 //import com.adobe.utils.AGALMiniAssembler;
-import { Bitmap } from "./flash/display/Bitmap.js";
-import { Loader } from "./flash/display/Loader.js";
-import { LoaderInfo } from "./flash/display/LoaderInfo.js";
-import { Stage } from "./flash/display/Stage.js";
-import { StageAlign } from "./flash/display/StageAlign.js";
-import { StageScaleMode } from "./flash/display/StageScaleMode.js";
-import { Context3D } from "./flash/display3D/Context3D.js";
-import { Context3DProgramType } from "./flash/display3D/Context3DProgramType.js";
-import { Context3DTextureFormat } from "./flash/display3D/Context3DTextureFormat.js";
-import { Context3DTriangleFace } from "./flash/display3D/Context3DTriangleFace.js";
-import { Context3DVertexBufferFormat } from "./flash/display3D/Context3DVertexBufferFormat.js";
-import { IndexBuffer3D } from "./flash/display3D/IndexBuffer3D.js";
-import { Program3D } from "./flash/display3D/Program3D.js";
-import { Texture } from "./flash/display3D/textures/Texture.js";
-import { VertexBuffer3D } from "./flash/display3D/VertexBuffer3D.js";
-import { Matrix3D } from "./flash/geom/Matrix3D.js";
-import { Vector3D } from "./flash/geom/Vector3D.js";
-import { URLLoader } from "./flash/net/URLLoader.js";
-import { URLRequest } from "./flash/net/URLRequest.js";
-import { AEvent } from "./flash/events/AEvent.js";
-import { ByteArray } from "./flash/utils/ByteArray.js";
-import { getTimer } from "./flash/utils/getTimer.js";
-import { BitmapData } from "./flash/display/BitmapData.js";
-import { Sprite } from "./flash/display/Sprite.js";
-import { Stats } from "./flashport/Stats.js";
-import { FlashPort } from "./FlashPort.js";
-import { Camera3DOrbit } from "./flashport/Camera3DOrbit.js";
+import { Bitmap } from "../src/flash/display/Bitmap.js";
+import { Loader } from "../src/flash/display/Loader.js";
+import { LoaderInfo } from "../src/flash/display/LoaderInfo.js";
+import { Stage } from "../src/flash/display/Stage.js";
+import { StageAlign } from "../src/flash/display/StageAlign.js";
+import { StageScaleMode } from "../src/flash/display/StageScaleMode.js";
+import { Context3D } from "../src/flash/display3D/Context3D.js";
+import { Context3DProgramType } from "../src/flash/display3D/Context3DProgramType.js";
+import { Context3DTextureFormat } from "../src/flash/display3D/Context3DTextureFormat.js";
+import { Context3DTriangleFace } from "../src/flash/display3D/Context3DTriangleFace.js";
+import { Context3DVertexBufferFormat } from "../src/flash/display3D/Context3DVertexBufferFormat.js";
+import { IndexBuffer3D } from "../src/flash/display3D/IndexBuffer3D.js";
+import { Program3D } from "../src/flash/display3D/Program3D.js";
+import { Texture } from "../src/flash/display3D/textures/Texture.js";
+import { VertexBuffer3D } from "../src/flash/display3D/VertexBuffer3D.js";
+import { Matrix3D } from "../src/flash/geom/Matrix3D.js";
+import { Vector3D } from "../src/flash/geom/Vector3D.js";
+import { URLLoader } from "../src/flash/net/URLLoader.js";
+import { URLRequest } from "../src/flash/net/URLRequest.js";
+import { AEvent } from "../src/flash/events/AEvent.js";
+import { ByteArray } from "../src/flash/utils/ByteArray.js";
+import { getTimer } from "../src/flash/utils/getTimer.js";
+import { BitmapData } from "../src/flash/display/BitmapData.js";
+import { Sprite } from "../src/flash/display/Sprite.js";
+import { Stats } from "../src/flashport/Stats.js";
+import { FlashPort } from "../src/FlashPort.js";
+import { Camera3DOrbit } from "../src/flashport/Camera3DOrbit.js";
 
 export class Test3D extends Sprite
 {
@@ -45,7 +45,9 @@ export class Test3D extends Sprite
     {
         super();
 
-        FlashPort.autoSize = true;
+        //FlashPort.autoSize = true;
+        FlashPort.stageWidth = 600;
+        FlashPort.stageHeight = 360;
         
         var loader:Loader = new Loader();
         loader.contentLoaderInfo.addEventListener(AEvent.COMPLETE, this.textureLoadComplete);
@@ -233,7 +235,7 @@ export class Test3D extends Sprite
         var normBuffer:VertexBuffer3D = this.ctx.createVertexBuffer(normData.length/3,3);
         normBuffer.uploadFromVector(normData, 0, normData.length / 3);
         
-        var uvData:Array<any> = [ 
+        var uvData:Array<number> = [ 
         // Front face
         0.0, 0.0,
         1.0, 0.0,
@@ -267,6 +269,7 @@ export class Test3D extends Sprite
 
         var uvBuffer:VertexBuffer3D = this.ctx.createVertexBuffer(uvData.length/2,2);
         uvBuffer.uploadFromVector(uvData,0,uvData.length/2);
+        
         var iData:Array<number> = [
             0, 1, 2,      0, 2, 3,    // Front face
             4, 5, 6,      4, 6, 7,    // Back face

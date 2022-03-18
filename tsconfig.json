@@ -1,12 +1,30 @@
 {
     "compilerOptions": {
+        "target": "ESNEXT",
         "module": "ES2020",
-        "target": "ES6",
+        "lib": [
+            "ES2020", "DOM"
+        ],
+        "outDir": "./dist",
+        "rootDir": "./src",
+        "moduleResolution": "node",
+        "allowSyntheticDefaultImports": true,
         "strict": true,
         "noImplicitAny": false,
         "strictNullChecks": false,
         "allowJs": true,
         "sourceMap": true,
-        "outDir": "dist"
-    }
+        "declaration": true,
+        "declarationDir": "./dist",
+        "skipLibCheck": true
+    },
+    "include": [
+        "./src"
+    ],
+    "exclude": [
+        "node_modules",
+        "**/node_modules/*",
+        "dist",
+        "examples"
+    ]
 }

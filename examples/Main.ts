@@ -1,19 +1,19 @@
-import { Sprite } from "./flash/display/Sprite.js";
-import { FlashPort } from "./FlashPort.js";
-import { StageAlign } from "./flash/display/StageAlign.js";
-import { StageScaleMode } from "./flash/display/StageScaleMode.js";
-import { AEvent } from "./flash/events/AEvent.js";
-import { Matrix } from "./flash/geom/Matrix.js";
-import { Shape } from "./flash/display/Shape.js";
-import { GradientType } from "./flash/display/GradientType.js";
-import { DropShadowFilter } from "./flash/filters/DropShadowFilter.js";
-import { TextField } from "./flash/text/TextField.js";
-import { GlowFilter } from "./flash/filters/GlowFilter.js";
-import { TextFormat } from "./flash/text/TextFormat.js";
-import { MouseEvent } from "./flash/events/MouseEvent.js";
-import { AssetLoader } from "./flash/__native/AssetLoader.js";
-import { Bitmap } from "./flash/display/Bitmap.js";
-import { Stats } from "./flashport/Stats.js";
+import { Sprite } from "../src/flash/display/Sprite.js";
+import { FlashPort } from "../src/FlashPort.js";
+import { StageAlign } from "../src/flash/display/StageAlign.js";
+import { StageScaleMode } from "../src/flash/display/StageScaleMode.js";
+import { AEvent } from "../src/flash/events/AEvent.js";
+import { Matrix } from "../src/flash/geom/Matrix.js";
+import { Shape } from "../src/flash/display/Shape.js";
+import { GradientType } from "../src/flash/display/GradientType.js";
+import { DropShadowFilter } from "../src/flash/filters/DropShadowFilter.js";
+import { TextField } from "../src/flash/text/TextField.js";
+import { GlowFilter } from "../src/flash/filters/GlowFilter.js";
+import { TextFormat } from "../src/flash/text/TextFormat.js";
+import { MouseEvent } from "../src/flash/events/MouseEvent.js";
+import { AssetLoader } from "../src/flash/__native/AssetLoader.js";
+import { Bitmap } from "../src/flash/display/Bitmap.js";
+import { Stats } from "../src/flashport/Stats.js";
 
 /**
  * ...
@@ -29,8 +29,12 @@ export class Main extends Sprite
 	{
         super();
 
-        FlashPort.autoSize = true;
+        //FlashPort.autoSize = true;
         //FlashPort.debug = true;
+
+        FlashPort.stageWidth = 600;
+        FlashPort.stageHeight = 360;
+
         this.stage.canvas.style.backgroundColor = "#9abdf5";
         this.stage.align = StageAlign.TOP_LEFT;
         this.stage.scaleMode = StageScaleMode.NO_SCALE;
