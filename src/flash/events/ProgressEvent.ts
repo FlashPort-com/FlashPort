@@ -1,4 +1,4 @@
-import { AEvent } from "./AEvent.js";
+import { AEvent } from "./AEvent";
 export class ProgressEvent extends AEvent
 {
 	

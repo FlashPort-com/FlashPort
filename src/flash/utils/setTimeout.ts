@@ -1,4 +1,4 @@
-import { SetIntervalTimer } from "./SetIntervalTimer.js";
+import { SetIntervalTimer } from "./SetIntervalTimer";
 
 export function setTimeout(closure:Function, delay:number, ... args):number
 {

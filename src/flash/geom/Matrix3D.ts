@@ -1,5 +1,5 @@
-import { Orientation3D } from "./Orientation3D.js";
-import { Vector3D } from "./Vector3D.js";
+import { Orientation3D } from "./Orientation3D";
+import { Vector3D } from "./Vector3D";
 export class Matrix3D 
 {
 	private static TEMP:Matrix3D = new Matrix3D;

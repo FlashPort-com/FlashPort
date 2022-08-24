@@ -1,5 +1,5 @@
-import { GLCanvasRenderingContext2D } from "../__native/GLCanvasRenderingContext2D.js";
-import { ColorTransform } from "../geom/ColorTransform.js";
+import { GLCanvasRenderingContext2D } from "../__native/GLCanvasRenderingContext2D";
+import { ColorTransform } from "../geom/ColorTransform";
 	
 export interface IGraphicsData
 {

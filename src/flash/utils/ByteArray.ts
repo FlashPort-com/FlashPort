@@ -1,6 +1,6 @@
-import { IDataInput2 } from "./IDataInput2.js";
-import { IDataOutput2 } from "./IDataOutput2.js";
-import { Endian } from "./Endian.js";
+import { IDataInput2 } from "./IDataInput2";
+import { IDataOutput2 } from "./IDataOutput2";
+import { Endian } from "./Endian";
 
 export class ByteArray implements IDataInput2, IDataOutput2
 {

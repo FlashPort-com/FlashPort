@@ -1,12 +1,12 @@
-import { FlashPort } from "../../FlashPort.js";
-import { Bitmap } from "../display/Bitmap.js";
-import { Loader } from "../display/Loader.js";
-import { LoaderInfo } from "../display/LoaderInfo.js";
-import { AEvent } from "../events/AEvent.js";
-import { EventDispatcher } from "../events/EventDispatcher.js";
-import { URLLoader } from "../net/URLLoader.js";
-import { URLRequest } from "../net/URLRequest.js";
-import { URLLoaderDataFormat } from "../net/URLLoaderDataFormat.js";
+import { FlashPort } from "../../FlashPort";
+import { Bitmap } from "../display/Bitmap";
+import { Loader } from "../display/Loader";
+import { LoaderInfo } from "../display/LoaderInfo";
+import { AEvent } from "../events/AEvent";
+import { EventDispatcher } from "../events/EventDispatcher";
+import { URLLoader } from "../net/URLLoader";
+import { URLRequest } from "../net/URLRequest";
+import { URLLoaderDataFormat } from "../net/URLLoaderDataFormat";
 	
 /**
  * ...

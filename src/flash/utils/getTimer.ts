@@ -1,4 +1,4 @@
-import { FlashPort } from "../../FlashPort.js";
+import { FlashPort } from "../../FlashPort";
 	
 export function getTimer():number
 {

@@ -1,4 +1,4 @@
-import { ByteArray } from "./ByteArray.js";
+import { ByteArray } from "./ByteArray";
 
 /**
  * The IDataOutput interface provides a set of methods for writing binary data.

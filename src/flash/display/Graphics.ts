@@ -1,21 +1,21 @@
-import { IGraphicsData } from "./IGraphicsData.js";
-import { GraphicsGradientFill } from "./GraphicsGradientFill.js";
-import { GraphicsStroke } from "./GraphicsStroke.js";
-import { IGraphicsFill } from "./IGraphicsFill.js";
-import { GraphicsPath } from "./GraphicsPath.js";
-import { FlashPort } from "../../FlashPort.js";
-import { GraphicsSolidFill } from "./GraphicsSolidFill.js";
-import { BitmapData } from "./BitmapData.js";
-import { GraphicsBitmapFill } from "./GraphicsBitmapFill.js";
-import { GraphicsEndFill } from "./GraphicsEndFill.js";
-import { IGraphicsPath } from "./IGraphicsPath.js";
-import { GraphicsTrianglePath } from "./GraphicsTrianglePath.js";
-import { IGraphicsStroke } from "./IGraphicsStroke.js";
+import { IGraphicsData } from "./IGraphicsData";
+import { GraphicsGradientFill } from "./GraphicsGradientFill";
+import { GraphicsStroke } from "./GraphicsStroke";
+import { IGraphicsFill } from "./IGraphicsFill";
+import { GraphicsPath } from "./GraphicsPath";
+import { FlashPort } from "../../FlashPort";
+import { GraphicsSolidFill } from "./GraphicsSolidFill";
+import { BitmapData } from "./BitmapData";
+import { GraphicsBitmapFill } from "./GraphicsBitmapFill";
+import { GraphicsEndFill } from "./GraphicsEndFill";
+import { IGraphicsPath } from "./IGraphicsPath";
+import { GraphicsTrianglePath } from "./GraphicsTrianglePath";
+import { IGraphicsStroke } from "./IGraphicsStroke";
 
-import { ColorTransform } from "../geom/ColorTransform.js";
-import { Matrix } from "../geom/Matrix.js";
-import { Rectangle } from "../geom/Rectangle.js";
-import { Vector3D } from "../geom/Vector3D.js";
+import { ColorTransform } from "../geom/ColorTransform";
+import { Matrix } from "../geom/Matrix";
+import { Rectangle } from "../geom/Rectangle";
+import { Vector3D } from "../geom/Vector3D";
 
 export class Graphics extends Object
 {
@@ -496,7 +496,7 @@ export class Graphics extends Object
 	 */
 	public get bound():Rectangle 
 	{
-		return this._bound
+		return this._bound;
 	}
 	
 	public draw = (ctx:CanvasRenderingContext2D, m:Matrix, blendMode:string, colorTransform:ColorTransform, useCache:boolean = false, cacheImage:BitmapData = null):void =>

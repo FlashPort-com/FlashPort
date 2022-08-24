@@ -1,4 +1,4 @@
-import { IDataInput } from "./IDataInput.js";
+import { IDataInput } from "./IDataInput";
 
 export interface IDataInput2 extends IDataInput
 {

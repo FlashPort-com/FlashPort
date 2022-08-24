@@ -1,13 +1,13 @@
-import { IGraphicsStroke } from "./IGraphicsStroke.js";
-import { IGraphicsData } from "./IGraphicsData.js";
-import { IGraphicsFill } from "./IGraphicsFill.js";
-import { GraphicsSolidFill } from "./GraphicsSolidFill.js";
-import { FlashPort } from "../../FlashPort.js";
-import { GraphicsGradientFill } from "./GraphicsGradientFill.js";
+import { IGraphicsStroke } from "./IGraphicsStroke";
+import { IGraphicsData } from "./IGraphicsData";
+import { IGraphicsFill } from "./IGraphicsFill";
+import { GraphicsSolidFill } from "./GraphicsSolidFill";
+import { FlashPort } from "../../FlashPort";
+import { GraphicsGradientFill } from "./GraphicsGradientFill";
 
-import { GLCanvasRenderingContext2D } from "../__native/GLCanvasRenderingContext2D.js";
-import { ColorTransform } from "../geom/ColorTransform.js";
-import { JointStyle } from "./JointStyle.js";
+import { GLCanvasRenderingContext2D } from "../__native/GLCanvasRenderingContext2D";
+import { ColorTransform } from "../geom/ColorTransform";
+import { JointStyle } from "./JointStyle";
 
 export class GraphicsStroke extends Object implements IGraphicsStroke, IGraphicsData
 {

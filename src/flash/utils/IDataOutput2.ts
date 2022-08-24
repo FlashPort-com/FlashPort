@@ -1,4 +1,4 @@
-import { IDataOutput } from "./IDataOutput.js";
+import { IDataOutput } from "./IDataOutput";
 export interface IDataOutput2 extends IDataOutput
 {	
 

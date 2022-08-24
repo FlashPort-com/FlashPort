@@ -1,6 +1,6 @@
-import { Rectangle } from "../../../flash/geom/Rectangle.js";
-import { IntegerRectangle } from "../../villekoskela/utils/IntegerRectangle.js";
-import { SortableSize } from "./SortableSize.js";
+import { Rectangle } from "../../../flash/geom/Rectangle";
+import { IntegerRectangle } from "../../villekoskela/utils/IntegerRectangle";
+import { SortableSize } from "./SortableSize";
 
 /**
  * Class used to pack rectangles within container rectangle with close to optimal solution.

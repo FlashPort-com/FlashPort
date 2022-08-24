@@ -1,5 +1,5 @@
 
-   import { DisplayObject } from "../display/DisplayObject.js";
+   import { DisplayObject } from "../display/DisplayObject";
    
    export class StaticText extends DisplayObject
    {

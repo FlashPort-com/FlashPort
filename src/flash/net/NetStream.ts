@@ -1,16 +1,16 @@
-import { EventDispatcher } from "../events/EventDispatcher.js";
-import { NetStatusEvent } from "../events/NetStatusEvent.js";
-import { NetStreamInfo } from "./NetStreamInfo.js";
-import { NetConnection } from "./NetConnection.js";
-import { Microphone } from "../media/Microphone.js";
-import { Camera } from "../media/Camera.js";
-import { NetStreamPlayOptions } from "./NetStreamPlayOptions.js";
-import { SoundTransform } from "../media/SoundTransform.js";
-import { ByteArray } from "../utils/ByteArray.js";
-import { VideoStreamSettings } from "../media/VideoStreamSettings.js";
-import { VideoCodec } from "../media/VideoCodec.js";
-import { ActivityEvent } from "../events/ActivityEvent.js";
-import { NetStreamMulticastInfo } from "./NetStreamMulticastInfo.js";
+import { EventDispatcher } from "../events/EventDispatcher";
+import { NetStatusEvent } from "../events/NetStatusEvent";
+import { NetStreamInfo } from "./NetStreamInfo";
+import { NetConnection } from "./NetConnection";
+import { Microphone } from "../media/Microphone";
+import { Camera } from "../media/Camera";
+import { NetStreamPlayOptions } from "./NetStreamPlayOptions";
+import { SoundTransform } from "../media/SoundTransform";
+import { ByteArray } from "../utils/ByteArray";
+import { VideoStreamSettings } from "../media/VideoStreamSettings";
+import { VideoCodec } from "../media/VideoCodec";
+import { ActivityEvent } from "../events/ActivityEvent";
+import { NetStreamMulticastInfo } from "./NetStreamMulticastInfo";
 
 /**
  * Dispatched when playing video content and certain type of messages are processed.
@@ -672,7 +672,7 @@ export class NetStream extends EventDispatcher
 	 * @playerversion	Flash 10.1
 	 * @playerversion	AIR 2
 	 */
-	public appendBytes (bytes:ByteArray):void
+	public appendBytes  = (bytes:ByteArray):void =>
 	{
 		if (bytes.length == 0) throw Error("NetStream.play() No Bytes Available. bytes.length is 0.");
 		
@@ -714,7 +714,7 @@ export class NetStream extends EventDispatcher
 	 * @playerversion	Flash 10.1
 	 * @playerversion	AIR 2
 	 */
-	public appendBytesAction (netStreamAppendBytesAction:string):void
+	public appendBytesAction = (netStreamAppendBytesAction:string):void =>
 	{
 		console.log("Netstream.appendBytesAction method not implemented.");
 	}
@@ -724,7 +724,7 @@ export class NetStream extends EventDispatcher
 	 * @playerversion	Flash 10.1
 	 * @playerversion	AIR 2
 	 */
-	public attach (connection:NetConnection):void
+	public attach = (connection:NetConnection):void =>
 	{
 		this._netConnection = connection;
 	}
@@ -734,7 +734,7 @@ export class NetStream extends EventDispatcher
 	 * @langversion	3.0
 	 * @playerversion	Flash 9
 	 */
-	public attachAudio (microphone:Microphone):void
+	public attachAudio = (microphone:Microphone):void =>
 	{
 		
 	}
@@ -748,7 +748,7 @@ export class NetStream extends EventDispatcher
 	 * @langversion	3.0
 	 * @playerversion	Flash 9
 	 */
-	public attachCamera (theCamera:Camera, snapshotMilliseconds:number =-1):void
+	public attachCamera = (theCamera:Camera, snapshotMilliseconds:number =-1):void =>
 	{
 		let _this = this;
 		
@@ -776,12 +776,12 @@ export class NetStream extends EventDispatcher
 	 * @playerversion	Flash 9
 	 * @playerversion	Lite 4
 	 */
-	public close():void
+	public close = ():void =>
 	{
 		// TODO implement close() method
 	}
 
-	public dispose():void
+	public dispose = ():void =>
 	{
 		// TODO implement dispose() method
 	}
@@ -807,7 +807,7 @@ export class NetStream extends EventDispatcher
 	 * @playerversion	AIR 1.5
 	 * @playerversion	Lite 4
 	 */
-	public onPeerConnect (subscriber:NetStream):boolean
+	public onPeerConnect = (subscriber:NetStream):boolean =>
 	{
 		console.log("WARNING Netstream.onPeerConnect property not implemented.");
 		return null;
@@ -818,7 +818,7 @@ export class NetStream extends EventDispatcher
 	 * @playerversion	Flash 9
 	 * @playerversion	Lite 4
 	 */
-	public pause():void
+	public pause = ():void =>
 	{
 		this._playbackTarget.pause();
 		this._paused = true;
@@ -835,7 +835,7 @@ export class NetStream extends EventDispatcher
 	 * @throws	ArgumentError At least one parameter must be specified.
 	 * @throws	Error The NetStream Object is invalid.  This may be due to a failed NetConnection.
 	 */
-	public play (...rest):void
+	public play = (...rest):void =>
 	{
 		
 		if (rest && rest[0] != null)
@@ -879,7 +879,7 @@ export class NetStream extends EventDispatcher
 	 * @playerversion	AIR 1.5
 	 * @playerversion	Lite 4
 	 */
-	public play2 (param:NetStreamPlayOptions):void
+	public play2 = (param:NetStreamPlayOptions):void =>
 	{
 		console.log("Netstream.play2 property not implemented.");
 	}
@@ -892,7 +892,7 @@ export class NetStream extends EventDispatcher
 	 * @langversion	3.0
 	 * @playerversion	Flash 9
 	 */
-	public publish (name:string = null, type:string = null):void
+	public publish = (name:string = null, type:string = null):void =>
 	{
 		console.log("Netstream.publish property not implemented.");
 	}
@@ -904,7 +904,7 @@ export class NetStream extends EventDispatcher
 	 * @playerversion	Flash 9
 	 * @playerversion	Lite 4
 	 */
-	public receiveAudio (flag:boolean):void
+	public receiveAudio = (flag:boolean):void =>
 	{
 		console.log("Netstream.receiveAudio property not implemented.");
 	}
@@ -916,7 +916,7 @@ export class NetStream extends EventDispatcher
 	 * @playerversion	Flash 9
 	 * @playerversion	Lite 4
 	 */
-	public receiveVideo (flag:boolean):void
+	public receiveVideo = (flag:boolean):void =>
 	{
 		console.log("Netstream.receiveVideo property not implemented.");
 	}
@@ -927,7 +927,7 @@ export class NetStream extends EventDispatcher
 	 * @playerversion	Flash 9
 	 * @playerversion	Lite 4
 	 */
-	public receiveVideoFPS (FPS:number):void
+	public receiveVideoFPS = (FPS:number):void =>
 	{
 		console.log("Netstream.receiveVideoFPS property not implemented.");
 	}
@@ -938,7 +938,7 @@ export class NetStream extends EventDispatcher
 	 * @playerversion	Lite 4
 	 * @throws	IOError The voucher data cannot be deleted.
 	 */
-	public static resetDRMVouchers():void
+	public static resetDRMVouchers = ():void =>
 	{
 		console.log("Netstream.resetDRMVouchers property not implemented.");
 	}
@@ -950,7 +950,7 @@ export class NetStream extends EventDispatcher
 	 * @playerversion	Flash 9
 	 * @playerversion	Lite 4
 	 */
-	public resume():void
+	public resume = ():void =>
 	{
 		this._playbackTarget.play();
 		this._paused = false;
@@ -963,7 +963,7 @@ export class NetStream extends EventDispatcher
 	 * @playerversion	Flash 9
 	 * @playerversion	Lite 4
 	 */
-	public seek (offset:number):void
+	public seek = (offset:number):void =>
 	{
 		this._playbackTarget.currentTime = offset;
 	}
@@ -972,7 +972,7 @@ export class NetStream extends EventDispatcher
 	 * @langversion	3.0
 	 * @playerversion	Flash 9
 	 */
-	public send (handlerName:string, ...rest):void
+	public send = (handlerName:string, ...rest):void =>
 	{
 		console.log("Netstream.send method not implemented.");
 	}
@@ -982,7 +982,7 @@ export class NetStream extends EventDispatcher
 	 * @playerversion	Flash 10.1
 	 * @playerversion	AIR 2
 	 */
-	public step (frames:number):void
+	public step = (frames:number):void =>
 	{
 		console.log("Netstream.step method not implemented.");
 	}
@@ -992,7 +992,7 @@ export class NetStream extends EventDispatcher
 	 * @playerversion	Flash 9
 	 * @playerversion	Lite 4
 	 */
-	public togglePause():void
+	public togglePause = ():void =>
 	{
 		this._paused = !this._paused;
 		if (this._playbackTarget)
@@ -1067,7 +1067,7 @@ export class NetStream extends EventDispatcher
 		if (this._playbackTarget && this._url) this._playbackTarget.loop = value;
 	}
 	
-	private netStatusEvents(e:Event):void 
+	private netStatusEvents = (e:Event):void =>
 	{
 		switch (e.type) 
 		{
@@ -1175,7 +1175,7 @@ export class NetStream extends EventDispatcher
 		}
 	}
 	
-	private setupBuffer():void 
+	private setupBuffer = ():void =>
 	{
 		this._sourceBuffer = this._mediaSource.addSourceBuffer(this._mimeCodec);
 		this._sourceBuffer.addEventListener('updateend', this.handleUpdateEnd, false);
@@ -1184,18 +1184,18 @@ export class NetStream extends EventDispatcher
 		this._sourceBuffer.appendBuffer(this._bytes);
 	}
 	
-	private handleMediaSourceError(e:Event):void 
+	private handleMediaSourceError = (e:Event):void =>
 	{
 		console.log("Error: NetStream.handleMediaSourceError()", e);
 	}
 	
-	private handleSourceOpened(e:Event):void 
+	private handleSourceOpened = (e:Event):void =>
 	{
 		//console.log("Source Opened? " + _mediaSource.readyState);
 		if (!this._sourceBuffer) this.setupBuffer();
 	}
 	
-	private handleUpdateEnd(e:Event):void 
+	private handleUpdateEnd = (e:Event):void =>
 	{
 		console.log("NetStream.handleUpdateEnd() readyState: " + this._mediaSource.readyState + ", duration: " + this._mediaSource.duration);
 		if (this._mimeCodec == VideoCodec.VP8) this._mediaSource.endOfStream(); // throws error on IE using MP4
@@ -1235,13 +1235,13 @@ export class NetStream extends EventDispatcher
 	}
 	
 	
-	private handleSeeked(e:Event):void 
+	private handleSeeked = (e:Event):void =>
 	{
 		//console.log("NetStream.handleSeeked()");
 		this._playbackTarget.addEventListener('timeupdate', this.handleTime, false);
 	}
 	
-	private handleTime(e:Event):void 
+	private handleTime = (e:Event):void =>
 	{
 		//console.log("NetStream.handleTime() time: " + _playbackTarget.currentTime);
 		if (this._bytes && this._playbackTarget.currentTime != 0 && this._playbackTarget.currentTime >= this._duration - 1 && !this._looped)

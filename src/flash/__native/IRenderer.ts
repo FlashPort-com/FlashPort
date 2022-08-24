@@ -1,11 +1,11 @@
 
-import { BitmapData } from "../display/BitmapData.js";
-import { Graphics } from "../display/Graphics.js";
-import { GraphicsPath } from "../display/GraphicsPath.js";
-import { ColorTransform } from "../geom/ColorTransform.js";
-import { Matrix } from "../geom/Matrix.js";
-import { TextField } from "../text/TextField.js";
-import { TextFormat } from "../text/TextFormat.js";
+import { BitmapData } from "../display/BitmapData";
+import { Graphics } from "../display/Graphics";
+import { GraphicsPath } from "../display/GraphicsPath";
+import { ColorTransform } from "../geom/ColorTransform";
+import { Matrix } from "../geom/Matrix";
+import { TextField } from "../text/TextField";
+import { TextFormat } from "../text/TextFormat";
 
 export class IRenderer 
 {

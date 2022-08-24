@@ -1,4 +1,4 @@
-import { BitmapFilter } from "./BitmapFilter.js";
+import { BitmapFilter } from "./BitmapFilter";
 
 /**
  * The ColorMatrixFilter class lets you apply a 4 x 5 matrix transformation on the RGBA color and alpha values

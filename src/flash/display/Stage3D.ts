@@ -1,7 +1,7 @@
-import { EventDispatcher } from "../events/EventDispatcher.js";
-import { AEvent } from "../events/AEvent.js";
-import { Context3D } from "../display3D/Context3D.js";
-import { Stage } from "./Stage.js";
+import { EventDispatcher } from "../events/EventDispatcher";
+import { AEvent } from "../events/AEvent";
+import { Context3D } from "../display3D/Context3D";
+import { Stage } from "./Stage";
 
 export class Stage3D extends EventDispatcher
 {

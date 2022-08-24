@@ -1,5 +1,5 @@
-import { Point } from "./Point.js";
-import { Matrix3D } from "./Matrix3D.js";
+import { Point } from "./Point";
+import { Matrix3D } from "./Matrix3D";
 
 export class PerspectiveProjection extends Object
 {

@@ -1,10 +1,10 @@
-import { URLRequest } from "./URLRequest.js";
-import { URLVariables } from "./URLVariables.js";
-import { AEvent } from "../events/AEvent.js";
-import { EventDispatcher } from "../events/EventDispatcher.js";
-import { ByteArray } from "../utils/ByteArray.js";
-import { IOErrorEvent } from "../events/IOErrorEvent.js";
-import { ProgressEvent } from "../events/ProgressEvent.js";
+import { URLRequest } from "./URLRequest";
+import { URLVariables } from "./URLVariables";
+import { AEvent } from "../events/AEvent";
+import { EventDispatcher } from "../events/EventDispatcher";
+import { ByteArray } from "../utils/ByteArray";
+import { IOErrorEvent } from "../events/IOErrorEvent";
+import { ProgressEvent } from "../events/ProgressEvent";
 
 export class URLStream extends EventDispatcher
 {

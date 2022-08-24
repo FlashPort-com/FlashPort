@@ -1,4 +1,4 @@
-import { ByteArray } from "../utils/ByteArray.js";
+import { ByteArray } from "../utils/ByteArray";
 export class IndexBuffer3D extends Object
 {
    public count:number;

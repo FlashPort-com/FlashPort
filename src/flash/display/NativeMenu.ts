@@ -1,4 +1,4 @@
-import { EventDispatcher } from "../events/EventDispatcher.js";
+import { EventDispatcher } from "../events/EventDispatcher";
 export class NativeMenu extends EventDispatcher
 {
 	constructor(){

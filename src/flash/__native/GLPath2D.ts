@@ -1,10 +1,10 @@
-import { GraphicsPath } from "../display/GraphicsPath.js";
-import { GraphicsPathCommand } from "../display/GraphicsPathCommand.js";
-import { Context3D } from "../display3D/Context3D.js";
-import { Matrix } from "../geom/Matrix.js";
-import { GLDrawable } from "./GLDrawable.js";
-import { GLGraphicsPath } from "./GLGraphicsPath.js";
-import { MemArray } from "./MemArray.js";
+import { GraphicsPath } from "../display/GraphicsPath";
+import { GraphicsPathCommand } from "../display/GraphicsPathCommand";
+import { Context3D } from "../display3D/Context3D";
+import { Matrix } from "../geom/Matrix";
+import { GLDrawable } from "./GLDrawable";
+import { GLGraphicsPath } from "./GLGraphicsPath";
+import { MemArray } from "./MemArray";
 export class GLPath2D 
 {
     public matr:Matrix = new Matrix;

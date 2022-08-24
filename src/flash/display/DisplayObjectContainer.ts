@@ -1,8 +1,8 @@
-import { InteractiveObject } from "./InteractiveObject.js";
-import { DisplayObject } from "./DisplayObject.js";
-import { MouseEvent } from "../events/MouseEvent.js";
-import { Point } from "../geom/Point.js";
-import { Rectangle } from "../geom/Rectangle.js";
+import { InteractiveObject } from "./InteractiveObject";
+import { DisplayObject } from "./DisplayObject";
+import { MouseEvent } from "../events/MouseEvent";
+import { Point } from "../geom/Point";
+import { Rectangle } from "../geom/Rectangle";
 
 export class DisplayObjectContainer extends InteractiveObject
 {

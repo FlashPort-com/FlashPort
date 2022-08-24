@@ -1,5 +1,5 @@
-import { Point } from "./Point.js";
-import { Matrix } from "./Matrix.js";
+import { Point } from "./Point";
+import { Matrix } from "./Matrix";
 
 export class Rectangle extends Object
 {
@@ -97,17 +97,17 @@ export class Rectangle extends Object
 		this.height = value.y;
 	}
 	
-	public clone():Rectangle
+	public clone = ():Rectangle =>
 	{
 		return new Rectangle(this.x, this.y, this.width, this.height);
 	}
 	
-	public isEmpty():boolean
+	public isEmpty = ():boolean =>
 	{
 		return this.width <= 0 || this.height <= 0;
 	}
 	
-	public setEmpty():void
+	public setEmpty = ():void =>
 	{
 		this.x = 0;
 		this.y = 0;
@@ -115,7 +115,7 @@ export class Rectangle extends Object
 		this.height = 0;
 	}
 	
-	public inflate(dx:number, dy:number):void
+	public inflate = (dx:number, dy:number):void =>
 	{
 		this.x = this.x - dx;
 		this.width = this.width + 2 * dx;
@@ -123,7 +123,7 @@ export class Rectangle extends Object
 		this.height = this.height + 2 * dy;
 	}
 	
-	public inflatePoint(point:Point):void
+	public inflatePoint = (point:Point):void =>
 	{
 		this.x = this.x - point.x;
 		this.width = this.width + 2 * point.x;
@@ -131,29 +131,29 @@ export class Rectangle extends Object
 		this.height = this.height + 2 * point.y;
 	}
 	
-	public offset(dx:number, dy:number):void
+	public offset = (dx:number, dy:number):void =>
 	{
 		this.x = this.x + dx;
 		this.y = this.y + dy;
 	}
 	
-	public offsetPoint(point:Point):void
+	public offsetPoint = (point:Point):void =>
 	{
 		this.x = this.x + point.x;
 		this.y = this.y + point.y;
 	}
 	
-	public contains(x:number, y:number):boolean
+	public contains = (x:number, y:number):boolean =>
 	{
 		return x >= this.x && x < this.x + this.width && y >= this.y && y < this.y + this.height;
 	}
 	
-	public containsPoint(point:Point):boolean
+	public containsPoint = (point:Point):boolean =>
 	{
 		return point.x >= this.x && point.x < this.x + this.width && point.y >= this.y && point.y < this.y + this.height;
 	}
 	
-	public containsRect(rect:Rectangle):boolean
+	public containsRect = (rect:Rectangle):boolean =>
 	{
 		var r1:number = rect.x + rect.width;
 		var b1:number = rect.y + rect.height;
@@ -162,7 +162,7 @@ export class Rectangle extends Object
 		return rect.x >= this.x && rect.x < r2 && rect.y >= this.y && rect.y < b2 && r1 > this.x && r1 <= r2 && b1 > this.y && b1 <= b2;
 	}
 	
-	public intersection(toIntersect:Rectangle):Rectangle
+	public intersection = (toIntersect:Rectangle):Rectangle =>
 	{
 		var result:Rectangle = new Rectangle();
 		if (this.isEmpty() || toIntersect.isEmpty())
@@ -181,7 +181,7 @@ export class Rectangle extends Object
 		return result;
 	}
 	
-	public intersects(toIntersect:Rectangle):boolean
+	public intersects = (toIntersect:Rectangle):boolean =>
 	{
 		if (this.isEmpty() || toIntersect.isEmpty())
 		{
@@ -198,7 +198,7 @@ export class Rectangle extends Object
 		return true;
 	}
 	
-	public union(toUnion:Rectangle):Rectangle
+	public union = (toUnion:Rectangle):Rectangle =>
 	{
 		var r:Rectangle = null;
 		if (this.isEmpty())
@@ -217,17 +217,17 @@ export class Rectangle extends Object
 		return r;
 	}
 	
-	public equals(toCompare:Rectangle):boolean
+	public equals = (toCompare:Rectangle):boolean =>
 	{
 		return toCompare.x === this.x && toCompare.y === this.y && toCompare.width === this.width && toCompare.height === this.height;
 	}
 	
-	public toString():string
+	public toString = ():string =>
 	{
 		return "(x=" + this.x + ", y=" + this.y + ", w=" + this.width + ", h=" + this.height + ")";
 	}
 	
-	public copyFrom(sourceRect:Rectangle):void
+	public copyFrom = (sourceRect:Rectangle):void =>
 	{
 		this.x = sourceRect.x;
 		this.y = sourceRect.y;
@@ -235,7 +235,7 @@ export class Rectangle extends Object
 		this.height = sourceRect.height;
 	}
 	
-	public setTo(xa:number, ya:number, widtha:number, heighta:number):void
+	public setTo = (xa:number, ya:number, widtha:number, heighta:number):void =>
 	{
 		this.x = xa;
 		this.y = ya;
@@ -243,7 +243,7 @@ export class Rectangle extends Object
 		this.height = heighta;
 	}
 	
-	public __transform(rect:Rectangle, m:Matrix):void
+	public __transform = (rect:Rectangle, m:Matrix):void =>
 	{
 		var tx0:number = m.a * this.x + m.c * this.y;
 		var tx1:number = tx0;
@@ -277,7 +277,7 @@ export class Rectangle extends Object
 		rect.setTo(tx0 + m.tx, ty0 + m.ty, tx1 - tx0, ty1 - ty0);
 	}
 	
-	public __expand(x:number, y:number, width:number, height:number):void
+	public __expand = (x:number, y:number, width:number, height:number):void =>
 	{
 		if (this.width == 0 && this.height == 0)
 		{

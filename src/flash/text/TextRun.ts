@@ -1,4 +1,4 @@
-import { TextFormat } from "./TextFormat.js";
+import { TextFormat } from "./TextFormat";
 
    /*[ExcludeClass]*/
    export class TextRun extends Object

@@ -1,25 +1,18 @@
 {
   "name": "flashport",
-  "type": "module",
-  "version": "1.0.3",
-  "description": "Typescript port of the ActionScript 3.0 Flash library",
-  "author": "Kenny Lerma",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/kennylerma/FlashPort.git"
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
   },
-  "main": "dist/index.js",
-  "module": "dist/flashport-lib.mjs",
-  "typings": "dist/index.ts",
-  "homepage": "https://flashport.org",
-  "types": "dist/flashport-lib.d.ts",
-  "files": [
-    "/dist"
-  ],
+  "devDependencies": {
+    "typescript": "^4.5.4",
+    "vite": "^2.9.0"
+  },
   "dependencies": {
     "@types/css-font-loading-module": "^0.0.7",
-    "@types/npm": "^7.19.0",
-    "typings": "^2.1.1"
+    "canvaskit-wasm": "^0.34.0"
   }
 }

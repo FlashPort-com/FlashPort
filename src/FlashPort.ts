@@ -1,5 +1,5 @@
-import { BaseRenderer } from "./flash/__native/BaseRenderer.js";
-import { IRenderer } from "./flash/__native/IRenderer.js";
+import { BaseRenderer } from "./flash/__native/BaseRenderer";
+import { IRenderer } from "./flash/__native/IRenderer";
 
 export class FlashPort 
 {

@@ -1,4 +1,4 @@
-import { Error } from "./Error.js";
+import { Error } from "./Error";
 export class ArgumentError extends Error
 {
    public static len:number = 1;

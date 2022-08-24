@@ -1,5 +1,5 @@
 import { Timer } from "./Timer";
-import { TimerEvent } from "../events/TimerEvent.js";
+import { TimerEvent } from "../events/TimerEvent";
 
 export class SetIntervalTimer extends Timer
 {

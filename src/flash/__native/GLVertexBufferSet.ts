@@ -1,5 +1,5 @@
-import { Context3D } from "../display3D/Context3D.js";
-import { VertexBuffer3D } from "../display3D/VertexBuffer3D.js";
+import { Context3D } from "../display3D/Context3D";
+import { VertexBuffer3D } from "../display3D/VertexBuffer3D";
 
 export class GLVertexBufferSet 
 {

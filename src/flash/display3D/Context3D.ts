@@ -1,22 +1,22 @@
-import { Program3D } from "./Program3D.js";
-import { FlashPort } from "../../FlashPort.js";
-import { IndexBuffer3D } from "./IndexBuffer3D.js";
-import { Context3DProgramType } from "./Context3DProgramType.js";
-import { VertexBuffer3D } from "./VertexBuffer3D.js";
-import { Context3DVertexBufferFormat } from "./Context3DVertexBufferFormat.js";
-import { Context3DBlendFactor } from "./Context3DBlendFactor.js";
-import { Context3DCompareMode } from "./Context3DCompareMode.js";
-import { TextureBase } from "./textures/TextureBase.js";
-import { Texture } from "./textures/Texture.js";
-import { CubeTexture } from "./textures/CubeTexture.js";
-import { RectangleTexture } from "./textures/RectangleTexture.js";
-import { VideoTexture } from "./textures/VideoTexture.js";
-import { Context3DTriangleFace } from "./Context3DTriangleFace.js";
-import { EventDispatcher } from "../events/EventDispatcher.js";
-import { Matrix3D } from "../geom/Matrix3D.js";
-import { ByteArray } from "../utils/ByteArray.js";
-import { Rectangle } from "../geom/Rectangle.js";
-import { BitmapData } from "../display/BitmapData.js";
+import { Program3D } from "./Program3D";
+import { FlashPort } from "../../FlashPort";
+import { IndexBuffer3D } from "./IndexBuffer3D";
+import { Context3DProgramType } from "./Context3DProgramType";
+import { VertexBuffer3D } from "./VertexBuffer3D";
+import { Context3DVertexBufferFormat } from "./Context3DVertexBufferFormat";
+import { Context3DBlendFactor } from "./Context3DBlendFactor";
+import { Context3DCompareMode } from "./Context3DCompareMode";
+import { TextureBase } from "./textures/TextureBase";
+import { Texture } from "./textures/Texture";
+import { CubeTexture } from "./textures/CubeTexture";
+import { RectangleTexture } from "./textures/RectangleTexture";
+import { VideoTexture } from "./textures/VideoTexture";
+import { Context3DTriangleFace } from "./Context3DTriangleFace";
+import { EventDispatcher } from "../events/EventDispatcher";
+import { Matrix3D } from "../geom/Matrix3D";
+import { ByteArray } from "../utils/ByteArray";
+import { Rectangle } from "../geom/Rectangle";
+import { BitmapData } from "../display/BitmapData";
 
 export class Context3D extends EventDispatcher
 {

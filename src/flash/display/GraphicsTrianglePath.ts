@@ -1,8 +1,8 @@
-import { IGraphicsPath } from "./IGraphicsPath.js";
-import { IGraphicsData } from "./IGraphicsData.js";
+import { IGraphicsPath } from "./IGraphicsPath";
+import { IGraphicsData } from "./IGraphicsData";
 
-import { GLCanvasRenderingContext2D } from "../__native/GLCanvasRenderingContext2D.js";
-import { ColorTransform } from "../geom/ColorTransform.js";
+import { GLCanvasRenderingContext2D } from "../__native/GLCanvasRenderingContext2D";
+import { ColorTransform } from "../geom/ColorTransform";
 
 export class GraphicsTrianglePath extends Object implements IGraphicsPath, IGraphicsData
 {

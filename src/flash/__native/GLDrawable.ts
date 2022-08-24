@@ -1,5 +1,5 @@
-import { GLVertexBufferSet } from "../../flash/__native/GLVertexBufferSet.js";
-import { GLIndexBufferSet } from "./GLIndexBufferSet.js";
+import { GLVertexBufferSet } from "../../flash/__native/GLVertexBufferSet";
+import { GLIndexBufferSet } from "./GLIndexBufferSet";
 
 export class GLDrawable 
 {

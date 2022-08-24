@@ -1,5 +1,5 @@
 
-import { Rectangle } from "../geom/Rectangle.js";
+import { Rectangle } from "../geom/Rectangle";
 
 
 export class AccessibilityImplementation extends Object

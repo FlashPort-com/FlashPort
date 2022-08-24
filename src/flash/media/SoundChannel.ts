@@ -1,7 +1,7 @@
-import { SoundTransform } from "./SoundTransform.js";
-import { AEvent } from "../events/AEvent.js";
-import { EventDispatcher } from "../events/EventDispatcher.js";
-import { Stage } from "../display/Stage.js";
+import { SoundTransform } from "./SoundTransform";
+import { AEvent } from "../events/AEvent";
+import { EventDispatcher } from "../events/EventDispatcher";
+import { Stage } from "../display/Stage";
 
 export class SoundChannel extends EventDispatcher
 {

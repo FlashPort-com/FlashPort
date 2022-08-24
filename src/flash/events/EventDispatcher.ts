@@ -1,9 +1,9 @@
-import { IEventDispatcher } from "./IEventDispatcher.js";
-import { AEvent } from "./AEvent.js";
+import { IEventDispatcher } from "./IEventDispatcher";
+import { AEvent } from "./AEvent";
 	
 export class EventDispatcher extends Object implements IEventDispatcher
 {
-	protected listeners:Object = {};
+	protected listeners:any = {};
 	
 	constructor(target:IEventDispatcher = null)
 	{
@@ -47,7 +47,9 @@ export class EventDispatcher extends Object implements IEventDispatcher
 	
 	public addEventListener = (type:string, listener:Function, useCapture:boolean = false, priority:number = 0, useWeakReference:boolean = false):void =>
 	{
-		var funcs:any[] = this.listeners[type] = this.listeners[type] || [];
+		if (this.listeners[type] == undefined) this.listeners[type] = [];
+		
+		var funcs:Function[] = this.listeners[type];
 		var i:number = funcs.indexOf(listener);
 		if (i != -1) funcs.splice(i, 1);
 		funcs.push(listener);
@@ -55,7 +57,7 @@ export class EventDispatcher extends Object implements IEventDispatcher
 	
 	public removeEventListener = (type:string, listener:Function, useCapture:boolean = false):void =>
 	{
-		var funcs:any[] = this.listeners[type];
+		var funcs:Function[] = this.listeners[type];
 		if (funcs)
 		{
 			var i:number = funcs.indexOf(listener);
@@ -88,7 +90,9 @@ export class EventDispatcher extends Object implements IEventDispatcher
 	{
 		event.target = this;
 		event.currentTarget = this;
-		var funcs:Array<Function> = this.listeners[event.type];
+		var foundFunc:boolean = false;
+		var funcs:Function[] = this.listeners[event.type];
+
 		if (funcs)
 		{
 			var len:number = funcs.length;
@@ -98,10 +102,10 @@ export class EventDispatcher extends Object implements IEventDispatcher
 				if (func)
 				{
 					func(event);
-					return true;
+					foundFunc = true;
 				} 
 			}
 		}
-		return false;
+		return foundFunc;
 	}
 }

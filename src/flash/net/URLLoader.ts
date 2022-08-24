@@ -1,14 +1,14 @@
-import { URLStream } from "./URLStream.js";
-import { URLRequest } from "./URLRequest.js";
-import { URLLoaderDataFormat } from "./URLLoaderDataFormat.js";
-import { URLVariables } from "./URLVariables.js";
-import { AEvent } from "../events/AEvent.js";
-import { EventDispatcher } from "../events/EventDispatcher.js";
-import { HTTPStatusEvent } from "../events/HTTPStatusEvent.js";
-import { IOErrorEvent } from "../events/IOErrorEvent.js";
-import { ProgressEvent } from "../events/ProgressEvent.js";
-import { SecurityErrorEvent } from "../events/SecurityErrorEvent.js";
-import { ByteArray } from "../utils/ByteArray.js";
+import { URLStream } from "./URLStream";
+import { URLRequest } from "./URLRequest";
+import { URLLoaderDataFormat } from "./URLLoaderDataFormat";
+import { URLVariables } from "./URLVariables";
+import { AEvent } from "../events/AEvent";
+import { EventDispatcher } from "../events/EventDispatcher";
+import { HTTPStatusEvent } from "../events/HTTPStatusEvent";
+import { IOErrorEvent } from "../events/IOErrorEvent";
+import { ProgressEvent } from "../events/ProgressEvent";
+import { SecurityErrorEvent } from "../events/SecurityErrorEvent";
+import { ByteArray } from "../utils/ByteArray";
 
 export class URLLoader extends EventDispatcher
 {

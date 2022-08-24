@@ -43,7 +43,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		 * This method doesn't actually have to be used - equations can always be referenced by their full function
 		 * names. But "registering" them make them available as their shorthand string names.
 		 */
-		public static init():void {
+		public static init = ():void =>
+		{
 			Tweener.registerTransition("easenone",			Equations.easeNone);
 			Tweener.registerTransition("linear",			Equations.easeNone);		// mx.transitions.easing.None.easeNone
 			
@@ -111,7 +112,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		 * @param d		Expected easing duration (in frames or seconds).
 		 * @return		The correct value.
 		 */
-		public static easeNone (t:number, b:number, c:number, d:number, p_params:any = null):number {
+		public static easeNone = (t:number, b:number, c:number, d:number, p_params:any = null):number =>
+		{
 			return c*t/d + b;
 		}
 	
@@ -124,7 +126,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		 * @param d		Expected easing duration (in frames or seconds).
 		 * @return		The correct value.
 		 */
-		public static easeInQuad (t:number, b:number, c:number, d:number, p_params:any = null):number {
+		public static easeInQuad = (t:number, b:number, c:number, d:number, p_params:any = null):number =>
+		{
 			return c*(t/=d)*t + b;
 		}
 	
@@ -137,7 +140,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		 * @param d		Expected easing duration (in frames or seconds).
 		 * @return		The correct value.
 		 */
-		public static easeOutQuad (t:number, b:number, c:number, d:number, p_params:any = null):number {
+		public static easeOutQuad = (t:number, b:number, c:number, d:number, p_params:any = null):number =>
+		{
 			return -c *(t/=d)*(t-2) + b;
 		}
 	
@@ -150,7 +154,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		 * @param d		Expected easing duration (in frames or seconds).
 		 * @return		The correct value.
 		 */
-		public static easeInOutQuad (t:number, b:number, c:number, d:number, p_params:any = null):number {
+		public static easeInOutQuad = (t:number, b:number, c:number, d:number, p_params:any = null):number =>
+		{
 			if ((t/=d/2) < 1) return c/2*t*t + b;
 			return -c/2 * ((--t)*(t-2) - 1) + b;
 		}
@@ -164,7 +169,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		 * @param d		Expected easing duration (in frames or seconds).
 		 * @return		The correct value.
 		 */
-		public static easeOutInQuad (t:number, b:number, c:number, d:number, p_params:any = null):number {
+		public static easeOutInQuad = (t:number, b:number, c:number, d:number, p_params:any = null):number =>
+		{
 			if (t < d/2) return Equations.easeOutQuad (t*2, b, c/2, d, p_params);
 			return Equations.easeInQuad((t*2)-d, b+c/2, c/2, d, p_params);
 		}
@@ -178,7 +184,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		 * @param d		Expected easing duration (in frames or seconds).
 		 * @return		The correct value.
 		 */
-		public static easeInCubic (t:number, b:number, c:number, d:number, p_params:any = null):number {
+		public static easeInCubic = (t:number, b:number, c:number, d:number, p_params:any = null):number =>
+		{
 			return c*(t/=d)*t*t + b;
 		}
 	
@@ -191,7 +198,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		 * @param d		Expected easing duration (in frames or seconds).
 		 * @return		The correct value.
 		 */
-		public static easeOutCubic (t:number, b:number, c:number, d:number, p_params:any = null):number {
+		public static easeOutCubic = (t:number, b:number, c:number, d:number, p_params:any = null):number =>
+		{
 			return c*((t=t/d-1)*t*t + 1) + b;
 		}
 	
@@ -204,7 +212,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		 * @param d		Expected easing duration (in frames or seconds).
 		 * @return		The correct value.
 		 */
-		public static easeInOutCubic (t:number, b:number, c:number, d:number, p_params:any = null):number {
+		public static easeInOutCubic = (t:number, b:number, c:number, d:number, p_params:any = null):number =>
+		{
 			if ((t/=d/2) < 1) return c/2*t*t*t + b;
 			return c/2*((t-=2)*t*t + 2) + b;
 		}
@@ -218,7 +227,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		 * @param d		Expected easing duration (in frames or seconds).
 		 * @return		The correct value.
 		 */
-		public static easeOutInCubic (t:number, b:number, c:number, d:number, p_params:any = null):number {
+		public static easeOutInCubic = (t:number, b:number, c:number, d:number, p_params:any = null):number =>
+		{
 			if (t < d/2) return Equations.easeOutCubic (t*2, b, c/2, d, p_params);
 			return Equations.easeInCubic((t*2)-d, b+c/2, c/2, d, p_params);
 		}
@@ -232,7 +242,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		 * @param d		Expected easing duration (in frames or seconds).
 		 * @return		The correct value.
 		 */
-		public static easeInQuart (t:number, b:number, c:number, d:number, p_params:any = null):number {
+		public static easeInQuart = (t:number, b:number, c:number, d:number, p_params:any = null):number =>
+		{
 			return c*(t/=d)*t*t*t + b;
 		}
 	
@@ -245,7 +256,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		 * @param d		Expected easing duration (in frames or seconds).
 		 * @return		The correct value.
 		 */
-		public static easeOutQuart (t:number, b:number, c:number, d:number, p_params:any = null):number {
+		public static easeOutQuart = (t:number, b:number, c:number, d:number, p_params:any = null):number =>
+		{
 			return -c * ((t=t/d-1)*t*t*t - 1) + b;
 		}
 	
@@ -258,7 +270,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		 * @param d		Expected easing duration (in frames or seconds).
 		 * @return		The correct value.
 		 */
-		public static easeInOutQuart (t:number, b:number, c:number, d:number, p_params:any = null):number {
+		public static easeInOutQuart = (t:number, b:number, c:number, d:number, p_params:any = null):number =>
+		{
 			if ((t/=d/2) < 1) return c/2*t*t*t*t + b;
 			return -c/2 * ((t-=2)*t*t*t - 2) + b;
 		}
@@ -272,7 +285,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		 * @param d		Expected easing duration (in frames or seconds).
 		 * @return		The correct value.
 		 */
-		public static easeOutInQuart (t:number, b:number, c:number, d:number, p_params:any = null):number {
+		public static easeOutInQuart = (t:number, b:number, c:number, d:number, p_params:any = null):number =>
+		{
 			if (t < d/2) return Equations.easeOutQuart (t*2, b, c/2, d, p_params);
 			return Equations.easeInQuart((t*2)-d, b+c/2, c/2, d, p_params);
 		}
@@ -286,7 +300,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		 * @param d		Expected easing duration (in frames or seconds).
 		 * @return		The correct value.
 		 */
-		public static easeInQuint (t:number, b:number, c:number, d:number, p_params:any = null):number {
+		public static easeInQuint = (t:number, b:number, c:number, d:number, p_params:any = null):number =>
+		{
 			return c*(t/=d)*t*t*t*t + b;
 		}
 	
@@ -299,7 +314,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		 * @param d		Expected easing duration (in frames or seconds).
 		 * @return		The correct value.
 		 */
-		public static easeOutQuint (t:number, b:number, c:number, d:number, p_params:any = null):number {
+		public static easeOutQuint = (t:number, b:number, c:number, d:number, p_params:any = null):number =>
+		{
 			return c*((t=t/d-1)*t*t*t*t + 1) + b;
 		}
 	
@@ -312,7 +328,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		 * @param d		Expected easing duration (in frames or seconds).
 		 * @return		The correct value.
 		 */
-		public static easeInOutQuint (t:number, b:number, c:number, d:number, p_params:any = null):number {
+		public static easeInOutQuint = (t:number, b:number, c:number, d:number, p_params:any = null):number =>
+		{
 			if ((t/=d/2) < 1) return c/2*t*t*t*t*t + b;
 			return c/2*((t-=2)*t*t*t*t + 2) + b;
 		}
@@ -326,7 +343,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		 * @param d		Expected easing duration (in frames or seconds).
 		 * @return		The correct value.
 		 */
-		public static easeOutInQuint (t:number, b:number, c:number, d:number, p_params:any = null):number {
+		public static easeOutInQuint = (t:number, b:number, c:number, d:number, p_params:any = null):number =>
+		{
 			if (t < d/2) return Equations.easeOutQuint (t*2, b, c/2, d, p_params);
 			return Equations.easeInQuint((t*2)-d, b+c/2, c/2, d, p_params);
 		}
@@ -340,7 +358,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		 * @param d		Expected easing duration (in frames or seconds).
 		 * @return		The correct value.
 		 */
-		public static easeInSine (t:number, b:number, c:number, d:number, p_params:any = null):number {
+		public static easeInSine = (t:number, b:number, c:number, d:number, p_params:any = null):number =>
+		{
 			return -c * Math.cos(t/d * (Math.PI/2)) + c + b;
 		}
 	
@@ -353,7 +372,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		 * @param d		Expected easing duration (in frames or seconds).
 		 * @return		The correct value.
 		 */
-		public static easeOutSine (t:number, b:number, c:number, d:number, p_params:any = null):number {
+		public static easeOutSine = (t:number, b:number, c:number, d:number, p_params:any = null):number =>
+		{
 			return c * Math.sin(t/d * (Math.PI/2)) + b;
 		}
 	
@@ -366,7 +386,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		 * @param d		Expected easing duration (in frames or seconds).
 		 * @return		The correct value.
 		 */
-		public static easeInOutSine (t:number, b:number, c:number, d:number, p_params:any = null):number {
+		public static easeInOutSine = (t:number, b:number, c:number, d:number, p_params:any = null):number =>
+		{
 			return -c/2 * (Math.cos(Math.PI*t/d) - 1) + b;
 		}
 	
@@ -379,7 +400,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		 * @param d		Expected easing duration (in frames or seconds).
 		 * @return		The correct value.
 		 */
-		public static easeOutInSine (t:number, b:number, c:number, d:number, p_params:any = null):number {
+		public static easeOutInSine = (t:number, b:number, c:number, d:number, p_params:any = null):number =>
+		{
 			if (t < d/2) return Equations.easeOutSine (t*2, b, c/2, d, p_params);
 			return Equations.easeInSine((t*2)-d, b+c/2, c/2, d, p_params);
 		}
@@ -393,7 +415,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		 * @param d		Expected easing duration (in frames or seconds).
 		 * @return		The correct value.
 		 */
-		public static easeInExpo (t:number, b:number, c:number, d:number, p_params:any = null):number {
+		public static easeInExpo = (t:number, b:number, c:number, d:number, p_params:any = null):number =>
+		{
 			return (t==0) ? b : c * Math.pow(2, 10 * (t/d - 1)) + b - c * 0.001;
 		}
 	
@@ -406,7 +429,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		 * @param d		Expected easing duration (in frames or seconds).
 		 * @return		The correct value.
 		 */
-		public static easeOutExpo (t:number, b:number, c:number, d:number, p_params:any = null):number {
+		public static easeOutExpo = (t:number, b:number, c:number, d:number, p_params:any = null):number =>
+		{
 			return (t==d) ? b+c : c * 1.001 * (-Math.pow(2, -10 * t/d) + 1) + b;
 		}
 	
@@ -419,7 +443,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		 * @param d		Expected easing duration (in frames or seconds).
 		 * @return		The correct value.
 		 */
-		public static easeInOutExpo (t:number, b:number, c:number, d:number, p_params:any = null):number {
+		public static easeInOutExpo = (t:number, b:number, c:number, d:number, p_params:any = null):number =>
+		{
 			if (t==0) return b;
 			if (t==d) return b+c;
 			if ((t/=d/2) < 1) return c/2 * Math.pow(2, 10 * (t - 1)) + b - c * 0.0005;
@@ -435,7 +460,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		 * @param d		Expected easing duration (in frames or seconds).
 		 * @return		The correct value.
 		 */
-		public static easeOutInExpo (t:number, b:number, c:number, d:number, p_params:any = null):number {
+		public static easeOutInExpo = (t:number, b:number, c:number, d:number, p_params:any = null):number =>
+		{
 			if (t < d/2) return Equations.easeOutExpo (t*2, b, c/2, d, p_params);
 			return Equations.easeInExpo((t*2)-d, b+c/2, c/2, d, p_params);
 		}
@@ -449,7 +475,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		 * @param d		Expected easing duration (in frames or seconds).
 		 * @return		The correct value.
 		 */
-		public static easeInCirc (t:number, b:number, c:number, d:number, p_params:any = null):number {
+		public static easeInCirc = (t:number, b:number, c:number, d:number, p_params:any = null):number =>
+		{
 			return -c * (Math.sqrt(1 - (t/=d)*t) - 1) + b;
 		}
 	
@@ -462,7 +489,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		 * @param d		Expected easing duration (in frames or seconds).
 		 * @return		The correct value.
 		 */
-		public static easeOutCirc (t:number, b:number, c:number, d:number, p_params:any = null):number {
+		public static easeOutCirc = (t:number, b:number, c:number, d:number, p_params:any = null):number =>
+		{
 			return c * Math.sqrt(1 - (t=t/d-1)*t) + b;
 		}
 	
@@ -475,7 +503,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		 * @param d		Expected easing duration (in frames or seconds).
 		 * @return		The correct value.
 		 */
-		public static easeInOutCirc (t:number, b:number, c:number, d:number, p_params:any = null):number {
+		public static easeInOutCirc = (t:number, b:number, c:number, d:number, p_params:any = null):number =>
+		{
 			if ((t/=d/2) < 1) return -c/2 * (Math.sqrt(1 - t*t) - 1) + b;
 			return c/2 * (Math.sqrt(1 - (t-=2)*t) + 1) + b;
 		}
@@ -489,7 +518,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		 * @param d		Expected easing duration (in frames or seconds).
 		 * @return		The correct value.
 		 */
-		public static easeOutInCirc (t:number, b:number, c:number, d:number, p_params:any = null):number {
+		public static easeOutInCirc = (t:number, b:number, c:number, d:number, p_params:any = null):number =>
+		{
 			if (t < d/2) return Equations.easeOutCirc (t*2, b, c/2, d, p_params);
 			return Equations.easeInCirc((t*2)-d, b+c/2, c/2, d, p_params);
 		}
@@ -505,7 +535,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		 * @param p		Period.
 		 * @return		The correct value.
 		 */
-		public static easeInElastic (t:number, b:number, c:number, d:number, p_params:any = null):number {
+		public static easeInElastic = (t:number, b:number, c:number, d:number, p_params:any = null):number =>
+		{
 			if (t==0) return b;
 			if ((t/=d)==1) return b+c;
 			var p:number = !Boolean(p_params) || isNaN(p_params.period) ? d*.3 : p_params.period;
@@ -531,7 +562,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		 * @param p		Period.
 		 * @return		The correct value.
 		 */
-		public static easeOutElastic (t:number, b:number, c:number, d:number, p_params:any = null):number {
+		public static easeOutElastic = (t:number, b:number, c:number, d:number, p_params:any = null):number =>
+		{
 			if (t==0) return b;
 			if ((t/=d)==1) return b+c;
 			var p:number = !Boolean(p_params) || isNaN(p_params.period) ? d*.3 : p_params.period;
@@ -557,7 +589,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		 * @param p		Period.
 		 * @return		The correct value.
 		 */
-		public static easeInOutElastic (t:number, b:number, c:number, d:number, p_params:any = null):number {
+		public static easeInOutElastic = (t:number, b:number, c:number, d:number, p_params:any = null):number =>
+		{
 			if (t==0) return b;
 			if ((t/=d/2)==2) return b+c;
 			var p:number = !Boolean(p_params) || isNaN(p_params.period) ? d*(.3*1.5) : p_params.period;
@@ -584,7 +617,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		 * @param p		Period.
 		 * @return		The correct value.
 		 */
-		public static easeOutInElastic (t:number, b:number, c:number, d:number, p_params:any = null):number {
+		public static easeOutInElastic = (t:number, b:number, c:number, d:number, p_params:any = null):number =>
+		{
 			if (t < d/2) return Equations.easeOutElastic (t*2, b, c/2, d, p_params);
 			return Equations.easeInElastic((t*2)-d, b+c/2, c/2, d, p_params);
 		}
@@ -599,7 +633,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		 * @param s		Overshoot ammount: higher s means greater overshoot (0 produces cubic easing with no overshoot, and the default value of 1.70158 produces an overshoot of 10 percent).
 		 * @return		The correct value.
 		 */
-		public static easeInBack (t:number, b:number, c:number, d:number, p_params:any = null):number {
+		public static easeInBack = (t:number, b:number, c:number, d:number, p_params:any = null):number =>
+		{
 			var s:number = !Boolean(p_params) || isNaN(p_params.overshoot) ? 1.70158 : p_params.overshoot;
 			return c*(t/=d)*t*((s+1)*t - s) + b;
 		}
@@ -614,7 +649,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		 * @param s		Overshoot ammount: higher s means greater overshoot (0 produces cubic easing with no overshoot, and the default value of 1.70158 produces an overshoot of 10 percent).
 		 * @return		The correct value.
 		 */
-		public static easeOutBack (t:number, b:number, c:number, d:number, p_params:any = null):number {
+		public static easeOutBack = (t:number, b:number, c:number, d:number, p_params:any = null):number =>
+		{
 			var s:number = !Boolean(p_params) || isNaN(p_params.overshoot) ? 1.70158 : p_params.overshoot;
 			return c*((t=t/d-1)*t*((s+1)*t + s) + 1) + b;
 		}
@@ -629,7 +665,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		 * @param s		Overshoot ammount: higher s means greater overshoot (0 produces cubic easing with no overshoot, and the default value of 1.70158 produces an overshoot of 10 percent).
 		 * @return		The correct value.
 		 */
-		public static easeInOutBack (t:number, b:number, c:number, d:number, p_params:any = null):number {
+		public static easeInOutBack = (t:number, b:number, c:number, d:number, p_params:any = null):number =>
+		{
 			var s:number = !Boolean(p_params) || isNaN(p_params.overshoot) ? 1.70158 : p_params.overshoot;
 			if ((t/=d/2) < 1) return c/2*(t*t*(((s*=(1.525))+1)*t - s)) + b;
 			return c/2*((t-=2)*t*(((s*=(1.525))+1)*t + s) + 2) + b;
@@ -645,7 +682,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		 * @param s		Overshoot ammount: higher s means greater overshoot (0 produces cubic easing with no overshoot, and the default value of 1.70158 produces an overshoot of 10 percent).
 		 * @return		The correct value.
 		 */
-		public static easeOutInBack (t:number, b:number, c:number, d:number, p_params:any = null):number {
+		public static easeOutInBack = (t:number, b:number, c:number, d:number, p_params:any = null):number =>
+		{
 			if (t < d/2) return Equations.easeOutBack (t*2, b, c/2, d, p_params);
 			return Equations.easeInBack((t*2)-d, b+c/2, c/2, d, p_params);
 		}
@@ -659,7 +697,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		 * @param d		Expected easing duration (in frames or seconds).
 		 * @return		The correct value.
 		 */
-		public static easeInBounce (t:number, b:number, c:number, d:number, p_params:any = null):number {
+		public static easeInBounce = (t:number, b:number, c:number, d:number, p_params:any = null):number =>
+		{
 			return c - Equations.easeOutBounce (d-t, 0, c, d) + b;
 		}
 	
@@ -672,7 +711,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		 * @param d		Expected easing duration (in frames or seconds).
 		 * @return		The correct value.
 		 */
-		public static easeOutBounce (t:number, b:number, c:number, d:number, p_params:any = null):number {
+		public static easeOutBounce = (t:number, b:number, c:number, d:number, p_params:any = null):number =>
+		{
 			if ((t/=d) < (1/2.75)) {
 				return c*(7.5625*t*t) + b;
 			} else if (t < (2/2.75)) {
@@ -693,7 +733,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		 * @param d		Expected easing duration (in frames or seconds).
 		 * @return		The correct value.
 		 */
-		public static easeInOutBounce (t:number, b:number, c:number, d:number, p_params:any = null):number {
+		public static easeInOutBounce = (t:number, b:number, c:number, d:number, p_params:any = null):number =>
+		{
 			if (t < d/2) return Equations.easeInBounce (t*2, 0, c, d) * .5 + b;
 			else return Equations.easeOutBounce (t*2-d, 0, c, d) * .5 + c*.5 + b;
 		}
@@ -707,7 +748,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		 * @param d		Expected easing duration (in frames or seconds).
 		 * @return		The correct value.
 		 */
-		public static easeOutInBounce (t:number, b:number, c:number, d:number, p_params:any = null):number {
+		public static easeOutInBounce = (t:number, b:number, c:number, d:number, p_params:any = null):number =>
+		{
 			if (t < d/2) return Equations.easeOutBounce (t*2, b, c/2, d, p_params);
 			return Equations.easeInBounce((t*2)-d, b+c/2, c/2, d, p_params);
 		}

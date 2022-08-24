@@ -1,4 +1,4 @@
-import { Error } from "../../Error.js";
+import { Error } from "../../Error";
 export class IllegalOperationError extends Error
 {  
    constructor(message:string = "", id:number = 0)

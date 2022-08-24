@@ -1,6 +1,6 @@
-import { EventDispatcher } from "../events/EventDispatcher.js";
-import { SoundTransform } from "./SoundTransform.js";
-import { MicrophoneEnhancedOptions } from "./MicrophoneEnhancedOptions.js";
+import { EventDispatcher } from "../events/EventDispatcher";
+import { SoundTransform } from "./SoundTransform";
+import { MicrophoneEnhancedOptions } from "./MicrophoneEnhancedOptions";
 
 /**
  * Dispatched when a microphone reports its status.

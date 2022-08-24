@@ -1,6 +1,6 @@
-import { GraphicsPath } from "../display/GraphicsPath.js";
-import { Vector3D } from "../geom/Vector3D.js";
-import { MemArray } from "./MemArray.js";
+import { GraphicsPath } from "../display/GraphicsPath";
+import { Vector3D } from "../geom/Vector3D";
+import { MemArray } from "./MemArray";
 
 export class GLGraphicsPath extends GraphicsPath
 {

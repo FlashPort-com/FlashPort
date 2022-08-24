@@ -25,7 +25,8 @@
 		/**
 		 * Registers all the special properties to the Tweener class, so the Tweener knows what to do with them.
 		 */
-		public static init():void {
+		public static init = ():void =>
+		{
 
 			// Normal properties
 			Tweener.registerSpecialProperty("_sound_volume", SoundShortcuts._sound_volume_get, SoundShortcuts._sound_volume_set);
@@ -46,7 +47,8 @@
 		 * @param		p_obj				Object		SoundChannel object
 		 * @return							Number		The current volume
 		 */
-		public static _sound_volume_get (p_obj:any, p_parameters:any[], p_extra:any = null):number {
+		public static _sound_volume_get = (p_obj:any, p_parameters:any[], p_extra:any = null):number =>
+		{
 			return p_obj.soundTransform.volume;
 		}
 
@@ -56,7 +58,8 @@
 		 * @param		p_obj				Object		SoundChannel object
 		 * @param		p_value				Number		New volume
 		 */
-		public static _sound_volume_set (p_obj:any, p_value:number, p_parameters:any[], p_extra:any = null):void {
+		public static _sound_volume_set = (p_obj:any, p_value:number, p_parameters:any[], p_extra:any = null):void =>
+		{
 			var sndTransform:SoundTransform = p_obj.soundTransform;
 			sndTransform.volume = p_value;
 			p_obj.soundTransform = sndTransform;
@@ -72,7 +75,8 @@
 		 * @param		p_obj				Object		SoundChannel object
 		 * @return							Number		The current pan
 		 */
-		public static _sound_pan_get (p_obj:any, p_parameters:any[], p_extra:any = null):number {
+		public static _sound_pan_get = (p_obj:any, p_parameters:any[], p_extra:any = null):number =>
+		{
 			return p_obj.soundTransform.pan;
 		}
 
@@ -82,7 +86,8 @@
 		 * @param		p_obj				Object		SoundChannel object
 		 * @param		p_value				Number		New pan
 		 */
-		public static _sound_pan_set (p_obj:any, p_value:number, p_parameters:any[], p_extra:any = null):void {
+		public static _sound_pan_set = (p_obj:any, p_value:number, p_parameters:any[], p_extra:any = null):void =>
+		{
 			var sndTransform:SoundTransform = p_obj.soundTransform;
 			sndTransform.pan = p_value;
 			p_obj.soundTransform = sndTransform;

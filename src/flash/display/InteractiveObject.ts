@@ -1,15 +1,16 @@
 /**
  * @suppress {lateProvide}
  */
-import { DisplayObject } from "./DisplayObject.js";
-import { Rectangle } from "../geom/Rectangle.js";
+import { DisplayObject } from "./DisplayObject";
+import { Rectangle } from "../geom/Rectangle";
 
 export class InteractiveObject extends DisplayObject
 {
 	private _mouseEnabled:boolean = true;
 	private _doubleClickEnabled:boolean = false;
 	
-	constructor(){
+	constructor()
+	{
 		super();
 	}
 	
@@ -21,7 +22,7 @@ export class InteractiveObject extends DisplayObject
 	
 	public set tabIndex(param1:number)  {/**/ }
 	
-	public get focusRect():Object  { return null }
+	public get focusRect():Object  { return {} }
 	
 	public set focusRect(param1:Object)  {/**/ }
 	
@@ -37,7 +38,7 @@ export class InteractiveObject extends DisplayObject
 	
 	//public function set accessibilityImplementation(param1:AccessibilityImplementation) : void;
 	
-	public get softKeyboardInputAreaOfInterest():Rectangle  { return null }
+	public get softKeyboardInputAreaOfInterest():Rectangle  { return new Rectangle() }
 	
 	public set softKeyboardInputAreaOfInterest(param1:Rectangle)  {/**/ }
 	

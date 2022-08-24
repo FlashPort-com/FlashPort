@@ -1,13 +1,13 @@
-import { IGraphicsFill } from "./IGraphicsFill.js";
-import { IGraphicsData } from "./IGraphicsData.js";
-import { FlashPort } from "../../FlashPort.js";
-import { GradientType } from "./GradientType.js";
+import { IGraphicsFill } from "./IGraphicsFill";
+import { IGraphicsData } from "./IGraphicsData";
+import { FlashPort } from "../../FlashPort";
+import { GradientType } from "./GradientType";
 
-import { GLCanvasRenderingContext2D } from "../__native/GLCanvasRenderingContext2D.js";
-import { ColorTransform } from "../geom/ColorTransform.js";
-import { Matrix } from "../geom/Matrix.js";
-import { Point } from "../geom/Point.js";
-import { Rectangle } from "../geom/Rectangle.js";
+import { GLCanvasRenderingContext2D } from "../__native/GLCanvasRenderingContext2D";
+import { ColorTransform } from "../geom/ColorTransform";
+import { Matrix } from "../geom/Matrix";
+import { Point } from "../geom/Point";
+import { Rectangle } from "../geom/Rectangle";
 
 export class GraphicsGradientFill extends Object implements IGraphicsFill, IGraphicsData
 {

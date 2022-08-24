@@ -1,4 +1,4 @@
-import { ByteArray } from "../utils/ByteArray.js";
+import { ByteArray } from "../utils/ByteArray";
 
 export class VertexBuffer3D extends Object
 {

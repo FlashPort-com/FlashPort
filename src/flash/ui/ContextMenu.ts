@@ -1,8 +1,8 @@
 
-	import { NativeMenu } from "../display/NativeMenu.js";
-	import { ContextMenuBuiltInItems } from "./ContextMenuBuiltInItems.js";
-	import { URLRequest } from "../net/URLRequest.js";
-	import { ContextMenuClipboardItems } from "./ContextMenuClipboardItems.js";
+	import { NativeMenu } from "../display/NativeMenu";
+	import { ContextMenuBuiltInItems } from "./ContextMenuBuiltInItems";
+	import { URLRequest } from "../net/URLRequest";
+	import { ContextMenuClipboardItems } from "./ContextMenuClipboardItems";
 
 	/**
 	 * Dispatched when a user first generates a 

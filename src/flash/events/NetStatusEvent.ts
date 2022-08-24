@@ -1,5 +1,5 @@
 
-import { AEvent } from "./AEvent.js";
+import { AEvent } from "./AEvent";
 
 /// @eventType	flash.events.NetStatusEvent.NET_STATUS
 /*[Event(name="netStatus", type="flash.events.NetStatusEvent")]*/ 
@@ -90,7 +90,7 @@ export class NetStatusEvent extends AEvent
 	 */
 	public static NET_STATUS : string = "netStatus";
 	
-	private _info:Object;
+	private _info:any;
 
 	/**
 	 * An object with properties that describe the object's status or error condition.
@@ -125,8 +125,8 @@ export class NetStatusEvent extends AEvent
 	 * @playerversion	Flash 9
 	 * @playerversion	Lite 4
 	 */
-	public get info () : Object { return this._info; }
-	public set info (value:Object) { this._info = value; }
+	public get info () : any { return this._info; }
+	public set info (value:any) { this._info = value; }
 
 	/**
 	 * Creates a copy of the NetStatusEvent object and sets the value of each property to match that of the original.
@@ -135,7 +135,7 @@ export class NetStatusEvent extends AEvent
 	 * @playerversion	Flash 9
 	 * @playerversion	Lite 4
 	 */
-	/*override*/ public clone():AEvent 
+	/*override*/ public clone = ():AEvent =>
 	{
 		return new NetStatusEvent(this.type, this.bubbles, this.cancelable, this.info);
 	}
@@ -151,7 +151,7 @@ export class NetStatusEvent extends AEvent
 	 * @playerversion	Flash 9
 	 * @playerversion	Lite 4
 	 */
-	constructor (type:string, bubbles:boolean = false, cancelable:boolean = false, info:Object = null){
+	constructor (type:string, bubbles:boolean = false, cancelable:boolean = false, info:any = null){
 		super(type, bubbles, cancelable);
 		this._info = info;
 	}
@@ -164,7 +164,7 @@ export class NetStatusEvent extends AEvent
 	 * @playerversion	Flash 9
 	 * @playerversion	Lite 4
 	 */
-	/*override*/ public toString () : string
+	/*override*/ public toString = () : string =>
 	{
 		return this.formatToString("NetStatusEvent", "type", "bubbles", "cancelable", "info");
 	}

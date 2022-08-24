@@ -1,16 +1,16 @@
-import { Sprite } from "./Sprite.js";
-import { FrameLabel } from "./FrameLabel.js";
-import { DisplayObject } from "./DisplayObject.js";
-import { FlashPort } from "../../FlashPort.js";
+import { Sprite } from "./Sprite";
+import { FrameLabel } from "./FrameLabel";
+import { DisplayObject } from "./DisplayObject";
+import { FlashPort } from "../../FlashPort";
 
-import { Scene } from "./Scene.js";
-import { AEvent } from "../events/AEvent.js";
-import { Tweener } from "../../caurina/transitions/Tweener.js";
-import { Equations } from "../../caurina/transitions/Equations.js";
-import { Sound } from "../media/Sound.js";
-import { SoundChannel } from "../media/SoundChannel.js";
-import { SoundTransform } from "../media/SoundTransform.js";
-import { URLRequest } from "../net/URLRequest.js";
+import { Scene } from "./Scene";
+import { AEvent } from "../events/AEvent";
+import { Tweener } from "../../caurina/transitions/Tweener";
+import { Equations } from "../../caurina/transitions/Equations";
+import { Sound } from "../media/Sound";
+import { SoundChannel } from "../media/SoundChannel";
+import { SoundTransform } from "../media/SoundTransform";
+import { URLRequest } from "../net/URLRequest";
 
 
 export class MovieClip extends Sprite
@@ -19,31 +19,31 @@ export class MovieClip extends Sprite
 	private _currentKeyFrame:number = 0;
 	private _currentFrameLabel:string = "";
 	private _currentLabel:string = "";
-	private _currentLabels:Array<FrameLabel> = [];
+	private _currentLabels:FrameLabel[] = [];
 	private _currentScene:Scene;
 	private _enabled:boolean = true;
 	private _framesLoaded:number = 1;
 	private _isPlaying:boolean = false;
-	private _scenes:Array<any> = [];
+	private _scenes:any[] = [];
 	private _totalFrames:number = 1;
 	private _trackAsMenu:boolean = false;
 	
-	private _keyframes:Object = {};
-	private _tweens:Object = {};
-	private _tweenEnds:Object = {};
+	private _keyframes:any[] = [];
+	private _tweens:any[] = [];
+	private _tweenEnds:any[] = [];
 	private _frame:number = 0;
 	private _keyList:Array<number> = [];
 	private _layerList:Array<any> = [];
 	private _prevKeyframe:number = 0;
 	
-	private _frameScripts:Object = {};
-	private _frameSounds:Object = {};
-	private _playingSounds:Object = {};
+	private _frameScripts:any[] = [];
+	private _frameSounds:any[] = [];
+	private _playingSounds:any[] = [];
 	
 	/**
 	 * Animate Method Only
 	 */
-	public addLabels(frameLabels:Array<any>):void 
+	public addLabels = (frameLabels:Array<any>):void =>
 	{
 		for  (let label of frameLabels) 
 		{
@@ -55,7 +55,7 @@ export class MovieClip extends Sprite
 	/**
 	 * Animate Method Only
 	 */
-	public addFrameObjects(frame:number, layer:number, frameEnd:number, frameObjects:any[]):void 
+	public addFrameObjects = (frame:number, frameEnd:number, layer:number, frameObjects:any[]):void =>
 	{
 		if (this._keyList.indexOf(frame) == -1) this._keyList.push(frame);
 		
@@ -76,7 +76,7 @@ export class MovieClip extends Sprite
 	/**
 	 * Animate Method Only
 	 */
-	public addFrameTween(start:number, end:number, obj:DisplayObject, props:Object):void 
+	public addFrameTween = (start:number, end:number, obj:DisplayObject, props:any):void =>
 	{
 		if (this._tweens[start] == undefined) this._tweens[start] = [];
 		this._tweens[start].push({start:start, end:end, obj:obj, props:props});
@@ -88,7 +88,7 @@ export class MovieClip extends Sprite
 		}
 	}
 	
-	private navigate(frame:number, force:boolean = false):void 
+	private navigate = (frame:number, force:boolean = false):void =>
 	{
 		let _this = this;
 		if (this._frame == frame && !force) return;
@@ -106,7 +106,7 @@ export class MovieClip extends Sprite
 			// turn off elements whose duration has expired.
 			if (this._keyframes[this._prevKeyframe] != undefined)
 			{
-				for (var layerID of this._keyframes[this._prevKeyframe])
+				for (var layerID in this._keyframes[this._prevKeyframe])
 				{
 					var duration:number = this._keyframes[this._prevKeyframe][layerID]['duration'];
 					if ((this._frame + 1) > duration || this._frame < this._prevKeyframe)
@@ -172,11 +172,11 @@ export class MovieClip extends Sprite
 		}
 	}
 	
-	private updateTweens(currentKeyFrame:number):void 
+	private updateTweens = (currentKeyFrame:number):void =>
 	{
 		var twArr:any[] = this._tweens[currentKeyFrame];
 		if (!twArr) twArr = this._tweenEnds[currentKeyFrame];
-		
+
 		if (twArr)
 		{
 			var len:number = twArr.length;
@@ -184,26 +184,31 @@ export class MovieClip extends Sprite
 			{
 				var tw:any = twArr[i];
 				var t:number = (tw.end - tw.start) / (this.stage.frameRate - 1);
-				if (currentKeyFrame != this._frame)
+				if (tw.end == currentKeyFrame) t = 0;
+
+				
+				for (var p in tw.props) 
 				{
-					for (var p in tw.props) 
+					if (p != "time" && p != "transition")
 					{
-						if (p != "time" && p != "transition")
+						
+						var propValue:number = tw.props[p];
+						var percent:number = ((this._frame - tw.start) / (tw.end - tw.start));
+						if (currentKeyFrame != this._frame) propValue *= percent;
+						
+						if (currentKeyFrame != this._frame || t == 0)
 						{
-							var propValue:number = tw.props[p];
-							var percent:number = ((this._frame - tw.start) / (tw.end - tw.start));
-							tw.obj[p] = propValue * percent;
+							tw.obj[p] = propValue;
+							//console.log("currentKeyFrame: " + currentKeyFrame + ", frame: " + this._frame);
+						}
+						else if (this._isPlaying)
+						{
+							tw.props.transition = Equations.easeNone;
+							tw.props.time = t;
+							Tweener.addTween(tw.obj, tw.props);
 						}
 					}
 				}
-				else
-				{
-					if (tw.end == currentKeyFrame) t = 0;
-					tw.props.transition = Equations.easeNone;
-					tw.props.time = t;
-					if (this._isPlaying || t==0) Tweener.addTween(tw.obj, tw.props);
-				}
-				
 			}
 		}
 	}
@@ -214,7 +219,7 @@ export class MovieClip extends Sprite
 	 * @param	frame
 	 * @param	envelops
 	 */
-	public _addSnd(id:string, start:number, end:number, frame:number, envelops:any[]):void 
+	public _addSnd = (id:string, start:number, end:number, frame:number, envelops:any[]):void =>
 	{
 		if (this._frameSounds[frame] == undefined) this._frameSounds[frame] = [];
 		this._frameSounds[frame].push({id:id, start:start, end:end, vols:envelops});
@@ -343,7 +348,7 @@ export class MovieClip extends Sprite
 		
 	}
 
-	public addFrameScript (frame:number, func:Function):void
+	public addFrameScript = (frame:number, func:Function):void =>
 	{
 		this._frameScripts[frame] = func;
 	}
@@ -361,7 +366,7 @@ export class MovieClip extends Sprite
 	 * @playerversion	Flash 9
 	 * @playerversion	Lite 4
 	 */
-	public gotoAndPlay (frame:any, scene:string = null):void
+	public gotoAndPlay = (frame:any, scene:string = null):void =>
 	{
 		this._isPlaying = true;
 		if (frame instanceof String)
@@ -410,7 +415,7 @@ export class MovieClip extends Sprite
 	 * @throws	ArgumentError If the scene or frame specified are
 	 *   not found in this movie clip.
 	 */
-	public gotoAndStop (frame:any, scene:string = null):void
+	public gotoAndStop = (frame:any, scene:string = null):void =>
 	{
 		this._isPlaying = false;
 		if (frame instanceof String)
@@ -465,9 +470,9 @@ export class MovieClip extends Sprite
 	 * @playerversion	Flash 9
 	 * @playerversion	Lite 4
 	 */
-	public nextFrame():void
+	public nextFrame = ():void =>
 	{
-		
+		this.gotoAndStop(this.currentFrame + 1);
 	}
 
 	/**
@@ -477,7 +482,7 @@ export class MovieClip extends Sprite
 	 * @playerversion	Flash 9
 	 * @playerversion	Lite 4
 	 */
-	public nextScene():void
+	public nextScene = ():void =>
 	{
 		
 	}
@@ -488,9 +493,11 @@ export class MovieClip extends Sprite
 	 * @playerversion	Flash 9
 	 * @playerversion	Lite 4
 	 */
-	public play():void
+	public play= ():void =>
 	{
-		
+		//this.gotoAndPlay(this.currentFrame);
+		this._isPlaying = true;
+		Tweener.resumeAllTweens();
 	}
 
 	/**
@@ -500,9 +507,9 @@ export class MovieClip extends Sprite
 	 * @playerversion	Flash 9
 	 * @playerversion	Lite 4
 	 */
-	public prevFrame():void
+	public prevFrame= ():void =>
 	{
-		
+		this.gotoAndStop(this.currentFrame - 1);
 	}
 
 	/**
@@ -512,7 +519,7 @@ export class MovieClip extends Sprite
 	 * @playerversion	Flash 9
 	 * @playerversion	Lite 4
 	 */
-	public prevScene():void
+	public prevScene = ():void =>
 	{
 		
 	}
@@ -523,13 +530,15 @@ export class MovieClip extends Sprite
 	 * @playerversion	Flash 9
 	 * @playerversion	Lite 4
 	 */
-	public stop():void
+	public stop = ():void =>
 	{
 		this._isPlaying = false;
+		this.gotoAndStop(this.currentFrame);
+		Tweener.pauseAllTweens();
 	}
 	
-	private onFrameEvent(e:Event):void 
+	private onFrameEvent = (e:Event):void =>
 	{
-		if (this._isPlaying) this.navigate(this._frame + 1);
+		if (this.isPlaying) this.navigate(this._frame + 1);
 	}
 }

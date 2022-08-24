@@ -1,4 +1,4 @@
-import { AEvent } from "./AEvent.js";
+import { AEvent } from "./AEvent";
 
 /// @eventType	flash.events.ActivityEvent.ACTIVITY
 /*[Event(name="activity", type="flash.events.ActivityEvent")]*/ 

@@ -1,6 +1,6 @@
-import { TextFormat } from "./TextFormat.js";
+import { TextFormat } from "./TextFormat";
 
-   import { EventDispatcher } from "../events/EventDispatcher.js";
+   import { EventDispatcher } from "../events/EventDispatcher";
    
    export class StyleSheet extends EventDispatcher
    {

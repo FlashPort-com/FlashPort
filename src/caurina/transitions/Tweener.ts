@@ -47,6 +47,9 @@ http://code.google.com/p/tweener/wiki/License
 	import { MovieClip } from "../../flash/display/MovieClip";
 	import { AEvent } from "../../flash/events/AEvent";
 	import { getTimer } from "../../flash/utils/getTimer";
+import { FlashPort } from "../../FlashPort";
+import { Stage } from "../../flash/display/Stage";
+import { Sprite } from "../../flash/display/Sprite";
 
 	export class Tweener {
 	
@@ -101,7 +104,8 @@ http://code.google.com/p/tweener/wiki/License
 		 * @param		.skipUpdates		Number				* Direct property, See the TweenListObj class
 		 * @return							Boolean				TRUE if the tween was successfully added, FALSE if otherwise
 		 */
-		public static addTween (p_scopes:any = null, p_parameters:any = null):boolean {
+		public static addTween = (p_scopes:any = null, p_parameters:any = null):boolean =>
+		{
 			if (!Boolean(p_scopes)) return false;
 
 			var i:number, j:number, istr:string;
@@ -276,7 +280,8 @@ http://code.google.com/p/tweener/wiki/License
 		 * @param		.waitFrames			Boolean				Whether to wait (or not) one frame for each call
 		 * @return							<code>true</code> if the tween was successfully added, <code>false</code> if otherwise.
 		 */
-		public static addCaller (p_scopes:any = null, p_parameters:any = null):boolean {
+		public static addCaller = (p_scopes:any = null, p_parameters:any = null):boolean =>
+		{
 			if (!Boolean(p_scopes)) return false;
 	
 			var i:number;
@@ -376,7 +381,8 @@ http://code.google.com/p/tweener/wiki/License
 		 * @param		p_timeComplete		Number						Time when the new tween ends
 		 * @return							Boolean						Whether or not it actually deleted something
 		 */
-		public static removeTweensByTime (p_scope:any, p_properties:any, p_timeStart:number, p_timeComplete:number):boolean {
+		public static removeTweensByTime = (p_scope:any, p_properties:any, p_timeStart:number, p_timeComplete:number):boolean =>
+		{
 			var removed:boolean = false;
 			var removedLocally:boolean;
 	
@@ -439,7 +445,8 @@ http://code.google.com/p/tweener/wiki/License
 		 * @param		(2nd-last params)	Object		Property(ies) that must be removed
 		 * @return							Boolean		Whether or not it successfully removed this tweening
 		 */
-		public static removeTweens (p_scope:any, ...args):boolean {
+		public static removeTweens = (p_scope:any, ...args):boolean =>
+		{
 			// Create the property list
 			var properties:any[] = new Array();
 			var i:number;
@@ -468,7 +475,8 @@ http://code.google.com/p/tweener/wiki/License
 		 *
 		 * @return					<code>true</code> if it successfully removed any tweening, <code>false</code> if otherwise.
 		 */
-		public static removeAllTweens ():boolean {
+		public static removeAllTweens = ():boolean =>
+		{
 			if (!Boolean(Tweener._tweenList)) return false;
 			var removed:boolean = false;
 			var i:number;
@@ -486,7 +494,8 @@ http://code.google.com/p/tweener/wiki/License
 		 * @param		(2nd-last params)	Property(ies) that must be paused
 		 * @return					<code>true</code> if it successfully paused any tweening, <code>false</code> if otherwise.
 		 */
-		public static pauseTweens (p_scope:any, ...args):boolean {
+		public static pauseTweens = (p_scope:any, ...args):boolean =>
+		{
 			// Create the property list
 			var properties:any[] = new Array();
 			var i:number;
@@ -503,7 +512,8 @@ http://code.google.com/p/tweener/wiki/License
 		 * @return					<code>true</code> if it successfully paused any tweening, <code>false</code> if otherwise.
 		 * @see #resumeAllTweens()
 		 */
-		public static pauseAllTweens ():boolean {
+		public static pauseAllTweens = ():boolean =>
+		{
 			if (!Boolean(Tweener._tweenList)) return false;
 			var paused:boolean = false;
 			var i:number;
@@ -521,7 +531,8 @@ http://code.google.com/p/tweener/wiki/License
 		 * @param		(2nd-last params)	Object		Property(ies) that must be resumed
 		 * @return							Boolean		Whether or not it successfully resumed something
 		 */
-		public static resumeTweens (p_scope:any, ...args):boolean {
+		public static resumeTweens = (p_scope:any, ...args):boolean =>
+		{
 			// Create the property list
 			var properties:any[] = new Array();
 			var i:number;
@@ -538,7 +549,8 @@ http://code.google.com/p/tweener/wiki/License
 		 * @return <code>true</code> if it successfully resumed any tweening, <code>false</code> if otherwise.
 		 * @see #pauseAllTweens()
 		 */
-		public static resumeAllTweens ():boolean {
+		public static resumeAllTweens = ():boolean =>
+		{
 			if (!Boolean(Tweener._tweenList)) return false;
 			var resumed:boolean = false;
 			var i:number;
@@ -557,7 +569,8 @@ http://code.google.com/p/tweener/wiki/License
 		 * @param		p_properties		Array		Array of strings that must be affected
 		 * @return							Boolean		Whether or not it successfully affected something
 		 */
-		private static affectTweens (p_affectFunction:Function, p_scope:any, p_properties:any[]):boolean {
+		private static affectTweens = (p_affectFunction:Function, p_scope:any, p_properties:any[]):boolean =>
+		{
 			var affected:boolean = false;
 			var i:number;
 
@@ -605,7 +618,8 @@ http://code.google.com/p/tweener/wiki/License
 		 * @param		p_properties		Array		Array of strings containing the list of properties that must be separated
 		 * @return							Number		The index number of the new tween
 		 */
-		public static splitTweens (p_tween:number, p_properties:any[]):number {
+		public static splitTweens = (p_tween:number, p_properties:any[]):number =>
+		{
 			// First, duplicates
 			var originalTween:TweenListObj = Tweener._tweenList[p_tween];
 			var newTween:TweenListObj = originalTween.clone(false);
@@ -653,7 +667,8 @@ http://code.google.com/p/tweener/wiki/License
 		 *
 		 * @return							Boolean		FALSE if no update was made because there's no tweening (even delayed ones)
 		 */
-		private static updateTweens ():boolean {
+		private static updateTweens = ():boolean =>
+		{
 			if (Tweener._tweenList.length == 0) return false;
 			var i:number;
 			for (i = 0; i < Tweener._tweenList.length; i++) {
@@ -676,7 +691,8 @@ http://code.google.com/p/tweener/wiki/License
 		 * @param		p_tween				Number		Index of the tween to be removed on the tweenings list
 		 * @return							Boolean		Whether or not it successfully removed this tweening
 		 */
-		public static removeTweenByIndex (i:number, p_finalRemoval:boolean = false):boolean {
+		public static removeTweenByIndex = (i:number, p_finalRemoval:boolean = false):boolean =>
+		{
 			Tweener._tweenList[i] = null;
 			if (p_finalRemoval) Tweener._tweenList.splice(i, 1);
 			return true;
@@ -688,7 +704,8 @@ http://code.google.com/p/tweener/wiki/License
 		 * @param		p_tween				Number		Index of the tween to be paused
 		 * @return							Boolean		Whether or not it successfully paused this tweening
 		 */
-		public static pauseTweenByIndex (p_tween:number):boolean {
+		public static pauseTweenByIndex = (p_tween:number):boolean =>
+		{
 			var tTweening:TweenListObj = Tweener._tweenList[p_tween];	// Shortcut to this tweening
 			if (tTweening == null || tTweening.isPaused) return false;
 			tTweening.timePaused = Tweener.getCurrentTweeningTime(tTweening);
@@ -703,7 +720,8 @@ http://code.google.com/p/tweener/wiki/License
 		 * @param		p_tween				Number		Index of the tween to be resumed
 		 * @return							Boolean		Whether or not it successfully resumed this tweening
 		 */
-		public static resumeTweenByIndex (p_tween:number):boolean {
+		public static resumeTweenByIndex = (p_tween:number):boolean =>
+		{
 			var tTweening:TweenListObj = Tweener._tweenList[p_tween];	// Shortcut to this tweening
 			if (tTweening == null || !tTweening.isPaused) return false;
 			var cTime:number = Tweener.getCurrentTweeningTime(tTweening);
@@ -721,8 +739,8 @@ http://code.google.com/p/tweener/wiki/License
 		 * @param		i					Number		Index (from the tween list) of the tween that should be updated
 		 * @return							Boolean		FALSE if it's already finished and should be deleted, TRUE if otherwise
 		 */
-		private static updateTweenByIndex (i:number):boolean {
-
+		private static updateTweenByIndex = (i:number):boolean =>
+		{
 			var tTweening:TweenListObj = Tweener._tweenList[i];	// Shortcut to this tweening
 
 			if (tTweening == null || !Boolean(tTweening.scope)) return false;
@@ -897,7 +915,8 @@ http://code.google.com/p/tweener/wiki/License
 		/**
 		 * Initiates the Tweener--should only be ran once.
 		 */
-		public static init(...rest):void {
+		public static init = (...rest):void =>
+		{
 			Tweener._inited = true;
 
 			// Registers all default equations
@@ -916,7 +935,8 @@ http://code.google.com/p/tweener/wiki/License
 		 * @param		p_name				String		Shorthand transition name
 		 * @param		p_function			Function	The proper equation function
 		 */
-		public static registerTransition(p_name:string, p_function:Function): void {
+		public static registerTransition = (p_name:string, p_function:Function): void =>
+		{
 			if (!Tweener._inited) Tweener.init();
 			Tweener._transitionList[p_name] = p_function;
 		}
@@ -928,7 +948,8 @@ http://code.google.com/p/tweener/wiki/License
 		 * @param		p_getFunction		Function that gets the value.
 		 * @param		p_setFunction		Function that sets the value.
 		 */
-		public static registerSpecialProperty(p_name:string, p_getFunction:Function, p_setFunction:Function, p_parameters:any[] = null, p_preProcessFunction:Function = null): void {
+		public static registerSpecialProperty = (p_name:string, p_getFunction:Function, p_setFunction:Function, p_parameters:any[] = null, p_preProcessFunction:Function = null): void =>
+		{
 			if (!Tweener._inited) Tweener.init();
 			var sp:SpecialProperty = new SpecialProperty(p_getFunction, p_setFunction, p_parameters, p_preProcessFunction);
 			Tweener._specialPropertyList[p_name] = sp;
@@ -941,7 +962,8 @@ http://code.google.com/p/tweener/wiki/License
 		 * @param		p_modifyFunction	Function that modifies the value.
 		 * @param		p_getFunction		Function that gets the value.
 		 */
-		public static registerSpecialPropertyModifier(p_name:string, p_modifyFunction:Function, p_getFunction:Function): void {
+		public static registerSpecialPropertyModifier = (p_name:string, p_modifyFunction:Function, p_getFunction:Function): void =>
+		{
 			if (!Tweener._inited) Tweener.init();
 			var spm:SpecialPropertyModifier = new SpecialPropertyModifier(p_modifyFunction, p_getFunction);
 			Tweener._specialPropertyModifierList[p_name] = spm;
@@ -953,56 +975,68 @@ http://code.google.com/p/tweener/wiki/License
 		 * @param		p_name				Name of the "special" property splitter.
 		 * @param		p_splitFunction		Function that splits the value.
 		 */
-		public static registerSpecialPropertySplitter(p_name:string, p_splitFunction:Function, p_parameters:any[] = null): void {
+		public static registerSpecialPropertySplitter = (p_name:string, p_splitFunction:Function, p_parameters:any[] = null): void =>
+		{
 			if (!Tweener._inited) Tweener.init();
 			var sps:SpecialPropertySplitter = new SpecialPropertySplitter(p_splitFunction, p_parameters);
 			Tweener._specialPropertySplitterList[p_name] = sps;
 		}
 
+		public static setController(main:Sprite):void
+		{
+			Tweener.__tweener_controller__ = main;
+		}
+		
 		/**
 		 * Starts the Tweener class engine. It is supposed to be running every time a tween exists.
 		 */
-		private static startEngine():void {
-			Tweener._engineExists = true;
+		private static startEngine = ():void =>
+		{
+			
 			Tweener._tweenList = new Array();
 			
-			Tweener.__tweener_controller__ = new MovieClip();
+			Tweener._engineExists = true;	
 			Tweener.__tweener_controller__.addEventListener(AEvent.ENTER_FRAME, Tweener.onEnterFrame);
 			
 			Tweener._currentTimeFrame = 0;
 			Tweener.updateTime();
+			
 		}
 	
 		/**
 		 * Stops the Tweener class engine.
 		 */
-		private static stopEngine():void {
+		private static stopEngine = ():void =>
+		{
 			Tweener._engineExists = false;
 			Tweener._tweenList = null;
 			Tweener._currentTime = 0;
 			Tweener._currentTimeFrame = 0;
 			Tweener.__tweener_controller__.removeEventListener(AEvent.ENTER_FRAME, Tweener.onEnterFrame);
-			Tweener.__tweener_controller__ = null;
+			//Tweener.__tweener_controller__ = null;
 		}
 	
 		/**
 		 * Updates the time to enforce time grid-based updates.
 		 */
-		public static updateTime():void {
+		public static updateTime = ():void =>
+		{
 			Tweener._currentTime = getTimer();
 		}
 	
 		/**
 		 * Updates the current frame count
 		 */
-		public static updateFrame():void {
+		public static updateFrame = ():void =>
+		{
 			Tweener._currentTimeFrame++;
 		}
 
 		/**
 		 * Ran once every frame. It's the main engine; updates all existing tweenings.
 		 */
-		public static onEnterFrame(e:Event):void {
+		public static onEnterFrame = (e:Event):void =>
+		{
 			Tweener.updateTime();
 			Tweener.updateFrame();
 			var hasUpdated:boolean = false;
@@ -1015,7 +1049,8 @@ http://code.google.com/p/tweener/wiki/License
 		 *
 		 * @param		p_time				Number		New time scale (0.5 = slow, 1 = normal, 2 = 2x fast forward, etc)
 		 */
-		public static setTimeScale(p_time:number):void {
+		public static setTimeScale = (p_time:number):void =>
+		{
 			var i:number;
 			var cTime:number;
 	
@@ -1046,7 +1081,8 @@ http://code.google.com/p/tweener/wiki/License
 		 * @param		p_scope		Target object.
 		 * @return					<code>true</code> if there's a tweening occuring on this object (paused, delayed, or active), <code>false</code> if otherwise.
 		 */
-		public static isTweening (p_scope:any):boolean {
+		public static isTweening = (p_scope:any):boolean =>
+		{
 			if (!Boolean(Tweener._tweenList)) return false;
 			var i:number;
 
@@ -1064,7 +1100,8 @@ http://code.google.com/p/tweener/wiki/License
 		 * @param		p_scope		Target object.
 		 * @return					Total number of properties being tweened (including delayed or paused tweens).
 		 */
-		public static getTweens (p_scope:any):any[] {
+		public static getTweens = (p_scope:any):any[] =>
+		{
 			if (!Boolean(Tweener._tweenList)) return [];
 			var i:number;
 			var pName:string;
@@ -1084,7 +1121,8 @@ http://code.google.com/p/tweener/wiki/License
 		 * @param		p_scope		Target object.
 		 * @return					Total number of properties being tweened (including delayed or paused tweens).
 		 */
-		public static getTweenCount (p_scope:any):number {
+		public static getTweenCount = (p_scope:any):number =>
+		{
 			if (!Boolean(Tweener._tweenList)) return 0;
 			var i:number;
 			var c:number = 0;
@@ -1101,7 +1139,8 @@ http://code.google.com/p/tweener/wiki/License
         /* Handles errors when Tweener executes any callbacks (onStart, onUpdate, etc)
         *  If the TweenListObj specifies an <code>onError</code> callback it well get called, passing the <code>Error</code> object and the current scope as parameters. If no <code>onError</code> callback is specified, it will trace a stackTrace.
         */
-        private static handleError(pTweening : TweenListObj, pError : any, pCallBackName : string) : void{
+        private static handleError = (pTweening : TweenListObj, pError : any, pCallBackName : string) : void =>
+		{
             // do we have an error handler?
             if (Boolean(pTweening.onError) && (pTweening.onError instanceof Function)){
                 // yup, there's a handler. Wrap this in a try catch in case the onError throws an error itself.
@@ -1124,7 +1163,8 @@ http://code.google.com/p/tweener/wiki/License
 		 *
 		 * @param		p_tweening				TweenListObj		Tween information
 		 */
-		public static getCurrentTweeningTime(p_tweening:any):number {
+		public static getCurrentTweeningTime = (p_tweening:any):number => 
+		{
 			return p_tweening.useFrames ? Tweener._currentTimeFrame : Tweener._currentTime;
 		}
 
@@ -1133,7 +1173,8 @@ http://code.google.com/p/tweener/wiki/License
 		 *
 		 * @return							String		The number of the current Tweener version
 		 */
-		public static getVersion():string {
+		public static getVersion = ():string =>
+		{
 			return "AS3 1.33.74";
 		}
 
@@ -1146,8 +1187,8 @@ http://code.google.com/p/tweener/wiki/License
 		 *
 		 * @param		p_message				String		The error message to output
 		 */
-		public static printError(p_message:string): void {
-			//
+		public static printError = (p_message:string): void =>
+		{
 			console.log("## [Tweener] Error: "+p_message);
 		}
 

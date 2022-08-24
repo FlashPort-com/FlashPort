@@ -1,5 +1,5 @@
-import { ErrorEvent } from "./ErrorEvent.js";
-import { AEvent } from "./AEvent.js";
+import { ErrorEvent } from "./ErrorEvent";
+import { AEvent } from "./AEvent";
 
 export class IOErrorEvent extends ErrorEvent
 {

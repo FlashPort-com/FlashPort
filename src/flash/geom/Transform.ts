@@ -1,9 +1,9 @@
-import { Matrix } from "./Matrix.js";
-import { ColorTransform } from "./ColorTransform.js";
-import { Rectangle } from "./Rectangle.js";
-import { Matrix3D } from "./Matrix3D.js";
-import { PerspectiveProjection } from "./PerspectiveProjection.js";
-import { DisplayObject } from "../display/DisplayObject.js";
+import { Matrix } from "./Matrix";
+import { ColorTransform } from "./ColorTransform";
+import { Rectangle } from "./Rectangle";
+import { Matrix3D } from "./Matrix3D";
+import { PerspectiveProjection } from "./PerspectiveProjection";
+import { DisplayObject } from "../display/DisplayObject";
 export class Transform extends Object
 {
 	private _matrix:Matrix = new Matrix();

@@ -1,6 +1,6 @@
-import { SoundTransform } from "./SoundTransform.js";
-import { Sound } from "./Sound.js";
-import { ByteArray } from "../utils/ByteArray.js";
+import { SoundTransform } from "./SoundTransform";
+import { Sound } from "./Sound";
+import { ByteArray } from "../utils/ByteArray";
 
 export class SoundMixer extends Object
 {

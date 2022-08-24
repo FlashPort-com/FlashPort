@@ -1,10 +1,10 @@
-import { Sprite } from "../flash/display/Sprite.js";
-import { AEvent } from "../flash/events/AEvent.js";
-import { TextField } from "../flash/text/TextField.js";
-import { TextFieldAutoSize } from "../flash/text/TextFieldAutoSize.js";
-import { TextFormat } from "../flash/text/TextFormat.js";
-import { getTimer } from "../flash/utils/getTimer.js";
-import { FlashPort } from "../FlashPort.js";
+import { Sprite } from "../flash/display/Sprite";
+import { AEvent } from "../flash/events/AEvent";
+import { TextField } from "../flash/text/TextField";
+import { TextFieldAutoSize } from "../flash/text/TextFieldAutoSize";
+import { TextFormat } from "../flash/text/TextFormat";
+import { getTimer } from "../flash/utils/getTimer";
+import { FlashPort } from "../FlashPort";
 
 export class Stats extends Sprite
 {

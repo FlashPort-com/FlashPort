@@ -1,5 +1,5 @@
-import { Point } from "./Point.js";
-import { Vector3D } from "./Vector3D.js";
+import { Point } from "./Point";
+import { Vector3D } from "./Vector3D";
 	
 export class Matrix
 {

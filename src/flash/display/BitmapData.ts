@@ -1,12 +1,12 @@
-import { IBitmapDrawable } from "./IBitmapDrawable.js";
-import { FlashPort } from "../../FlashPort.js";
-import { BitmapDataChannel } from "./BitmapDataChannel.js";
-import { ColorTransform } from "../geom/ColorTransform.js";
-import { Matrix } from "../geom/Matrix.js";
-import { Point } from "../geom/Point.js";
-import { Rectangle } from "../geom/Rectangle.js";
-import { BitmapTexture } from "../__native/BitmapTexture.js";
-import { ByteArray } from "../utils/ByteArray.js";
+import { IBitmapDrawable } from "./IBitmapDrawable";
+import { FlashPort } from "../../FlashPort";
+import { BitmapDataChannel } from "./BitmapDataChannel";
+import { ColorTransform } from "../geom/ColorTransform";
+import { Matrix } from "../geom/Matrix";
+import { Point } from "../geom/Point";
+import { Rectangle } from "../geom/Rectangle";
+import { BitmapTexture } from "../__native/BitmapTexture";
+import { ByteArray } from "../utils/ByteArray";
 
 export class BitmapData implements IBitmapDrawable
 {

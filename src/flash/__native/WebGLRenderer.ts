@@ -1,15 +1,15 @@
-import { CharSet } from "./te/CharSet.js";
-import { BitmapData } from "../display/BitmapData.js";
-import { Graphics } from "../display/Graphics.js";
-import { GraphicsPath } from "../display/GraphicsPath.js";
-import { IGraphicsData } from "../display/IGraphicsData.js";
-import { ColorTransform } from "../geom/ColorTransform.js";
-import { Matrix } from "../geom/Matrix.js";
-import { TextField } from "../text/TextField.js";
-import { TextFormat } from "../text/TextFormat.js";
-import { GLCanvasRenderingContext2D } from "./GLCanvasRenderingContext2D.js";
-import { BaseRenderer } from "./BaseRenderer.js";
-import { GLGraphicsPath } from "./GLGraphicsPath.js";
+import { CharSet } from "./te/CharSet";
+import { BitmapData } from "../display/BitmapData";
+import { Graphics } from "../display/Graphics";
+import { GraphicsPath } from "../display/GraphicsPath";
+import { IGraphicsData } from "../display/IGraphicsData";
+import { ColorTransform } from "../geom/ColorTransform";
+import { Matrix } from "../geom/Matrix";
+import { TextField } from "../text/TextField";
+import { TextFormat } from "../text/TextFormat";
+import { GLCanvasRenderingContext2D } from "./GLCanvasRenderingContext2D";
+import { BaseRenderer } from "./BaseRenderer";
+import { GLGraphicsPath } from "./GLGraphicsPath";
 
 export class WebGLRenderer extends BaseRenderer
 {

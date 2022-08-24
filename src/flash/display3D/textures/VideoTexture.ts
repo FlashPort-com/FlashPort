@@ -1,6 +1,6 @@
-import { TextureBase } from "./TextureBase.js";
+import { TextureBase } from "./TextureBase";
 
-	import { Camera } from "../../media/Camera.js";
+	import { Camera } from "../../media/Camera";
    
 	export class VideoTexture extends TextureBase
 	{

@@ -1,29 +1,29 @@
-import { TextFieldType } from "./TextFieldType.js";
-import { TextFormat } from "./TextFormat.js";
-import { TextFieldAutoSize } from "./TextFieldAutoSize.js";
-import { FlashPort } from "../../FlashPort.js";
-import { StyleSheet } from "./StyleSheet.js";
-import { TextLineMetrics } from "./TextLineMetrics.js";
+import { TextFieldType } from "./TextFieldType";
+import { TextFormat } from "./TextFormat";
+import { TextFieldAutoSize } from "./TextFieldAutoSize";
+import { FlashPort } from "../../FlashPort";
+import { StyleSheet } from "./StyleSheet";
+import { TextLineMetrics } from "./TextLineMetrics";
 
-import { GLCanvasRenderingContext2D } from "../__native/GLCanvasRenderingContext2D.js";
-import { GLDrawable } from "../__native/GLDrawable.js";
-import { GLIndexBufferSet } from "../__native/GLIndexBufferSet.js";
-import { WebGLRenderer } from "../__native/WebGLRenderer.js";
-import { Char } from "../__native/te/Char.js";
-import { LineInfo } from "../__native/te/LineInfo.js";
-import { UVTexture } from "../__native/te/UVTexture.js";
-import { BitmapData } from "../display/BitmapData.js";
-import { BlendMode } from "../display/BlendMode.js";
-import { Graphics } from "../display/Graphics.js";
-import { InteractiveObject } from "../display/InteractiveObject.js";
-import { Sprite } from "../display/Sprite.js";
-import { AEvent } from "../events/AEvent.js";
-import { MouseEvent } from "../events/MouseEvent.js";
-import { FocusEvent } from "../events/FocusEvent.js";
-import { Matrix } from "../geom/Matrix.js";
-import { Point } from "../geom/Point.js";
-import { Rectangle } from "../geom/Rectangle.js";
-import { DisplayObject } from "../display/DisplayObject.js";
+import { GLCanvasRenderingContext2D } from "../__native/GLCanvasRenderingContext2D";
+import { GLDrawable } from "../__native/GLDrawable";
+import { GLIndexBufferSet } from "../__native/GLIndexBufferSet";
+import { WebGLRenderer } from "../__native/WebGLRenderer";
+import { Char } from "../__native/te/Char";
+import { LineInfo } from "../__native/te/LineInfo";
+import { UVTexture } from "../__native/te/UVTexture";
+import { BitmapData } from "../display/BitmapData";
+import { BlendMode } from "../display/BlendMode";
+import { Graphics } from "../display/Graphics";
+import { InteractiveObject } from "../display/InteractiveObject";
+import { Sprite } from "../display/Sprite";
+import { AEvent } from "../events/AEvent";
+import { MouseEvent } from "../events/MouseEvent";
+import { FocusEvent } from "../events/FocusEvent";
+import { Matrix } from "../geom/Matrix";
+import { Point } from "../geom/Point";
+import { Rectangle } from "../geom/Rectangle";
+import { DisplayObject } from "../display/DisplayObject";
 
 export class TextField extends InteractiveObject
 {

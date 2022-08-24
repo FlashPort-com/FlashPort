@@ -1,27 +1,26 @@
 export class Point extends Object
 {
-      
    public x:number;
-   
    public y:number;
    
-   constructor(x:number = 0, y:number = 0){
+   constructor(x:number = 0, y:number = 0)
+   {
       super();
       this.x = x;
       this.y = y;
    }
    
-   public static interpolate(pt1:Point, pt2:Point, f:number) : Point
+   public static interpolate = (pt1:Point, pt2:Point, f:number) : Point =>
    {
       return new Point(pt2.x + f * (pt1.x - pt2.x),pt2.y + f * (pt1.y - pt2.y));
    }
    
-   public static distance(pt1:Point, pt2:Point) : number
+   public static distance = (pt1:Point, pt2:Point) : number =>
    {
       return pt1.subtract(pt2).length;
    }
    
-   public static polar(len:number, angle:number) : Point
+   public static polar = (len:number, angle:number) : Point =>
    {
       return new Point(len * Math.cos(angle),len * Math.sin(angle));
    }
@@ -31,33 +30,33 @@ export class Point extends Object
       return Math.sqrt(this.x * this.x + this.y * this.y);
    }
    
-   public clone() : Point
+   public clone = () : Point =>
    {
       return new Point(this.x,this.y);
    }
    
-   public offset(dx:number, dy:number) : void
+   public offset = (dx:number, dy:number) : void =>
    {
       this.x = this.x + dx;
       this.y = this.y + dy;
    }
    
-   public equals(toCompare:Point) : boolean
+   public equals = (toCompare:Point) : boolean =>
    {
       return toCompare.x === this.x && toCompare.y === this.y;
    }
    
-   public subtract(v:Point) : Point
+   public subtract = (v:Point) : Point =>
    {
       return new Point(this.x - v.x,this.y - v.y);
    }
    
-   public add(v:Point) : Point
+   public add = (v:Point) : Point =>
    {
       return new Point(this.x + v.x,this.y + v.y);
    }
    
-   public normalize(thickness:number) : void
+   public normalize = (thickness:number) : void =>
    {
       var invD:number = this.length;
       if(invD > 0)
@@ -68,18 +67,18 @@ export class Point extends Object
       }
    }
    
-   public toString() : string
+   public toString = ():string =>
    {
       return "(x=" + this.x + ", y=" + this.y + ")";
    }
    
-   public copyFrom(sourcePoint:Point) : void
+   public copyFrom = (sourcePoint:Point):void =>
    {
       this.x = sourcePoint.x;
       this.y = sourcePoint.y;
    }
    
-   public setTo(xa:number, ya:number) : void
+   public setTo = (xa:number, ya:number):void =>
    {
       this.x = xa;
       this.y = ya;

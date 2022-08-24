@@ -1,6 +1,6 @@
 
-	import { ByteArray } from "../utils/ByteArray.js";
-	import { ShaderData } from "./ShaderData.js";
+	import { ByteArray } from "../utils/ByteArray";
+	import { ShaderData } from "./ShaderData";
 
 	/**
 	 * A Shader instance represents a Pixel Bender shader kernel in ActionScript. To use 

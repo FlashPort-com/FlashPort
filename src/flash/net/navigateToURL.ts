@@ -1,4 +1,4 @@
-import { URLRequest } from "./URLRequest.js";
+import { URLRequest } from "./URLRequest";
 
 export function navigateToURL(request:URLRequest, win:string=null):void
 {

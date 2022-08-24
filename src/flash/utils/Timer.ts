@@ -1,8 +1,8 @@
-import { EventDispatcher } from "../events/EventDispatcher.js";
-import { TimerEvent } from "../events/TimerEvent.js";
-import { setInterval } from "./setInterval.js";
-import { clearInterval } from "./clearInterval.js";
-import { Error } from "../../Error.js";
+import { EventDispatcher } from "../events/EventDispatcher";
+import { TimerEvent } from "../events/TimerEvent";
+import { setInterval } from "./setInterval";
+import { clearInterval } from "./clearInterval";
+import { Error } from "../../Error";
 
 /**
  * Dispatched whenever it has completed the number of requests set by Timer.repeatCount.

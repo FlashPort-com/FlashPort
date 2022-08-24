@@ -1,6 +1,6 @@
-import { TextureBase } from "./TextureBase.js";
-import { BitmapData } from "../../display/BitmapData.js";
-import { ByteArray } from "../../utils/ByteArray.js";
+import { TextureBase } from "./TextureBase";
+import { BitmapData } from "../../display/BitmapData";
+import { ByteArray } from "../../utils/ByteArray";
 
 export class Texture extends TextureBase
 {

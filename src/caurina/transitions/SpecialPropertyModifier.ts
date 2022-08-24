@@ -27,7 +27,8 @@
 	/**
 	 * Converts the instance to a string that can be used when trace()ing the object
 	 */
-	public toString():string {
+	public toString = ():string =>
+	{
 		var value:string = "";
 		value += "[SpecialPropertyModifier ";
 		value += "modifyValues:" + this.modifyValues.toString();

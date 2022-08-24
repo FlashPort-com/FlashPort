@@ -1,10 +1,10 @@
-import { IGraphicsFill } from "./IGraphicsFill.js";
-import { IGraphicsData } from "./IGraphicsData.js";
-import { GraphicsBitmapFill } from "./GraphicsBitmapFill.js";
+import { IGraphicsFill } from "./IGraphicsFill";
+import { IGraphicsData } from "./IGraphicsData";
+import { GraphicsBitmapFill } from "./GraphicsBitmapFill";
 
-import { GLCanvasRenderingContext2D } from "../__native/GLCanvasRenderingContext2D.js";
-import { ColorTransform } from "../geom/ColorTransform.js";
-import { Matrix } from "../geom/Matrix.js";
+import { GLCanvasRenderingContext2D } from "../__native/GLCanvasRenderingContext2D";
+import { ColorTransform } from "../geom/ColorTransform";
+import { Matrix } from "../geom/Matrix";
 
 export class GraphicsEndFill extends Object implements IGraphicsFill, IGraphicsData
 {

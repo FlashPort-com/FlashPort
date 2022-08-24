@@ -1,8 +1,8 @@
-import { EventDispatcher } from "../events/EventDispatcher.js";
-import { Timer } from "../utils/Timer.js";
-import { SecurityErrorEvent } from "../events/SecurityErrorEvent.js";
-import { TimerEvent } from "../events/TimerEvent.js";
-import { ByteArray } from "../utils/ByteArray.js";
+import { EventDispatcher } from "../events/EventDispatcher";
+import { Timer } from "../utils/Timer";
+import { SecurityErrorEvent } from "../events/SecurityErrorEvent";
+import { TimerEvent } from "../events/TimerEvent";
+import { ByteArray } from "../utils/ByteArray";
 
 export class Socket extends EventDispatcher
 {

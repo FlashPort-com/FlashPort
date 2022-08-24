@@ -1,7 +1,7 @@
 
-import { EventDispatcher } from "../events/EventDispatcher.js";
-import { NetStatusEvent } from "../events/NetStatusEvent.js";
-import { Responder } from "./Responder.js";
+import { EventDispatcher } from "../events/EventDispatcher";
+import { NetStatusEvent } from "../events/NetStatusEvent";
+import { Responder } from "./Responder";
 
 /**
  * Dispatched when a NetConnection object is reporting its status or error condition.
@@ -423,7 +423,7 @@ export class NetConnection extends EventDispatcher
 	 * @playerversion	Lite 4
 	 *   and Flex apps. It is also a server side method used by Flash Media Server apps.
 	 */
-	public addHeader (operation:string, mustUnderstand:boolean = false, param:Object = null) : void
+	public addHeader = (operation:string, mustUnderstand:boolean = false, param:Object = null) : void =>
 	{
 		console.log("WARNING NetConnection.addHeader method not implemented.");
 	}
@@ -462,7 +462,7 @@ export class NetConnection extends EventDispatcher
 	 * @playerversion	Flash 9
 	 * @playerversion	Lite 4
 	 */
-	public call (command:string, responder:Responder, ...rest) : void
+	public call = (command:string, responder:Responder, ...rest) : void =>
 	{
 		console.log("WARNING NetConnection.call method not implemented.");
 	}
@@ -493,7 +493,7 @@ export class NetConnection extends EventDispatcher
 	 * @playerversion	Flash 9
 	 * @playerversion	Lite 4
 	 */
-	public close () : void
+	public close = () : void =>
 	{
 		console.log("WARNING NetConnection.close method not implemented.");
 	}
@@ -551,7 +551,7 @@ export class NetConnection extends EventDispatcher
 	 *   For a complete list of blocked ports, see "Restricting Networking APIs" in the
 	 *   ActionScript 3.0 Developer's Guide.
 	 */
-	public connect (command:string, ...rest) : void
+	public connect = (command:string, ...rest) : void =>
 	{
 		if (command)
 		{

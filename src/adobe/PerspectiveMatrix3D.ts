@@ -1,5 +1,5 @@
-import { Matrix3D } from "../flash/geom/Matrix3D.js";
-import { Vector3D } from "../flash/geom/Vector3D.js";
+import { Matrix3D } from "../flash/geom/Matrix3D";
+import { Vector3D } from "../flash/geom/Vector3D";
 
 export class PerspectiveMatrix3D extends Matrix3D
 {

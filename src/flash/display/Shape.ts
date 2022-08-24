@@ -1,14 +1,14 @@
-import { DisplayObject } from "./DisplayObject.js";
-import { Graphics } from "./Graphics.js";
-import { BitmapData } from "./BitmapData.js";
-import { FlashPort } from "../../FlashPort.js";
-import { BlendMode } from "./BlendMode.js";
+import { DisplayObject } from "./DisplayObject";
+import { Graphics } from "./Graphics";
+import { BitmapData } from "./BitmapData";
+import { FlashPort } from "../../FlashPort";
+import { BlendMode } from "./BlendMode";
 
-import { ColorTransform } from "../geom/ColorTransform.js";
-import { Matrix } from "../geom/Matrix.js";
-import { Point } from "../geom/Point.js";
-import { Rectangle } from "../geom/Rectangle.js";
-import { MouseEvent } from "../events/MouseEvent.js";
+import { ColorTransform } from "../geom/ColorTransform";
+import { Matrix } from "../geom/Matrix";
+import { Point } from "../geom/Point";
+import { Rectangle } from "../geom/Rectangle";
+import { MouseEvent } from "../events/MouseEvent";
 
 export class Shape extends DisplayObject
 {

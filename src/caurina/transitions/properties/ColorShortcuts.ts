@@ -37,7 +37,8 @@
 		/**
 		 * Registers all the special properties to the Tweener class, so the Tweener knows what to do with them.
 		 */
-		public static init(): void {
+		public static init = (): void =>
+		{
 
 			// Normal properties
 			Tweener.registerSpecialProperty("_color_ra", ColorShortcuts._oldColor_property_get,	ColorShortcuts._oldColor_property_set,	["redMultiplier"]);
@@ -85,7 +86,8 @@
 		 * @param		p_value				Number		The original _color value
 		 * @return							Array		An array containing the .name and .value of all new properties
 		 */
-		public static _color_splitter (p_value:any, p_parameters:any[]):any[] {
+		public static _color_splitter = (p_value:any, p_parameters:any[]):any[] =>
+		{
 			var nArray:any[] = new Array();
 			if (p_value == null) {
 				// No parameter passed, so just resets the color
@@ -117,7 +119,8 @@
 		 * @param		p_value				Number		The original _colorTransform value
 		 * @return							Array		An array containing the .name and .value of all new properties
 		 */
-		public static _colorTransform_splitter (p_value:any, p_parameters:any[]):any[] {
+		public static _colorTransform_splitter = (p_value:any, p_parameters:any[]):any[] =>
+		{
 			var nArray:any[] = new Array();
 			if (p_value == null) {
 				// No parameter passed, so just resets the color
@@ -152,10 +155,13 @@
 		 * _color_*
 		 * Generic function for the ra/rb/etc components of the deprecated colorTransform object
 		 */
-		public static _oldColor_property_get (p_obj:any, p_parameters:any[], p_extra:any = null):number {
+		public static _oldColor_property_get = (p_obj:any, p_parameters:any[], p_extra:any = null):number =>
+		{
 			return p_obj.transform.colorTransform[p_parameters[0]] * 100;
 		}
-		public static _oldColor_property_set (p_obj:any, p_value:number, p_parameters:any[], p_extra:any = null): void {
+
+		public static _oldColor_property_set = (p_obj:any, p_value:number, p_parameters:any[], p_extra:any = null): void =>
+		{
 			var tf:ColorTransform = p_obj.transform.colorTransform;
 			tf[p_parameters[0]] = p_value / 100;
 			p_obj.transform.colorTransform = tf;
@@ -165,10 +171,13 @@
 		 * _color_*
 		 * Generic function for the redMultiplier/redOffset/etc components of the new colorTransform
 		 */
-		public static _color_property_get (p_obj:any, p_parameters:any[], p_extra:any = null):number {
+		public static _color_property_get = (p_obj:any, p_parameters:any[], p_extra:any = null):number =>
+		{
 			return p_obj.transform.colorTransform[p_parameters[0]];
 		}
-		public static _color_property_set (p_obj:any, p_value:number, p_parameters:any[], p_extra:any = null): void {
+
+		public static _color_property_set = (p_obj:any, p_value:number, p_parameters:any[], p_extra:any = null): void =>
+		{
 			var cfm:ColorTransform = p_obj.transform.colorTransform;
 			cfm[p_parameters[0]] = p_value;
 			p_obj.transform.colorTransform = cfm;
@@ -181,7 +190,8 @@
 		 * _brightness
 		 * Brightness of an object: -1 -> [0] -> +1
 		 */
-		public static _brightness_get (p_obj:any, p_parameters:any[], p_extra:any = null):number {
+		public static _brightness_get = (p_obj:any, p_parameters:any[], p_extra:any = null):number =>
+		{
 
 			var isTint:boolean = p_parameters[0];
 
@@ -207,7 +217,8 @@
 				return co / 100;
 			}
 		}
-		public static _brightness_set (p_obj:any, p_value:number, p_parameters:any[], p_extra:any = null): void {
+		public static _brightness_set = (p_obj:any, p_value:number, p_parameters:any[], p_extra:any = null): void =>
+		{
 			//var mtx:Array = getObjectMatrix(p_obj);
 
 			var isTint:boolean = p_parameters[0];
@@ -243,7 +254,8 @@
 		 * _saturation
 		 * Saturation of an object: 0 -> [1] -> 2
 		 */
-		public static _saturation_get (p_obj:any, p_parameters:any[], p_extra:any = null):number {
+		public static _saturation_get = (p_obj:any, p_parameters:any[], p_extra:any = null):number =>
+		{
 
 			var mtx:any[] = ColorShortcuts.getObjectMatrix(p_obj);
 
@@ -256,7 +268,8 @@
 			var cc:number = 1 - ((mtx[1]/gl + mtx[2]/bl + mtx[5]/rl + mtx[7]/bl + mtx[10]/rl + mtx[11]/gl) / 6);	// Color saturation as determined by the other channels
 			return (mc + cc) / 2;
 		}
-		public static _saturation_set (p_obj:any, p_value:number, p_parameters:any[], p_extra:any = null): void {
+		public static _saturation_set = (p_obj:any, p_value:number, p_parameters:any[], p_extra:any = null): void =>
+		{
 			
 			var isDumb:boolean = p_parameters[0];
 			var rl:number = isDumb ? 1/3 : ColorShortcuts.LUMINANCE_R;
@@ -280,7 +293,8 @@
 		 * _contrast
 		 * Contrast of an object: -1 -> [0] -> +1
 		 */
-		public static _contrast_get (p_obj:any, p_parameters:any[], p_extra:any = null):number {
+		public static _contrast_get = (p_obj:any, p_parameters:any[], p_extra:any = null):number =>
+		{
 
 			/*
 			// Using ColorMatrix:
@@ -308,7 +322,8 @@
 
 			return (mc+co)/2;
 		}
-		public static _contrast_set (p_obj:any, p_value:number, p_parameters:any[], p_extra:any = null): void {
+		public static _contrast_set = (p_obj:any, p_value:number, p_parameters:any[], p_extra:any = null): void =>
+		{
 			
 			var mc:number;	// Main channel
 			var co:number;	// Channel offset
@@ -347,7 +362,8 @@
 		 * _hue
 		 * Hue of an object: -180 -> [0] -> 180
 		 */
-		public static _hue_get (p_obj:any, p_parameters:any[], p_extra:any = null):number {
+		public static _hue_get = (p_obj:any, p_parameters:any[], p_extra:any = null):number =>
+		{
 
 			var mtx:any[] = ColorShortcuts.getObjectMatrix(p_obj);
 
@@ -387,15 +403,18 @@
 			return hues[angleToSplit].angle;
 		}
 
-		public static _hue_set (p_obj:any, p_value:number, p_parameters:any[], p_extra:any = null): void {
+		public static _hue_set = (p_obj:any, p_value:number, p_parameters:any[], p_extra:any = null): void =>
+		{
 			ColorShortcuts.setObjectMatrix(p_obj, ColorShortcuts.getHueMatrix(p_value));
 		}
 
-		public static getHueDistance (mtx1:any[], mtx2:any[]): number {
+		public static getHueDistance = (mtx1:any[], mtx2:any[]): number =>
+		{
 			return (Math.abs(mtx1[0] - mtx2[0]) + Math.abs(mtx1[1] - mtx2[1]) + Math.abs(mtx1[2] - mtx2[2]));
 		}
 
-		public static getHueMatrix (hue:number): any[] {
+		public static getHueMatrix = (hue:number): any[] =>
+		{
 			var ha:number = hue * Math.PI/180;		// Hue angle, to radians
 
 			var rl:number = ColorShortcuts.LUMINANCE_R;
@@ -429,7 +448,8 @@
 		// ==================================================================================================================================
 		// AUXILIARY functions --------------------------------------------------------------------------------------------------------------
 
-		private static getObjectMatrix(p_obj:any): any[] {
+		private static getObjectMatrix = (p_obj:any): any[] =>
+		{
 			// Get the current color matrix of an object
 			for (var i:number = 0; i < p_obj.filters.length; i++) {
 				if (p_obj.filters[i] instanceof ColorMatrixFilter) {
@@ -442,7 +462,8 @@
 				0, 0, 0, 1, 0];
 		}
 
-		private static setObjectMatrix(p_obj:any, p_matrix:any[]): void {
+		private static setObjectMatrix = (p_obj:any, p_matrix:any[]): void =>
+		{
 			// Set the current color matrix of an object
 			var objFilters:any[] = p_obj.filters.concat();
 			var found:boolean = false;
@@ -461,5 +482,3 @@
 		}
 
 	}
-
-

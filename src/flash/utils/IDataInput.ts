@@ -1,4 +1,4 @@
-import { ByteArray } from "./ByteArray.js";
+import { ByteArray } from "./ByteArray";
 export interface IDataInput
 {
 	

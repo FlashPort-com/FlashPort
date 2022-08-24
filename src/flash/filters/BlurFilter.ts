@@ -1,4 +1,4 @@
-import { BitmapFilter } from "./BitmapFilter.js";
+import { BitmapFilter } from "./BitmapFilter";
 
 /**
  * The BlurFilter class lets you apply a blur visual effect to display objects.

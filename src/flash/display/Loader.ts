@@ -1,14 +1,14 @@
-import { DisplayObjectContainer } from "./DisplayObjectContainer.js";
-import { LoaderInfo } from "./LoaderInfo.js";
-import { BitmapData } from "./BitmapData.js";
-import { Bitmap } from "./Bitmap.js";
-import { DisplayObject } from "./DisplayObject.js";
+import { DisplayObjectContainer } from "./DisplayObjectContainer";
+import { LoaderInfo } from "./LoaderInfo";
+import { BitmapData } from "./BitmapData";
+import { Bitmap } from "./Bitmap";
+import { DisplayObject } from "./DisplayObject";
 
-import { URLRequest } from "../net/URLRequest.js";
-import { LoaderContext } from "../system/LoaderContext.js";
-import { ByteArray } from "../utils/ByteArray.js";
+import { URLRequest } from "../net/URLRequest";
+import { LoaderContext } from "../system/LoaderContext";
+import { ByteArray } from "../utils/ByteArray";
 	
-import { AEvent } from "../events/AEvent.js";
+import { AEvent } from "../events/AEvent";
 	
 export class Loader extends DisplayObjectContainer
 {

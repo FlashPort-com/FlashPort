@@ -52,7 +52,8 @@
 		 * @param	omitEvents		Boolean			Whether or not events such as onStart (and its parameters) should be omitted
 		 * @return 					TweenListObj	A copy of this object
 		 */
-		public clone():PropertyInfoObj {
+		public clone = ():PropertyInfoObj =>
+		{
 			var nProperty:PropertyInfoObj = new PropertyInfoObj(this.valueStart, this.valueComplete, this.originalValueComplete, this.arrayIndex, this.extra, this.isSpecialProperty, this.modifierFunction, this.modifierParameters);
 			return nProperty;
 		}
@@ -62,7 +63,8 @@
 		 *
 		 * @return 					String		The description of this object.
 		 */
-		public toString():string {
+		public toString = ():string =>
+		{
 			var returnStr:string = "\n[PropertyInfoObj ";
 			returnStr += "valueStart:" + String(this.valueStart);
 			returnStr += ", ";

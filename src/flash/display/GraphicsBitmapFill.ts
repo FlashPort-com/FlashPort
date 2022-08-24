@@ -1,9 +1,9 @@
-import { IGraphicsFill } from "./IGraphicsFill.js";
-import { IGraphicsData } from "./IGraphicsData.js";
-import { BitmapData } from "./BitmapData.js";
-import { GLCanvasRenderingContext2D } from "../../flash/__native/GLCanvasRenderingContext2D.js";
-import { ColorTransform } from "../geom/ColorTransform.js";
-import { Matrix } from "../geom/Matrix.js";
+import { IGraphicsFill } from "./IGraphicsFill";
+import { IGraphicsData } from "./IGraphicsData";
+import { BitmapData } from "./BitmapData";
+import { GLCanvasRenderingContext2D } from "../../flash/__native/GLCanvasRenderingContext2D";
+import { ColorTransform } from "../geom/ColorTransform";
+import { Matrix } from "../geom/Matrix";
 	
 export class GraphicsBitmapFill extends Object implements IGraphicsFill, IGraphicsData
 {

@@ -1,6 +1,6 @@
 
 
-import { BitmapFilter } from "./BitmapFilter.js";
+import { BitmapFilter } from "./BitmapFilter";
 
 /**
  * The BevelFilter class lets you add a bevel effect to display objects.

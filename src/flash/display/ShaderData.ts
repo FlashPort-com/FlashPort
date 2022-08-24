@@ -1,5 +1,5 @@
 
-	import { ByteArray } from "../utils/ByteArray.js";
+	import { ByteArray } from "../utils/ByteArray";
 
 	/**
 	 * A ShaderData object contains properties representing any parameters and 

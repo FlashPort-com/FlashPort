@@ -1,15 +1,15 @@
-import { IRenderer } from "./IRenderer.js";
+import { IRenderer } from "./IRenderer";
 
-import { BitmapData } from "../display/BitmapData.js";
-import { Graphics } from "../display/Graphics.js";
-import { GraphicsEndFill } from "../display/GraphicsEndFill.js";
-import { GraphicsPath } from "../display/GraphicsPath.js";
-import { IGraphicsData } from "../display/IGraphicsData.js";
-import { ColorTransform } from "../geom/ColorTransform.js";
-import { Matrix } from "../geom/Matrix.js";
-import { TextField } from "../text/TextField.js";
-import { TextFieldType } from "../text/TextFieldType.js";
-import { TextFormat } from "../text/TextFormat.js";
+import { BitmapData } from "../display/BitmapData";
+import { Graphics } from "../display/Graphics";
+import { GraphicsEndFill } from "../display/GraphicsEndFill";
+import { GraphicsPath } from "../display/GraphicsPath";
+import { IGraphicsData } from "../display/IGraphicsData";
+import { ColorTransform } from "../geom/ColorTransform";
+import { Matrix } from "../geom/Matrix";
+import { TextField } from "../text/TextField";
+import { TextFieldType } from "../text/TextFieldType";
+import { TextFormat } from "../text/TextFormat";
 	
 
 export class BaseRenderer extends IRenderer

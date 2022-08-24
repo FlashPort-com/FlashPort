@@ -1,7 +1,7 @@
-import { Rectangle } from "../../geom/Rectangle.js";
-import { UVTexture } from "./UVTexture.js";
-import { Char } from "./Char.js";
-import { RectanglePacker } from "../../../org/villekoskela/utils/RectanglePacker.js";
+import { Rectangle } from "../../geom/Rectangle";
+import { UVTexture } from "./UVTexture";
+import { Char } from "./Char";
+import { RectanglePacker } from "../../../org/villekoskela/utils/RectanglePacker";
 
 export class CharSet 
 {

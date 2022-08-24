@@ -1,5 +1,5 @@
-import { LineInfo } from "./LineInfo.js";
-import { UVTexture } from "./UVTexture.js";
+import { LineInfo } from "./LineInfo";
+import { UVTexture } from "./UVTexture";
 
 export class Char 
 {

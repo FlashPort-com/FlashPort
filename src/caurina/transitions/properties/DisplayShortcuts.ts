@@ -25,8 +25,8 @@
 		/**
 		 * Registers all the special properties to the Tweener class, so the Tweener knows what to do with them.
 		 */
-		public static init(): void {
-
+		public static init = (): void =>
+		{
 			// Normal properties
 			Tweener.registerSpecialProperty("_frame", DisplayShortcuts._frame_get, DisplayShortcuts._frame_set);
 			Tweener.registerSpecialProperty("_autoAlpha", DisplayShortcuts._autoAlpha_get, DisplayShortcuts._autoAlpha_set);
@@ -55,7 +55,8 @@
 
 		// ----------------------------------------------------------------------------------------------------------------------------------
 		// scale
-		public static _scale_splitter(p_value:number, p_parameters:any[]) : any[]{
+		public static _scale_splitter = (p_value:number, p_parameters:any[]) : any[] =>
+		{
 			var nArray:any[] = new Array();
 			nArray.push({name:"scaleX", value: p_value});
 			nArray.push({name:"scaleY", value: p_value});
@@ -71,7 +72,8 @@
 		 * @param		p_value				Rectangle	The original _scrollRect rectangle
 		 * @return							Array		An array containing the .name and .value of all new properties
 		 */
-		public static _scrollRect_splitter (p_value:Rectangle, p_parameters:any[], p_extra:any = null):any[] {
+		public static _scrollRect_splitter = (p_value:Rectangle, p_parameters:any[], p_extra:any = null):any[] =>
+		{
 			var nArray:any[] = new Array();
 			if (p_value == null) {
 				// No parameter passed, so try any rectangle :/
@@ -102,7 +104,8 @@
 		 * @param		p_obj				Object		MovieClip object
 		 * @return							Number		The current frame
 		 */
-		public static _frame_get (p_obj:any, p_parameters:any[], p_extra:any = null):number {
+		public static _frame_get = (p_obj:any, p_parameters:any[], p_extra:any = null):number =>
+		{
 			return p_obj.currentFrame;
 		}
 
@@ -112,7 +115,8 @@
 		 * @param		p_obj				Object		MovieClip object
 		 * @param		p_value				Number		New frame number
 		 */
-		public static _frame_set (p_obj:any, p_value:number, p_parameters:any[], p_extra:any = null): void {
+		public static _frame_set = (p_obj:any, p_value:number, p_parameters:any[], p_extra:any = null): void =>
+		{
 			p_obj.gotoAndStop(Math.round(p_value));
 		}
 
@@ -126,7 +130,8 @@
 		 * @param		p_obj				Object		MovieClip or Textfield object
 		 * @return							Number		The current alpha
 		 */
-		public static _autoAlpha_get (p_obj:any, p_parameters:any[], p_extra:any = null):number {
+		public static _autoAlpha_get = (p_obj:any, p_parameters:any[], p_extra:any = null):number =>
+		{
 			return p_obj.alpha;
 		}
 
@@ -136,7 +141,8 @@
 		 * @param		p_obj				Object		MovieClip or Textfield object
 		 * @param		p_value				Number		New alpha
 		 */
-		public static _autoAlpha_set (p_obj:any, p_value:number, p_parameters:any[], p_extra:any = null): void {
+		public static _autoAlpha_set = (p_obj:any, p_value:number, p_parameters:any[], p_extra:any = null): void =>
+		{
 			p_obj.alpha = p_value;
 			p_obj.visible = p_value > 0;
 		}
@@ -148,10 +154,13 @@
 		 * _scrollRect_*
 		 * Generic function for the properties of the scrollRect object
 		 */
-		public static _scrollRect_property_get (p_obj:any, p_parameters:any[], p_extra:any = null):number {
+		public static _scrollRect_property_get = (p_obj:any, p_parameters:any[], p_extra:any = null):number =>
+		{
 			return p_obj.scrollRect[p_parameters[0]];
 		}
-		public static _scrollRect_property_set (p_obj:any, p_value:number, p_parameters:any[], p_extra:any = null): void {
+
+		public static _scrollRect_property_set = (p_obj:any, p_value:number, p_parameters:any[], p_extra:any = null): void =>
+		{
 			var rect:Rectangle = p_obj.scrollRect;
 			rect[p_parameters[0]] = Math.round(p_value);
 			p_obj.scrollRect = rect;

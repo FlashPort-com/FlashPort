@@ -1,28 +1,28 @@
-import { DisplayObjectContainer } from "./DisplayObjectContainer.js";
-import { StageQuality } from "./StageQuality.js";
-import { FlashPort } from "../../FlashPort.js";
-import { BaseRenderer } from "../__native/BaseRenderer.js";
-import { GLCanvasRenderingContext2D } from "../__native/GLCanvasRenderingContext2D.js";
-import { WebGLRenderer } from "../__native/WebGLRenderer.js";
-import { InteractiveObject } from "./InteractiveObject.js";
-import { Rectangle } from "../geom/Rectangle.js";
+import { DisplayObjectContainer } from "./DisplayObjectContainer";
+import { StageQuality } from "./StageQuality";
+import { FlashPort } from "../../FlashPort";
+import { BaseRenderer } from "../__native/BaseRenderer";
+import { GLCanvasRenderingContext2D } from "../__native/GLCanvasRenderingContext2D";
+import { WebGLRenderer } from "../__native/WebGLRenderer";
+import { InteractiveObject } from "./InteractiveObject";
+import { Rectangle } from "../geom/Rectangle";
 //import flash.media.StageVideo;
-import { Stage3D } from "./Stage3D.js";
-import { DisplayObject } from "./DisplayObject.js";
-import { AccessibilityProperties } from "../accessibility/AccessibilityProperties.js";
-import { AccessibilityImplementation } from "../accessibility/AccessibilityImplementation.js";
-import { TextSnapshot } from "../text/TextSnapshot.js";
-import { ContextMenu } from "../ui/ContextMenu.js";
-import { StageAlign } from "./StageAlign.js";
-import { BlendMode } from "./BlendMode.js";
-import { StageScaleMode } from "./StageScaleMode.js";
-import { MouseEvent } from "../events/MouseEvent.js";
-import { AEvent } from "../events/AEvent.js";
-import { TouchEvent } from "../events/TouchEvent.js";
-import { KeyboardEvent } from "../events/KeyboardEvent.js";
-import { Transform } from "../geom/Transform.js";
-import { Mouse } from "../ui/Mouse.js";
-//import { Tweener } from "../../caurina/transitions/Tweener.js";
+import { Stage3D } from "./Stage3D";
+import { DisplayObject } from "./DisplayObject";
+import { AccessibilityProperties } from "../accessibility/AccessibilityProperties";
+import { AccessibilityImplementation } from "../accessibility/AccessibilityImplementation";
+import { TextSnapshot } from "../text/TextSnapshot";
+import { ContextMenu } from "../ui/ContextMenu";
+import { StageAlign } from "./StageAlign";
+import { BlendMode } from "./BlendMode";
+import { StageScaleMode } from "./StageScaleMode";
+import { MouseEvent } from "../events/MouseEvent";
+import { AEvent } from "../events/AEvent";
+import { TouchEvent } from "../events/TouchEvent";
+import { KeyboardEvent } from "../events/KeyboardEvent";
+import { Transform } from "../geom/Transform";
+import { Mouse } from "../ui/Mouse";
+//import { Tweener } from "../../caurina/transitions/Tweener";
 
 export class Stage extends DisplayObjectContainer
 {
@@ -166,7 +166,7 @@ export class Stage extends DisplayObjectContainer
 		return this._instance;
 	}
 	
-	private window_resize = (e?:Object):void =>
+	private window_resize = (e?:any):void =>
 	{
 		if (this.origWidth == -1) this.origWidth = FlashPort.stageWidth;
 		if (this.origHeight == -1) this.origHeight = FlashPort.stageHeight;
@@ -205,8 +205,9 @@ export class Stage extends DisplayObjectContainer
 				Stage._instance.root.scaleX = FlashPort.stageWidth / this.origWidth;
 				Stage._instance.root.scaleY = FlashPort.stageHeight / this.origHeight;
 			}
+
+			Stage._instance.dispatchEvent(new AEvent(AEvent.RESIZE));
 		}
-		this.dispatchEvent(new AEvent(AEvent.RESIZE));
 	}
 	
 	private _updateStage = ():void =>
@@ -375,10 +376,11 @@ export class Stage extends DisplayObjectContainer
 	{
 		if (!this._canvas)
 		{
-			this._canvas = document.getElementById("spriteflexjsstage") as HTMLCanvasElement;
+			this._canvas = document.getElementById("flashportcanvas") as HTMLCanvasElement;
 
 			if (this._canvas == undefined){
 				this._canvas = document.createElement("canvas");
+				this._canvas.id = "flashportcanvas";
 				this._canvas.style.position = "absolute";
 				this._canvas.style.left = "0px";
 				this._canvas.style.top = "0px";

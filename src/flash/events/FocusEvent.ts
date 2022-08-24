@@ -1,7 +1,7 @@
 
 
-import { InteractiveObject } from "../display/InteractiveObject.js";
-import { AEvent } from "./AEvent.js";
+import { InteractiveObject } from "../display/InteractiveObject";
+import { AEvent } from "./AEvent";
 
 /// @eventType	flash.events.FocusEvent.FOCUS_IN
 /*[Event(name="focusIn", type="flash.events.FocusEvent")]*/ 

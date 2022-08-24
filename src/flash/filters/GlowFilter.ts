@@ -1,7 +1,7 @@
-import { DisplayObject } from "../display/DisplayObject.js";
-import { BitmapFilter } from "./BitmapFilter.js";
-import { Rectangle } from "../geom/Rectangle.js";
-import { TextField } from "../text/TextField.js";
+import { DisplayObject } from "../display/DisplayObject";
+import { BitmapFilter } from "./BitmapFilter";
+import { Rectangle } from "../geom/Rectangle";
+import { TextField } from "../text/TextField";
 
 /**
  * The GlowFilter class lets you apply a glow effect to display objects.
@@ -648,7 +648,7 @@ export class GlowFilter extends BitmapFilter
 		if (this._alpha > 1) this._alpha = 1;
 		this._blurX = blurX;
 		this._blurY = blurY;
-		this._strength = strength;
+		this._strength = strength - 1;
 		this._quality = quality;
 		this._inner = inner;
 		this._knockout = knockout;
@@ -677,25 +677,28 @@ export class GlowFilter extends BitmapFilter
 		//bgCtx.fillStyle = 'gainsboro';  // light grey
 		//bgCtx.fillRect(0, 0, this.biggerCanvas.width, this.biggerCanvas.height);
 		
+		var blurDiff:number = 1 - (this._blur / 6);
+		//blurDiff = 1;
+		let strengthX:number = 1 + (this.strength / 20);
+		let strengthY:number = 1 + (this.strength / 20);
+		bgCtx.scale(strengthX, strengthY);
+		bgCtx.filter = 'blur(' + this._blur / 6 + "px)";
+		//bgCtx.scale(-strengthX, -strengthY);
+
+	 	let diffX:number = Math.ceil((((canvas.width + this._offsetX + 20) / strengthX) - canvas.width) / 2);
+		//console.log("diffX: " + diffX + ", strengthX: " + strengthX);
+
+		var strengthDiff:number = 2 / this.strength;
 		// draw the duplicate drawing centered in the new bigger canvas that allows space for glow.
-		let strengthX:number = 1 + (this.strength / 100);
-		let strengthY:number = 1+ (this.strength / 100);
-		//bgCtx.scale(strengthX, strengthY);
-		bgCtx.filter = 'blur(' + this._blur / 2 + "px)";
-		//bgCtx.scale(1, 1);
-		bgCtx.drawImage(canvas,  Math.round(((this.biggerCanvas.width / strengthX) - canvas.width) / 2), Math.round(((this.biggerCanvas.height / strengthY) - canvas.height) / 2));
-		
-		
-		
-		
+		//bgCtx.drawImage(canvas, Math.ceil(1 - strengthX + (.5 * strengthDiff) - (1.15 * blurDiff + (.5 * strengthDiff))), Math.ceil(1 - strengthY + (.5 * strengthDiff) - (1.15 * blurDiff)));
+		bgCtx.drawImage(canvas, diffX, diffX);
+
 		return this.biggerCanvas;
 	}
 	
 	
-	public _applyFilter(ctx:CanvasRenderingContext2D, displayObject:DisplayObject, isText:boolean = false):void
+	public _applyFilter = (ctx:CanvasRenderingContext2D, displayObject:DisplayObject, isText:boolean = false):void =>
 	{
-		ctx.shadowColor = this._rgba;
-		
 		var bounds:Rectangle = displayObject.getFullBounds(displayObject);
 		this.origImage = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
 		var dData:Uint8ClampedArray = this.origImage.data;
@@ -750,19 +753,24 @@ export class GlowFilter extends BitmapFilter
 
 		// blur the duplicate solid color drawing
 		var glowCanvas:HTMLCanvasElement = this.blurFilter(this._strength, this.copyCanvas);
-
+		
 		var gco:string;
 		if (this._knockout) {
 			gco = (this._inner) ? "source-in" : "source-out";
 		} else {
 			gco = (this._inner) ? "source-atop" : "destination-over";
 		}
+
+		var diffX:number = (glowCanvas.width - ctx.canvas.width) * 3;
+		var diffY:number = (glowCanvas.height - ctx.canvas.height) * 3;
+		//ctx.canvas.width = glowCanvas.width;
+		//ctx.canvas.height = glowCanvas.height;
 		
 		ctx.save();
 		ctx.globalAlpha = this._alpha;
 		ctx.globalCompositeOperation = <any>gco;
-		ctx.drawImage(glowCanvas, bounds.x - Math.round(this._offsetX / 2), bounds.y - Math.round(this._offsetY / 2));
-		
+		var diff:number = (glowCanvas.width - this.copyCanvas.width) / 2;
+		ctx.drawImage(glowCanvas, Math.floor(bounds.x - diff), Math.floor(bounds.y - diff));
 		//ctx.drawImage(glowCanvas, 0,0);
 		
 		
@@ -775,6 +783,6 @@ export class GlowFilter extends BitmapFilter
 		ctx.restore();
 		
 		// clear shadow blur before next redraw or else double shadow blur.
-		ctx.shadowBlur = 0;
+		//ctx.shadowBlur = 0;
 	}
 }

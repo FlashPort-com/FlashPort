@@ -1,4 +1,4 @@
-import { BitmapFilter } from "./BitmapFilter.js";
+import { BitmapFilter } from "./BitmapFilter";
 
 /**
  * The DropShadowFilter class lets you add a drop shadow to display objects.
@@ -709,7 +709,10 @@ export class DropShadowFilter extends BitmapFilter
 			ctx.shadowOffsetY = 0;
 			ctx.shadowBlur = 0;
 			// restroke w/o the shadow
-			ctx.stroke();
+			if (hasStrokes) ctx.stroke();
 		}
+		
+
+		ctx.shadowBlur = 0;
 	}
 }

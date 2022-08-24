@@ -1,13 +1,13 @@
-import { SoundTransform } from "./SoundTransform.js";
-import { SoundLoaderContext } from "./SoundLoaderContext.js";
-import { SoundChannel } from "./SoundChannel.js";
-import { FlashPort } from "../../FlashPort.js";
-import { ID3Info } from "./ID3Info.js";
+import { SoundTransform } from "./SoundTransform";
+import { SoundLoaderContext } from "./SoundLoaderContext";
+import { SoundChannel } from "./SoundChannel";
+import { FlashPort } from "../../FlashPort";
+import { ID3Info } from "./ID3Info";
 
-import { EventDispatcher } from "../events/EventDispatcher.js";
-import { URLRequest } from "../net/URLRequest.js";
-import { ByteArray } from "../utils/ByteArray.js";
-import { AEvent } from "../events/AEvent.js";
+import { EventDispatcher } from "../events/EventDispatcher";
+import { URLRequest } from "../net/URLRequest";
+import { ByteArray } from "../utils/ByteArray";
+import { AEvent } from "../events/AEvent";
 
 /*[Event(name = "progress", type = "flash.events.ProgressEvent")]*/
 /*[Event(name = "open", type = "flash.events.Event")]*/

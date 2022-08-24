@@ -1,5 +1,5 @@
-import { Context3D } from "../display3D/Context3D.js";
-import { IndexBuffer3D } from "../display3D/IndexBuffer3D.js";
+import { Context3D } from "../display3D/Context3D";
+import { IndexBuffer3D } from "../display3D/IndexBuffer3D";
 
 export class GLIndexBufferSet 
 {

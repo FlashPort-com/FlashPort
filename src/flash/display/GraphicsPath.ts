@@ -1,10 +1,10 @@
-import { IGraphicsPath } from "./IGraphicsPath.js";
-import { IGraphicsData } from "./IGraphicsData.js";
-import { GraphicsPathCommand } from "./GraphicsPathCommand.js";
+import { IGraphicsPath } from "./IGraphicsPath";
+import { IGraphicsData } from "./IGraphicsData";
+import { GraphicsPathCommand } from "./GraphicsPathCommand";
 
-import { GLCanvasRenderingContext2D } from "../__native/GLCanvasRenderingContext2D.js";
-import { GLPath2D } from "../__native/GLPath2D.js";
-import { ColorTransform } from "../geom/ColorTransform.js";
+import { GLCanvasRenderingContext2D } from "../__native/GLCanvasRenderingContext2D";
+import { GLPath2D } from "../__native/GLPath2D";
+import { ColorTransform } from "../geom/ColorTransform";
 	
 export class GraphicsPath extends Object implements IGraphicsPath, IGraphicsData
 {

@@ -1,12 +1,12 @@
-import { BitmapData } from "../display/BitmapData.js";
-import { DisplayObject } from "../display/DisplayObject.js";
-import { ActivityEvent } from "../events/ActivityEvent.js";
-import { AEvent } from "../events/AEvent.js";
-import { EventDispatcher } from "../events/EventDispatcher.js";
-import { TimerEvent } from "../events/TimerEvent.js";
-import { Rectangle } from "../geom/Rectangle.js";
-import { ByteArray } from "../utils/ByteArray.js";
-import { Timer } from "../utils/Timer.js";
+import { BitmapData } from "../display/BitmapData";
+import { DisplayObject } from "../display/DisplayObject";
+import { ActivityEvent } from "../events/ActivityEvent";
+import { AEvent } from "../events/AEvent";
+import { EventDispatcher } from "../events/EventDispatcher";
+import { TimerEvent } from "../events/TimerEvent";
+import { Rectangle } from "../geom/Rectangle";
+import { ByteArray } from "../utils/ByteArray";
+import { Timer } from "../utils/Timer";
 
 /**
  * Dispatched when a camera reports its status.

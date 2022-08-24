@@ -1,12 +1,12 @@
-import { FlashPort } from "../../FlashPort.js";
+import { FlashPort } from "../../FlashPort";
 
-import { DisplayObject } from "../display/DisplayObject.js";
-import { ActivityEvent } from "../events/ActivityEvent.js";
-import { Matrix } from "../geom/Matrix.js";
-import { Rectangle } from "../geom/Rectangle.js";
-import { NetStream } from "../net/NetStream.js";
-import { Camera } from "./Camera.js";
-import { Bitmap } from "../display/Bitmap.js"; 
+import { DisplayObject } from "../display/DisplayObject";
+import { ActivityEvent } from "../events/ActivityEvent";
+import { Matrix } from "../geom/Matrix";
+import { Rectangle } from "../geom/Rectangle";
+import { NetStream } from "../net/NetStream";
+import { Camera } from "./Camera";
+import { Bitmap } from "../display/Bitmap"; 
 
 /**
  * The Video class displays live or recorded video in an application 
@@ -220,7 +220,7 @@ export class Video extends DisplayObject
 	 * @langversion	3.0
 	 * @playerversion	Flash 9
 	 */
-	public attachCamera(camera:Camera):void
+	public attachCamera = (camera:Camera):void =>
 	{
 		let _this = this;
 		this._camera = camera;
@@ -264,7 +264,7 @@ export class Video extends DisplayObject
 	 * @playerversion	Flash 9
 	 * @playerversion	Lite 4
 	 */
-	public attachNetStream(netStream:NetStream):void
+	public attachNetStream = (netStream:NetStream):void =>
 	{
 		this._netStream = netStream;
 		this._netStream.playbackTarget = this._videoElement;
@@ -279,7 +279,7 @@ export class Video extends DisplayObject
 	 * @playerversion	Flash 9
 	 * @playerversion	Lite 4
 	 */
-	public clear():void
+	public clear = ():void =>
 	{
 		
 	}
@@ -316,12 +316,12 @@ export class Video extends DisplayObject
 		this._height = v;
 	}
 	
-	/*override*/ public getBounds(v:DisplayObject):Rectangle 
+	/*override*/ public getBounds = (v:DisplayObject):Rectangle =>
 	{
 		return this._rect;
 	}
 	
-	/*override*/ public getRect(v:DisplayObject):Rectangle 
+	/*override*/ public getRect = (v:DisplayObject):Rectangle =>
 	{
 		return this._rect;
 	}

@@ -1,10 +1,10 @@
-import { PerspectiveMatrix3D } from "../adobe/PerspectiveMatrix3D.js";
-import { Stage } from "../flash/display/Stage.js";
-import { AEvent } from "../flash/events/AEvent.js";
-import { MouseEvent } from "../flash/events/MouseEvent.js";
-import { Matrix3D } from "../flash/geom/Matrix3D.js";
-import { Point } from "../flash/geom/Point.js";
-import { Vector3D } from "../flash/geom/Vector3D.js";
+import { PerspectiveMatrix3D } from "../adobe/PerspectiveMatrix3D";
+import { Stage } from "../flash/display/Stage";
+import { AEvent } from "../flash/events/AEvent";
+import { MouseEvent } from "../flash/events/MouseEvent";
+import { Matrix3D } from "../flash/geom/Matrix3D";
+import { Point } from "../flash/geom/Point";
+import { Vector3D } from "../flash/geom/Vector3D";
 
 export class Camera3DOrbit 
 {	

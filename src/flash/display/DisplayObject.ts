@@ -1,24 +1,24 @@
-import { IBitmapDrawable } from "./IBitmapDrawable.js";
-import { Stage } from "./Stage.js";
-import { DisplayObjectContainer } from "./DisplayObjectContainer.js";
-import { LoaderInfo } from "./LoaderInfo.js";
-import { BlendMode } from "./BlendMode.js";
-import { FlashPort } from "../../FlashPort.js";
-import { Graphics } from "./Graphics.js";
+import { IBitmapDrawable } from "./IBitmapDrawable";
+import { Stage } from "./Stage";
+import { DisplayObjectContainer } from "./DisplayObjectContainer";
+import { LoaderInfo } from "./LoaderInfo";
+import { BlendMode } from "./BlendMode";
+import { FlashPort } from "../../FlashPort";
+import { Graphics } from "./Graphics";
 
-import { AEvent } from "../events/AEvent.js";
-import { TouchEvent } from "../events/TouchEvent.js";
-import { EventDispatcher } from "../events/EventDispatcher.js";
-import { MouseEvent } from "../events/MouseEvent.js";
-import { DropShadowFilter } from "../filters/DropShadowFilter.js";
-import { GlowFilter } from "../filters/GlowFilter.js";
-import { Matrix } from "../geom/Matrix.js";
-import { Point } from "../geom/Point.js";
-import { Rectangle } from "../geom/Rectangle.js";
-import { Transform } from "../geom/Transform.js";
-import { Vector3D } from "../geom/Vector3D.js";
-import { getTimer } from "../utils/getTimer.js";
-import { ColorTransform } from "../geom/ColorTransform.js";
+import { AEvent } from "../events/AEvent";
+import { TouchEvent } from "../events/TouchEvent";
+import { EventDispatcher } from "../events/EventDispatcher";
+import { MouseEvent } from "../events/MouseEvent";
+import { DropShadowFilter } from "../filters/DropShadowFilter";
+import { GlowFilter } from "../filters/GlowFilter";
+import { Matrix } from "../geom/Matrix";
+import { Point } from "../geom/Point";
+import { Rectangle } from "../geom/Rectangle";
+import { Transform } from "../geom/Transform";
+import { Vector3D } from "../geom/Vector3D";
+import { getTimer } from "../utils/getTimer";
+import { ColorTransform } from "../geom/ColorTransform";
 	
 
 export class DisplayObject extends EventDispatcher implements IBitmapDrawable
@@ -215,15 +215,19 @@ export class DisplayObject extends EventDispatcher implements IBitmapDrawable
 	
 	public set scaleZ(v:number)  { }
 	
-	public get mouseX():number  {
-		if(this._stage)
-			return this.transform.invMatrix.transformPoint(new Point(this._stage.stageMouseX, this._stage.stageMouseY)).x;
+	public get mouseX():number {
+		if(this.stage)
+		{
+			return this.transform.invMatrix.transformPoint(new Point(this.stage.stageMouseX, this.stage.stageMouseY)).x;
+		}
 		return 0;
 	}
 	
-	public get mouseY():number  { 
-		if(this._stage)
-			return this.transform.invMatrix.transformPoint(new Point(this._stage.stageMouseX, this._stage.stageMouseY)).y;
+	public get mouseY():number { 
+		if(this.stage)
+		{
+			return this.transform.invMatrix.transformPoint(new Point(this.stage.stageMouseX, this.stage.stageMouseY)).y;
+		}
 		return 0;
 	}
 	
@@ -258,7 +262,7 @@ export class DisplayObject extends EventDispatcher implements IBitmapDrawable
 	
 	public set rotationZ(v:number)  { }
 	
-	public updateTransforms ():void
+	public updateTransforms():void
 	{
 		this.transform.updateTransforms();
 		FlashPort.dirtyGraphics = true;
@@ -345,11 +349,11 @@ export class DisplayObject extends EventDispatcher implements IBitmapDrawable
 	
 	public set scale9Grid(v:Rectangle)  {/**/ }
 	
-	public globalToLocal(v:Point):Point  { 
+	public globalToLocal = (v:Point):Point => { 
 		return this.transform.invMatrix.transformPoint(v);
 	}
 	
-	public localToGlobal(v:Point):Point  { 
+	public localToGlobal = (v:Point):Point => { 
 		return this.transform.concatenatedMatrix.transformPoint(v);
 	}
 	
@@ -386,7 +390,7 @@ export class DisplayObject extends EventDispatcher implements IBitmapDrawable
 	 * @param	v	DisplayObject to get bounds from.
 	 * @return		Rectangle of bounds
 	 */
-	public getFullBounds(v:DisplayObject):Rectangle 
+	public getFullBounds = (v:DisplayObject):Rectangle =>
 	{
 		var gfx:Graphics = Object(v).graphics;
 		var bounds:Rectangle = (gfx && gfx.bound) ? gfx.bound.clone() : new Rectangle();
@@ -414,23 +418,23 @@ export class DisplayObject extends EventDispatcher implements IBitmapDrawable
 		return bounds;
 	}
 	
-	public getRect(v:DisplayObject):Rectangle 
+	public getRect(v:DisplayObject):Rectangle
 	{
 		var gfx:Graphics = Object(v).graphics;
 		return (gfx && gfx.rect) ? gfx.rect.clone() : new Rectangle();
 	}
 	
-	public __getRect():Rectangle {
+	public __getRect = ():Rectangle => {
 		return null;
 	}
 	//public function get loaderInfo() : LoaderInfo{return null}
 	
-	public hitTestObject(obj:DisplayObject):boolean
+	public hitTestObject = (obj:DisplayObject):boolean =>
 	{
 		return false;// this._hitTest(false, 0, 0, false, obj);
 	}
 	
-	public hitTestPoint(x:number, y:number, shapeFlag:boolean = false):boolean
+	public hitTestPoint = (x:number, y:number, shapeFlag:boolean = false):boolean =>
 	{
 		//var rect:Rectangle = __getRect();
 		//if (rect) return rect.containsPoint(globalToLocal(new Point(x,y)));
@@ -443,9 +447,9 @@ export class DisplayObject extends EventDispatcher implements IBitmapDrawable
 	
 	//  public function set accessibilityProperties(param1:AccessibilityProperties) : void;
 	
-	public globalToLocal3D(param1:Point):Vector3D  { return null }
+	public globalToLocal3D = (param1:Point):Vector3D => { return null }
 	
-	public local3DToGlobal(param1:Vector3D):Point  { return null }
+	public local3DToGlobal = (param1:Vector3D):Point => { return null }
 	
 	//public function set blendShader(param1:Shader) : void;
 	

@@ -1,24 +1,23 @@
-import { DisplayObjectContainer } from "./DisplayObjectContainer.js";
-import { Graphics } from "./Graphics.js";
-import { BitmapData } from "./BitmapData.js";
-import { DisplayObject } from "./DisplayObject.js";
-import { Stage } from "./Stage.js";
-import { FlashPort } from "../../FlashPort.js";
-import { BlendMode } from "./BlendMode.js";
+import { DisplayObjectContainer } from "./DisplayObjectContainer";
+import { Graphics } from "./Graphics";
+import { BitmapData } from "./BitmapData";
+import { DisplayObject } from "./DisplayObject";
+import { Stage } from "./Stage";
+import { FlashPort } from "../../FlashPort";
+import { BlendMode } from "./BlendMode";
 
-import { AEvent } from "../events/AEvent.js";
-import { ColorTransform } from "../geom/ColorTransform.js";
-import { Matrix } from "../geom/Matrix.js";
-import { Point } from "../geom/Point.js";
-import { Rectangle } from "../geom/Rectangle.js";
-import { MouseEvent } from "../events/MouseEvent.js";
+import { AEvent } from "../events/AEvent";
+import { ColorTransform } from "../geom/ColorTransform";
+import { Matrix } from "../geom/Matrix";
+import { Point } from "../geom/Point";
+import { Rectangle } from "../geom/Rectangle";
+import { MouseEvent } from "../events/MouseEvent";
 
 export class Sprite extends DisplayObjectContainer
 {
 	public static __dragInstance:Sprite;
 	public static __dragFunction:Function;
 	public graphics:Graphics = new Graphics();
-	private tempPos:Point;
 	private _downX:number;
 	private _downY:number;
 	private _dragRect:Rectangle;
@@ -27,7 +26,6 @@ export class Sprite extends DisplayObjectContainer
 	private _cacheCanvas:HTMLCanvasElement;
 	private _cacheCTX:CanvasRenderingContext2D;
 	private _cacheImage:BitmapData;
-	private _cacheMatrix:Matrix;
 	private _cacheOffsetX:number = 0;
 	private _cacheOffsetY:number = 0;
 	private _cacheWidth:number = 0;
@@ -88,13 +86,13 @@ export class Sprite extends DisplayObjectContainer
 	
 	public set cacheAsBitmap(value:boolean) 
 	{
-		this._cacheAsBitmap = value;
+		super.cacheAsBitmap = value;
 		
 		if (value)
 		{
 			if (!this._cacheImage) this._cacheImage = new BitmapData(1, 1);
 			this.cacheBounds = this.getFullBounds(this);
-			//if (name == 'StarterBG') trace("Sprite Bounds: " + this.name + ", bounds: " + bounds);
+			this.cacheBounds.inflate(50, 50); // add extra padding for filters.  TODO make exact
 			
 			this._cacheCanvas = document.createElement("canvas");
 			/*var oc:* = new window['OffscreenCanvas'](500, 500);
@@ -102,12 +100,12 @@ export class Sprite extends DisplayObjectContainer
 			
 			this._cacheCanvas.width = this._cacheWidth = Math.ceil(this.cacheBounds.width); // TODO add filter padding
 			this._cacheCanvas.height = this._cacheHeight = Math.ceil(this.cacheBounds.height);
-			this._cacheCTX = this._cacheCanvas.getContext('2d');
+			this._cacheCTX = this._cacheCanvas.getContext('2d') as CanvasRenderingContext2D;
 			
-			if (FlashPort.debug || this.name == "MC_Bg")
+			if (this.name == "circle")
 			{
-				this._cacheCTX.fillStyle = "rgba(255, 255, 255, .15)";
-				this._cacheCTX.fillRect(0, 0, this._cacheCanvas.width, this._cacheCanvas.height);
+				//this._cacheCTX.fillStyle = "rgba(255, 255, 255, .25)";
+				//this._cacheCTX.fillRect(0, 0, this._cacheCanvas.width, this._cacheCanvas.height);
 			}
 			
 			// reset alpha before drawing
@@ -177,11 +175,13 @@ export class Sprite extends DisplayObjectContainer
 		
 		if (!this._off && this.visible && (this.graphics.graphicsData.length || this.numChildren) && !this._parentCached)
 		{
-			if (this.filters.length && !this._cacheAsBitmap && !(this.parent && this.parent.cacheAsBitmap) && !this._parentCached && parentIsCached) this.cacheAsBitmap = true;
+			if (this.filters.length && !this._cacheAsBitmap && !(this.parent && this.parent.cacheAsBitmap) && !this._parentCached && !parentIsCached)
+			{
+				this.cacheAsBitmap = true;
+			} 
 			
 			if (this._cacheAsBitmap && this._childrenCached && !parentIsCached) 
 			{
-				
 				FlashPort.renderer.renderImage(ctx, this._cacheImage, this.transform.concatenatedMatrix, this.blendMode, this.transform.concatenatedColorTransform, -this.x - childOffsetX, -this.y - childOffsetY);
 			}
 			else
@@ -240,7 +240,7 @@ export class Sprite extends DisplayObjectContainer
 	/*override*/ protected __doMouse = (e:MouseEvent):DisplayObject =>
 	{
 		Stage.instance.canvas.style.cursor = "default";
-		
+
 		if (this.mouseEnabled && this.visible && !this._off) 
 		{
 			var inMaskBounds:boolean = true;
@@ -253,9 +253,12 @@ export class Sprite extends DisplayObjectContainer
 			{
 				hitObject = this.mouseChildren ? obj : this;
 			}
-			else if (this.hitTestPoint(this.stage.mouseX, this.stage.mouseY))
+			else
 			{
-				hitObject = this;
+				if (this.hitTestPoint(this.stage.mouseX, this.stage.mouseY))
+				{
+					hitObject = this;
+				}
 			}
 			
 			if (hitObject && this.buttonMode) Stage.instance.canvas.style.cursor = this._useHandCursor ? "grab" : "pointer";
@@ -289,7 +292,7 @@ export class Sprite extends DisplayObjectContainer
 		funcs.push(listener);
 	}
 	
-	private handleDragMove(e:MouseEvent):void 
+	private handleDragMove = (e:MouseEvent):void =>
 	{
 		if (this._dragLockCenter)
 		{

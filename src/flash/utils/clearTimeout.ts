@@ -1,4 +1,4 @@
-import { SetIntervalTimer } from "./SetIntervalTimer.js";
+import { SetIntervalTimer } from "./SetIntervalTimer";
 
 export function clearTimeout(id:number):void
 {

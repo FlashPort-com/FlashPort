@@ -1,5 +1,5 @@
-import { TextEvent } from "./TextEvent.js";
-import { AEvent } from "./AEvent.js";
+import { TextEvent } from "./TextEvent";
+import { AEvent } from "./AEvent";
 export class ErrorEvent extends TextEvent
 {
    public static ERROR:string = "error";

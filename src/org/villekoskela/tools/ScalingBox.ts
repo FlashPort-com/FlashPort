@@ -29,9 +29,9 @@
  *
  */
 
-import { Sprite } from "../../../flash/display/Sprite.js";
-import { AEvent } from "../../../flash/events/AEvent.js";
-import { MouseEvent } from "../../../flash/events/MouseEvent.js";
+import { Sprite } from "../../../flash/display/Sprite";
+import { AEvent } from "../../../flash/events/AEvent";
+import { MouseEvent } from "../../../flash/events/MouseEvent";
 
 /**
  * Utility class to provide scalable box functionality.

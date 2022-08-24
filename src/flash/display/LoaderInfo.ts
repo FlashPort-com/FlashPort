@@ -1,8 +1,8 @@
-import { DisplayObject } from "./DisplayObject.js";
-import { URLVariables } from "../net/URLVariables.js";
-import { ByteArray } from "../utils/ByteArray.js";
-import { EventDispatcher } from "../events/EventDispatcher.js";
-import { Loader } from "./Loader.js";
+import { DisplayObject } from "./DisplayObject";
+import { URLVariables } from "../net/URLVariables";
+import { ByteArray } from "../utils/ByteArray";
+import { EventDispatcher } from "../events/EventDispatcher";
+import { Loader } from "./Loader";
 
 export class LoaderInfo extends EventDispatcher
 {

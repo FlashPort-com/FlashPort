@@ -1,4 +1,4 @@
-import { EventDispatcher } from "../events/EventDispatcher.js";
+import { EventDispatcher } from "../events/EventDispatcher";
 
 /**
  * The NetStreamPlayOptions class specifies the various options that can be passed 

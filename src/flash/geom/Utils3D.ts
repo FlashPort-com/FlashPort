@@ -1,5 +1,5 @@
-import { Matrix3D } from "./Matrix3D.js";
-import { Vector3D } from "./Vector3D.js";
+import { Matrix3D } from "./Matrix3D";
+import { Vector3D } from "./Vector3D";
 
 export class Utils3D extends Object
 {  

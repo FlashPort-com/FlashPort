@@ -1,5 +1,5 @@
-import { BitmapData } from "../display/BitmapData.js";
-import { Texture } from "../display3D/textures/Texture.js";
+import { BitmapData } from "../display/BitmapData";
+import { Texture } from "../display3D/textures/Texture";
 
 export class BitmapTexture 
 {
