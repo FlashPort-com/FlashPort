@@ -12,15 +12,20 @@ import { Rectangle } from "../geom/Rectangle";
 	export class Bitmap extends DisplayObject
 	{
 		private _bitmapData:BitmapData;
+		private _imageWidth:number = 0;
+		private _imageHeight:number = 0;
 		
 		constructor(bitmapData:BitmapData = null, pixelSnapping:string = "auto", smoothing:boolean = false){
 			super();
 			this.ctorbmp(bitmapData, pixelSnapping, smoothing);
+			
 		}
 		
 		private ctorbmp = (bitmapData:BitmapData, pixelSnapping:string, smoothing:boolean):void =>
 		{
 			this._bitmapData = bitmapData;
+			this._imageWidth = bitmapData.width;
+			this._imageHeight = bitmapData.height;
 		}
 		
 		public get pixelSnapping():string  { return null }
@@ -49,13 +54,37 @@ import { Rectangle } from "../geom/Rectangle";
 		{
 			return this._bitmapData;
 		}
-		
-		/*override*/ public getRect = (v:DisplayObject):Rectangle =>
+		/*
+		public get width(): number 
 		{
-			if (this.bitmapData) return this.bitmapData.rect;
-			return new Rectangle();
-		}
+			var rect:Rectangle = new Rectangle(0, 0, this._bitmapData.width, this._bitmapData.height);
 		
+			var radians:number = this.rotation * (Math.PI / 180);
+			rect.width = Math.round((rect.height * Math.abs(Math.sin(radians)) + rect.width * Math.abs(Math.cos(radians))) * this.scaleX * 10) / 10;
+			
+			return rect.width;
+		}
+
+		public set width(v: number) 
+		{
+			this.scaleX = v / this._imageWidth;
+		}
+
+		public get height(): number 
+		{
+			var rect:Rectangle = new Rectangle(0, 0, this._bitmapData.width, this._bitmapData.height);
+		
+			var radians:number = this.rotation * (Math.PI / 180);
+			rect.height = Math.round((rect.height * Math.abs(Math.cos(radians)) + rect.width * Math.abs(Math.sin(radians))) * this.scaleY * 10) / 10;
+			
+			return rect.height;
+		}
+
+		public set height(v: number) 
+		{
+			this.scaleY = v / this._imageHeight;
+		}
+		*/
 		/*override*/ public getFullBounds = (v:DisplayObject):Rectangle =>
 		{
 			if (this.bitmapData) return this.bitmapData.rect;

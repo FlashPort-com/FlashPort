@@ -81,6 +81,10 @@ import { BitmapFilter } from "./BitmapFilter";
  */
 export class BlurFilter extends BitmapFilter
 {
+	private _blurX:number = 0;
+	private _blurY:number = 0;
+	private _quality:number = 1;
+	
 	/**
 	 * The amount of horizontal blur. Valid values are from 0 to 255 (floating point). The
 	 * default value is 4. Values that are a power of 2 (such as 2, 4, 8, 16 and 32) are optimized 
@@ -119,10 +123,10 @@ export class BlurFilter extends BitmapFilter
 	 *   </listing>
 	 */
 	public get blurX () : number{
-		return 0;
+		return this._blurX;
 	}
 	public set blurX (value:number){
-		
+		this._blurX = value;
 	}
 
 	/**
@@ -163,10 +167,10 @@ export class BlurFilter extends BitmapFilter
 	 *   </listing>
 	 */
 	public get blurY () : number{
-		return 0;
+		return this._blurY;
 	}
 	public set blurY (value:number){
-		
+		this._blurY = value;
 	}
 
 	/**
@@ -216,10 +220,10 @@ export class BlurFilter extends BitmapFilter
 	 *   </listing>
 	 */
 	public get quality () : number{
-		return 0;
+		return this._quality;
 	}
 	public set quality (value:number){
-		
+		this._quality = value;
 	}
 
 	/**
@@ -267,6 +271,10 @@ export class BlurFilter extends BitmapFilter
 	 */
 	constructor (blurX:number = 4, blurY:number = 4, quality:number = 1){
 		super();
+
+		this._blurX = blurX;
+		this._blurY = blurY;
+		this._quality = quality;
 	}
 
 	/**
@@ -329,4 +337,10 @@ export class BlurFilter extends BitmapFilter
 	 *   </listing>
 	 */
 	/*public function clone () : flash.filters.BitmapFilter;*/
+
+
+	public _applyFilter(ctx:CanvasRenderingContext2D):void
+	{
+		ctx.filter = 'blur(' + this._blurX + 'px)';
+	}
 }

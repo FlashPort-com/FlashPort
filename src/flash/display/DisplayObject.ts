@@ -19,6 +19,8 @@ import { Transform } from "../geom/Transform";
 import { Vector3D } from "../geom/Vector3D";
 import { getTimer } from "../utils/getTimer";
 import { ColorTransform } from "../geom/ColorTransform";
+import { BlurFilter } from "../filters";
+import { Bitmap } from "./Bitmap";
 	
 
 export class DisplayObject extends EventDispatcher implements IBitmapDrawable
@@ -47,6 +49,7 @@ export class DisplayObject extends EventDispatcher implements IBitmapDrawable
 	private _filters:any[] = [];
 	protected _filterOffsetX:number = 0;
 	protected _filterOffsetY:number = 0;
+	protected _blurFilter:BlurFilter;
 	
 	private offscreenCanvas:any;
 	private ocCTX:any;
@@ -199,6 +202,7 @@ export class DisplayObject extends EventDispatcher implements IBitmapDrawable
 	public set scaleY(v:number)
 	{
 		var m:Matrix = this.transform.matrix;
+		
 		if (m.c === 0)
 		{
 			m.d = v;
@@ -291,27 +295,33 @@ export class DisplayObject extends EventDispatcher implements IBitmapDrawable
 	
 	public get width():number  { 
 		var rect:Rectangle = this.getRect(this);
-		
+
 		var radians:number = this._rotation * (Math.PI / 180);
-		rect.width = Math.round((rect.height * Math.abs(Math.sin(radians)) + rect.width * Math.abs(Math.cos(radians))) * 10) / 10;
+		rect.width = Math.round((rect.height * this.scaleY * Math.abs(Math.sin(radians)) + rect.width * this.scaleX * Math.abs(Math.cos(radians))) * 10) / 10;
 		
 		if (rect) return rect.width;
 		return 0;
 	}
 	
-	public set width(v:number)  {  }
+	public set width(v:number)  { 
+		
+		this.scaleX = v / this.width;
+	}
 	
 	public get height():number  { 
 		var rect:Rectangle = this.getRect(this);
 		
 		var radians:number = this._rotation * (Math.PI / 180);
-		rect.height = Math.round((rect.height * Math.abs(Math.cos(radians)) + rect.width * Math.abs(Math.sin(radians))) * 10) / 10;
+		rect.height = Math.round((rect.height * this.scaleY * Math.abs(Math.cos(radians)) + rect.width * this.scaleX * Math.abs(Math.sin(radians))) * 10) / 10;
 		
 		if (rect) return rect.height;
 		return 0;
 	}
 	
-	public set height(v:number)  {  }
+	public set height(v:number)  { 
+
+		this.scaleY = v / this.height;
+	}
 	
 	public get cacheAsBitmap():boolean  { return this._cacheAsBitmap }
 	
@@ -334,11 +344,19 @@ export class DisplayObject extends EventDispatcher implements IBitmapDrawable
 	public set filters(v:any[])
 	{
 		this._filters = v;
+		let blurFilterFound:boolean = false;
 		for  (let f of this._filters) 
 		{
 			this._filterOffsetX = Math.max(f.offsetX, this._filterOffsetX);
 			this._filterOffsetY = Math.max(f.offsetY, this._filterOffsetY);
+			if (f instanceof BlurFilter)
+			{
+				blurFilterFound = true;
+				this._blurFilter = f;
+			}
 		}
+
+		if (!blurFilterFound) this._blurFilter = null;
 	}
 	
 	public get blendMode():string  { return this._blendMode }
@@ -418,15 +436,14 @@ export class DisplayObject extends EventDispatcher implements IBitmapDrawable
 		return bounds;
 	}
 	
-	public getRect(v:DisplayObject):Rectangle
+	public getRect (v:DisplayObject):Rectangle
 	{
+		if (Object(v).bitmapData) return Object(v).bitmapData.rect;
+		
 		var gfx:Graphics = Object(v).graphics;
 		return (gfx && gfx.rect) ? gfx.rect.clone() : new Rectangle();
 	}
 	
-	public __getRect = ():Rectangle => {
-		return null;
-	}
 	//public function get loaderInfo() : LoaderInfo{return null}
 	
 	public hitTestObject = (obj:DisplayObject):boolean =>
@@ -436,10 +453,10 @@ export class DisplayObject extends EventDispatcher implements IBitmapDrawable
 	
 	public hitTestPoint = (x:number, y:number, shapeFlag:boolean = false):boolean =>
 	{
-		//var rect:Rectangle = __getRect();
+		//var rect:Rectangle = this.getRect(this);
 		//if (rect) return rect.containsPoint(globalToLocal(new Point(x,y)));
 		return false;
-	}
+	};
 	
 	//private function _hitTest(param1:Boolean, param2:number, param3:number, param4:Boolean, param5:DisplayObject):Boolean  { return false }
 	
@@ -475,6 +492,10 @@ export class DisplayObject extends EventDispatcher implements IBitmapDrawable
 			else if (filter instanceof GlowFilter && !shadowsOnly)
 			{
 				(filter as GlowFilter)._applyFilter(ctx, this, isText);
+			}
+			else if (filter instanceof BlurFilter)
+			{
+				(filter as BlurFilter)._applyFilter(ctx);
 			}
 		}
 	}

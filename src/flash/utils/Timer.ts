@@ -1,7 +1,5 @@
 import { EventDispatcher } from "../events/EventDispatcher";
 import { TimerEvent } from "../events/TimerEvent";
-import { setInterval } from "./setInterval";
-import { clearInterval } from "./clearInterval";
 import { Error } from "../../Error";
 
 /**
@@ -165,11 +163,10 @@ export class Timer extends EventDispatcher
 	 * @playerversion	Flash 9
 	 * @playerversion	Lite 4
 	 */
-	public reset():void
+	public reset = ():void =>
 	{
-		clearInterval(this._interval);
-		this._delayTime = this._delay;
-		this._running = false;
+		this.stop();
+		this._stopTime = 0;
 		this._complete = false;
 		this._currentCount = 0;
 	}
@@ -180,10 +177,10 @@ export class Timer extends EventDispatcher
 	 * @playerversion	Flash 9
 	 * @playerversion	Lite 4
 	 */
-	public start():void
+	public start = ():void =>
 	{
 		this._startTime = new Date().getMilliseconds();
-		this._interval = setInterval(this.timerComplete, this._delayTime);
+		this._interval = window.setInterval(this.timerComplete, this._delayTime);
 		this._running = true;
 	}
 
@@ -194,15 +191,15 @@ export class Timer extends EventDispatcher
 	 * @playerversion	Flash 9
 	 * @playerversion	Lite 4
 	 */
-	public stop():void
+	public stop = ():void =>
 	{
-		clearInterval(this._interval);
+		window.clearInterval(this._interval);
 		this._stopTime = new Date().getMilliseconds();
 		this._delayTime -= (this._stopTime - this._startTime);
 		this._running = false;
 	}
 	
-	private timerComplete():void 
+	private timerComplete = ():void =>
 	{
 		//trace("Timer.timerComplete()");
 		this._delayTime = this._delay;

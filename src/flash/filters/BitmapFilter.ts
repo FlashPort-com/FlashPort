@@ -72,8 +72,8 @@
  */
 export class BitmapFilter extends Object
 {
-	protected _offsetX:number;
-	protected _offsetY:number;
+	protected _offsetX:number = 0;
+	protected _offsetY:number = 0;
 	
 	constructor (){
 		super();

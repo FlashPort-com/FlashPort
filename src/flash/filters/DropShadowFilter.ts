@@ -700,7 +700,6 @@ export class DropShadowFilter extends BitmapFilter
 		
 		if (!isText)
 		{
-			// TODO:  determine if only has stroke and no fill :/
 			if (!hasFills && hasStrokes) ctx.stroke();
 			if (hasFills) ctx.fill();
 			// clear the shadow

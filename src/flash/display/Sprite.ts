@@ -175,6 +175,8 @@ export class Sprite extends DisplayObjectContainer
 		
 		if (!this._off && this.visible && (this.graphics.graphicsData.length || this.numChildren) && !this._parentCached)
 		{
+			if (this._blurFilter) this._blurFilter._applyFilter(ctx);
+			
 			if (this.filters.length && !this._cacheAsBitmap && !(this.parent && this.parent.cacheAsBitmap) && !this._parentCached && !parentIsCached)
 			{
 				this.cacheAsBitmap = true;
@@ -235,6 +237,7 @@ export class Sprite extends DisplayObjectContainer
 		if (firstCache) this._childrenCached = true;
 		this._parentCached = parentIsCached;
 		if (this.mask) ctx.restore();
+		ctx.filter = 'none';
 	}
 	
 	/*override*/ protected __doMouse = (e:MouseEvent):DisplayObject =>

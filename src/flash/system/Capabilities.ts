@@ -80,10 +80,10 @@ export class Capabilities extends Object
 	public static get screenDPI():number  { return 0 }
 
 	
-	public static get screenResolutionX():number  { return 0 }
+	public static get screenResolutionX():number  { return Math.max(window.screen.width, window.innerWidth); }
 
 	
-	public static get screenResolutionY():number  { return 0 }
+	public static get screenResolutionY():number  { return Math.max(window.screen.height, window.innerHeight); }
 
 	
 	public static get touchscreenType():string  { return null }

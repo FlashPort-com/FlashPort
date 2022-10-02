@@ -1149,8 +1149,8 @@ export class TextField extends InteractiveObject
 	/*override*/ public hitTestPoint = (x:number, y:number, shapeFlag:boolean = false):boolean =>
 	{
 		
-		var rect:Rectangle = this.__getRect();
-		if (rect) return rect.containsPoint(this.globalToLocal(new Point(x,y)));
+		//var rect:Rectangle = this.getRect(this);
+		//if (rect) return rect.containsPoint(this.globalToLocal(new Point(x,y)));
 		return false;
 	}
 	

@@ -198,7 +198,7 @@ export class DisplayObjectContainer extends InteractiveObject
 		}
 		
 		return rect;
-	}
+	};
 	
 	/*override*/ public getFullBounds = (v:DisplayObject):Rectangle =>
 	{

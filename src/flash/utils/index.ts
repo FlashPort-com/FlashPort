@@ -1,6 +1,4 @@
 // created from 'create-ts-index'
-
-export * from './__js';
 export * from './ByteArray';
 export * from './Dictionary';
 export * from './Endian';
@@ -11,10 +9,8 @@ export * from './IDataOutput2';
 export * from './Proxy';
 export * from './SetIntervalTimer';
 export * from './Timer';
-export * from './clearInterval';
 export * from './clearTimeout';
 export * from './getDefinitionByName';
 export * from './getQualifiedClassName';
 export * from './getTimer';
-export * from './setInterval';
 export * from './setTimeout';
