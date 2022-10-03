@@ -1,7 +1,10 @@
+import { GradientType } from "../flash/display/GradientType.js";
 import { Sprite } from "../flash/display/Sprite.js";
 import { AEvent } from "../flash/events/AEvent.js";
+import { BlurFilter } from "../flash/filters/BlurFilter.js";
 import { DropShadowFilter } from "../flash/filters/DropShadowFilter.js";
 import { GlowFilter } from "../flash/filters/GlowFilter.js";
+import { Matrix } from "../flash/geom/Matrix.js";
 import { Resizable } from "./utils/Resizable.js";
 
 
@@ -40,5 +43,21 @@ export class Filtered extends Resizable
         sqr2.x = sqr.x + sqr.width + 40;
         sqr2.y = 50;
         this.addChild(sqr2);
+
+        let mat:Matrix = new Matrix();
+        mat.createGradientBox(100, 125);
+        
+        let triangle:Sprite = new Sprite();
+        triangle.graphics.lineStyle(3, 0x00D9D9);
+        triangle.graphics.beginFill(0xA300D9);
+        triangle.graphics.beginGradientFill(GradientType.RADIAL, [0xA300D9, 0xFFBFFF], [1, 1], [0, 255], mat);
+        triangle.graphics.moveTo(50, 0);
+        triangle.graphics.lineTo(100, 100);
+        triangle.graphics.lineTo(0, 100);
+        triangle.graphics.lineTo(50, 0);
+        triangle.filters = [new BlurFilter(5, 5)];
+        triangle.x = sqr2.x + sqr2.width + 40;
+        triangle.y = 50;
+        this.addChild(triangle);
     }
 }

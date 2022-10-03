@@ -20,15 +20,15 @@ export class Header extends Sprite
         
 		var radians:number = Math.PI / 180 * this.degrees;
         this.mat = new Matrix();
-        this.mat.createGradientBox(this.stage.stageWidth, 350, radians);
+        this.mat.createGradientBox(this.stage.stageWidth, 300, radians);
         this.graphics.beginGradientFill("linear", [0x00A3D9, 0xFFFFFF, 0x00A3D9], [1,1,1], [0, 127, 255], this.mat);
-        this.graphics.drawRoundRectComplex(0, 0, this.stage.stageWidth, 350, 0, 0, 20, 20);
+        this.graphics.drawRoundRectComplex(0, 0, this.stage.stageWidth, 300, 0, 0, 20, 20);
 
         let tf:TextFormat = new TextFormat("Arial", 30, 0xFFFFFF, true);
         let title:TextField = new TextField();
         title.defaultTextFormat = tf;
         title.text = "FlashPort";
-        title.x = title.y = 40;
+        title.x = title.y = 20;
         //title.filters = [new DropShadowFilter()];
         this.addChild(title);
 
@@ -38,7 +38,7 @@ export class Header extends Sprite
         {
             flashMan = ld.contentLoaderInfo.content as Bitmap;
             flashMan.x = 40;
-            flashMan.y = 100;
+            flashMan.y = 75;
             this.addChild(flashMan);
         });
         ld.load(new URLRequest("assets/FlashPortMan-Med.png"));
@@ -53,9 +53,9 @@ export class Header extends Sprite
         this.mat.createGradientBox(this.stage.stageWidth, 350, radians);
         this.graphics.clear();
         this.graphics.beginGradientFill("linear", [0x00A3D9, 0xFFFFFF, 0x00A3D9], [1,1,1], [0, 127, 255], this.mat);
-        this.graphics.drawRoundRectComplex(0, 0, this.stage.stageWidth, 350, 0, 0, 20, 20);
+        this.graphics.drawRoundRectComplex(0, 0, this.stage.stageWidth, 300, 0, 0, 20, 20);
 
-        this.degrees++;
+        this.degrees += .5;
         if (this.degrees > 360) this.degrees = 0;
     }
 
