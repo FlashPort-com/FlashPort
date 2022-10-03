@@ -54,37 +54,7 @@ import { Rectangle } from "../geom/Rectangle";
 		{
 			return this._bitmapData;
 		}
-		/*
-		public get width(): number 
-		{
-			var rect:Rectangle = new Rectangle(0, 0, this._bitmapData.width, this._bitmapData.height);
 		
-			var radians:number = this.rotation * (Math.PI / 180);
-			rect.width = Math.round((rect.height * Math.abs(Math.sin(radians)) + rect.width * Math.abs(Math.cos(radians))) * this.scaleX * 10) / 10;
-			
-			return rect.width;
-		}
-
-		public set width(v: number) 
-		{
-			this.scaleX = v / this._imageWidth;
-		}
-
-		public get height(): number 
-		{
-			var rect:Rectangle = new Rectangle(0, 0, this._bitmapData.width, this._bitmapData.height);
-		
-			var radians:number = this.rotation * (Math.PI / 180);
-			rect.height = Math.round((rect.height * Math.abs(Math.cos(radians)) + rect.width * Math.abs(Math.sin(radians))) * this.scaleY * 10) / 10;
-			
-			return rect.height;
-		}
-
-		public set height(v: number) 
-		{
-			this.scaleY = v / this._imageHeight;
-		}
-		*/
 		/*override*/ public getFullBounds = (v:DisplayObject):Rectangle =>
 		{
 			if (this.bitmapData) return this.bitmapData.rect;
