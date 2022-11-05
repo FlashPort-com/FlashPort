@@ -504,14 +504,14 @@ export class Camera extends EventDispatcher
 			this._diffCanvas = (<HTMLCanvasElement>document.createElement("canvas") );
 			this._diffCanvas.width = this._diffWidth;
 			this._diffCanvas.height = this._diffHeight;
-			this._diffContext = (<CanvasRenderingContext2D>this._diffCanvas.getContext("2d") );
+			this._diffContext = (<CanvasRenderingContext2D>this._diffCanvas.getContext("2d", {willReadFrequently: true}) );
 			
 			this._motionCanvas = (<HTMLCanvasElement>document.createElement("canvas") );
 			this._motionCanvas.style.position = "absolute";
 			this._motionCanvas.style.zIndex = "999";
 			this._motionCanvas.width = this._diffWidth;
 			this._motionCanvas.height = this._diffHeight;
-			this._motionContext = (<CanvasRenderingContext2D>this._motionCanvas.getContext("2d") );
+			this._motionContext = (<CanvasRenderingContext2D>this._motionCanvas.getContext("2d", {willReadFrequently: true}) );
 			if (this._showMotionCanvas) document.body.appendChild(this._motionCanvas);
 		}
 		

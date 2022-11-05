@@ -20,15 +20,15 @@ export class Header extends Sprite
         
 		var radians:number = Math.PI / 180 * this.degrees;
         this.mat = new Matrix();
-        this.mat.createGradientBox(this.stage.stageWidth, 300, radians);
+        this.mat.createGradientBox(this.stage.stageWidth, 240, radians);
         this.graphics.beginGradientFill("linear", [0x00A3D9, 0xFFFFFF, 0x00A3D9], [1,1,1], [0, 127, 255], this.mat);
-        this.graphics.drawRoundRectComplex(0, 0, this.stage.stageWidth, 300, 0, 0, 20, 20);
+        this.graphics.drawRoundRectComplex(0, 0, this.stage.stageWidth, 240, 0, 0, 20, 20);
 
         let tf:TextFormat = new TextFormat("Arial", 30, 0xFFFFFF, true);
         let title:TextField = new TextField();
         title.defaultTextFormat = tf;
         title.text = "FlashPort";
-        title.x = title.y = 20;
+        title.x = title.y = 15;
         //title.filters = [new DropShadowFilter()];
         this.addChild(title);
 
@@ -37,8 +37,8 @@ export class Header extends Sprite
         ld.contentLoaderInfo.addEventListener(AEvent.COMPLETE, (e:AEvent):void =>
         {
             flashMan = ld.contentLoaderInfo.content as Bitmap;
-            flashMan.x = 40;
-            flashMan.y = 75;
+            flashMan.x = 30;
+            flashMan.y = 60;
             this.addChild(flashMan);
         });
         ld.load(new URLRequest("assets/FlashPortMan-Med.png"));
@@ -50,10 +50,10 @@ export class Header extends Sprite
     {
         let radians:number = Math.PI / 180 * this.degrees;
         this.mat = new Matrix();
-        this.mat.createGradientBox(this.stage.stageWidth, 350, radians);
+        this.mat.createGradientBox(this.stage.stageWidth, 240, radians);
         this.graphics.clear();
         this.graphics.beginGradientFill("linear", [0x00A3D9, 0xFFFFFF, 0x00A3D9], [1,1,1], [0, 127, 255], this.mat);
-        this.graphics.drawRoundRectComplex(0, 0, this.stage.stageWidth, 300, 0, 0, 20, 20);
+        this.graphics.drawRoundRectComplex(0, 0, this.stage.stageWidth, 240, 0, 0, 20, 20);
 
         this.degrees += .5;
         if (this.degrees > 360) this.degrees = 0;

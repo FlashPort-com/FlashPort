@@ -18,9 +18,7 @@ import { Rectangle } from "../geom/Rectangle";
 import { Transform } from "../geom/Transform";
 import { Vector3D } from "../geom/Vector3D";
 import { getTimer } from "../utils/getTimer";
-import { ColorTransform } from "../geom/ColorTransform";
 import { BlurFilter } from "../filters";
-import { Bitmap } from "./Bitmap";
 	
 
 export class DisplayObject extends EventDispatcher implements IBitmapDrawable
@@ -170,14 +168,14 @@ export class DisplayObject extends EventDispatcher implements IBitmapDrawable
 	public get scaleX():number
 	{
 		var m:Matrix = this.transform.matrix;
-		if (m.b === 0) return m.a;
+		if (this._rotation === 0) return m.a;
 		return Math.sqrt(m.a * m.a + m.b * m.b);
 	}
 	
 	public set scaleX(v:number)
 	{
 		var m:Matrix = this.transform.matrix;
-		if (m.c === 0)
+		if (this._rotation === 0)
 		{
 			m.a = v;
 		}
@@ -192,7 +190,7 @@ export class DisplayObject extends EventDispatcher implements IBitmapDrawable
 	public get scaleY():number
 	{
 		var m:Matrix = this.transform.matrix;
-		if (m.c === 0)
+		if (this._rotation === 0)
 		{
 			return m.d;
 		}
@@ -203,7 +201,7 @@ export class DisplayObject extends EventDispatcher implements IBitmapDrawable
 	{
 		var m:Matrix = this.transform.matrix;
 		
-		if (m.c === 0)
+		if (this._rotation === 0)
 		{
 			m.d = v;
 		}
@@ -305,7 +303,7 @@ export class DisplayObject extends EventDispatcher implements IBitmapDrawable
 	
 	public set width(v:number)  { 
 		
-		this.scaleX = v / this.width;
+		this.scaleX = v / this.getRect(this).width;
 	}
 	
 	public get height():number  { 
@@ -320,7 +318,7 @@ export class DisplayObject extends EventDispatcher implements IBitmapDrawable
 	
 	public set height(v:number)  { 
 
-		this.scaleY = v / this.height;
+		this.scaleY = v / this.getRect(this).height;
 	}
 	
 	public get cacheAsBitmap():boolean  { return this._cacheAsBitmap }

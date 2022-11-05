@@ -26,7 +26,7 @@ export class BitmapData implements IBitmapDrawable
 		this.image = (<HTMLCanvasElement>document.createElement("canvas") );
 		this.image.width = this._width = width;
 		this.image.height = this._height = height;
-		this.ctx = (<CanvasRenderingContext2D>this.image.getContext("2d") );
+		this.ctx = (<CanvasRenderingContext2D>this.image.getContext("2d", {willReadFrequently: true}) );
 		this.imageData = this.ctx.getImageData(0, 0, this.image.width, this.image.height);
 		this.__data = this.imageData.data;
 		//data32 = new Uint32Array(imageData.data);
