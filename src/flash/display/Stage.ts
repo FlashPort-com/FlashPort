@@ -22,6 +22,7 @@ import { TouchEvent } from "../events/TouchEvent";
 import { KeyboardEvent } from "../events/KeyboardEvent";
 import { Transform } from "../geom/Transform";
 import { Mouse } from "../ui/Mouse";
+import { Tweener } from "../../caurina/transitions/Tweener";
 //import { Tweener } from "../../caurina/transitions/Tweener";
 
 export class Stage extends DisplayObjectContainer
@@ -136,6 +137,7 @@ export class Stage extends DisplayObjectContainer
 		
 		Stage._instance = this;
 		Stage._instance.name = "Stage";
+		Tweener.setController(this);
 	}
 	
 	private handleVisibilityChange(e:Event):void 
@@ -369,7 +371,7 @@ export class Stage extends DisplayObjectContainer
 
 	public isFocusInaccessible ():boolean
 	{
-		return null;
+		return false;
 	}
 	
 	private createCanvas = ():void =>
@@ -432,8 +434,9 @@ export class Stage extends DisplayObjectContainer
 	private canvas_touchevent(e:Event):void 
 	{
 		var jsType:string = e.type;
-		var flashType:string;
-		var flashType2:string;
+		var flashType:string = '';
+		var flashType2:string = '';
+
 		switch(jsType) {
 			case "touchcancel":
 				flashType = TouchEvent.TOUCH_END;
@@ -468,7 +471,7 @@ export class Stage extends DisplayObjectContainer
 			if (this.hasEventListener(flashType))
 			{
 				if(flashType!=TouchEvent.TOUCH_MOVE){
-					this.dispatchEvent(new TouchEvent(flashType, true, false, 0, true, this._stageMouseX, this._stageMouseY,null,e['ctrlKey'],e['altKey'],e['shiftKey'],(e['buttons'] != null)?(e['buttons'] > 0):this.isButtonDown));
+					this.dispatchEvent(new TouchEvent(flashType, true, false, 0, true, this._stageMouseX, this._stageMouseY, 1, 1, 1, e['ctrlKey'], e['altKey'], e['shiftKey'],(e['buttons'] != null)?(e['buttons'] > 0):this.isButtonDown));
 				}else {
 					this.needSendTouchMove = true;
 				}
@@ -477,7 +480,7 @@ export class Stage extends DisplayObjectContainer
 			if (this.hasEventListener(flashType2)) 
 			{
 				if(flashType2 != MouseEvent.MOUSE_MOVE){
-					this.dispatchEvent(new MouseEvent(flashType2, true, false, this._stageMouseX, this._stageMouseY,null,e['ctrlKey'],e['altKey'],e['shiftKey'],(e['buttons'] != null)?(e['buttons'] > 0):this.isButtonDown));
+					this.dispatchEvent(new MouseEvent(flashType2, true, false, this._stageMouseX, this._stageMouseY, this,e['ctrlKey'],e['altKey'],e['shiftKey'],(e['buttons'] != null)?(e['buttons'] > 0):this.isButtonDown));
 				}else {
 					this.needSendMouseMove = e;
 				}
@@ -485,7 +488,7 @@ export class Stage extends DisplayObjectContainer
 			
 			if (flashType === TouchEvent.TOUCH_END && this.hasEventListener(MouseEvent.CLICK))
 			{
-				this.dispatchEvent(new MouseEvent(MouseEvent.CLICK, true, false, this._stageMouseX, this._stageMouseY,null,e['ctrlKey'],e['altKey'],e['shiftKey'],(e['buttons'] != null)?(e['buttons'] > 0):this.isButtonDown));
+				this.dispatchEvent(new MouseEvent(MouseEvent.CLICK, true, false, this._stageMouseX, this._stageMouseY, this,e['ctrlKey'],e['altKey'],e['shiftKey'],(e['buttons'] != null)?(e['buttons'] > 0):this.isButtonDown));
 			}
 		}
 	}
@@ -493,7 +496,7 @@ export class Stage extends DisplayObjectContainer
 	private canvas_keyevent = (e:Event):void =>
 	{
 		var jsType:string = e.type;
-		var flashType:string;
+		var flashType:string = '';
 		switch(jsType) {
 			case "keydown":
 				flashType = KeyboardEvent.KEY_DOWN;
@@ -510,7 +513,7 @@ export class Stage extends DisplayObjectContainer
 	private canvas_mouseevent = (e:Event):void =>
 	{
 		var jsType:string = e.type;
-		var flashType:string;
+		var flashType:string = '';
 		switch(jsType) {
 			case "click":
 				flashType = MouseEvent.CLICK;
@@ -554,7 +557,7 @@ export class Stage extends DisplayObjectContainer
 			this._stageMouseY = e['pageY'] - this._canvas.offsetTop - (FlashPort.rootHTMLElement ?  FlashPort.rootHTMLElement.offsetTop : 0);
 			if (this.hasEventListener(flashType)) {
 				if (flashType != MouseEvent.MOUSE_MOVE){
-					this.dispatchEvent(new MouseEvent(flashType,true,false,this._stageMouseX,this._stageMouseY,null,e['ctrlKey'],e['altKey'],e['shiftKey'],(e['buttons'] != null)?(e['buttons'] > 0):this.isButtonDown,(e['wheelDelta']/120)));
+					this.dispatchEvent(new MouseEvent(flashType,true,false,this._stageMouseX,this._stageMouseY,this,e['ctrlKey'],e['altKey'],e['shiftKey'],(e['buttons'] != null)?(e['buttons'] > 0):this.isButtonDown,(e['wheelDelta']/120)));
 				} else {
 					this.needSendMouseMove = e;
 				}
