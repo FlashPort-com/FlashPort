@@ -1,6 +1,3 @@
-/**
- * @suppress {lateProvide}
- */
 import { DisplayObject } from "./DisplayObject";
 import { Rectangle } from "../geom/Rectangle";
 

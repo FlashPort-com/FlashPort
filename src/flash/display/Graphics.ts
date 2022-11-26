@@ -40,13 +40,12 @@ export class Graphics extends Object
 	
 	public clear = ():void =>
 	{
-		FlashPort.dirtyGraphics = true;
 		this.lastStroke = null;
 		this.lastPath = null;
 		this.pathPoolPos = 0;
 		this.graphicsData = [];
 		this._bound = null;
-		//_bound.setTo(Number.MAX_VALUE,Number.MAX_VALUE,-Number.MAX_VALUE,-Number.MAX_VALUE);
+		FlashPort.dirtyGraphics = true;
 	}
 	
 	public beginFill = (color:number, alpha:number = 1.0):void =>

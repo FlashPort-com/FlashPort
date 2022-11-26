@@ -90,8 +90,8 @@ export class AEvent extends Object
 	private _type:string;
 	private _bubbles:boolean;
 	private _cancelable:boolean;
-	private _target:Object;
-	private _currentTarget:Object;
+	private _target:any;
+	private _currentTarget:any;
 	public _stopImmediatePropagation:boolean = false;
 
 	constructor(type:string, bubbles:boolean = false, cancelable:boolean = false)
@@ -128,13 +128,13 @@ export class AEvent extends Object
 	
 	public get cancelable():boolean  { return this._cancelable }
 	
-	public get target():Object  { return this._target }
+	public get target():any  { return this._target }
 	
-	public set target(value:Object)  { this._target = value }
+	public set target(value:any)  { this._target = value }
 	
-	public get currentTarget():Object  { return this._currentTarget }
+	public get currentTarget():any  { return this._currentTarget }
 	
-	public set currentTarget(value:Object)  { this._currentTarget = value }
+	public set currentTarget(value:any)  { this._currentTarget = value }
 	
 	public get eventPhase():number  { return 0 }
 	

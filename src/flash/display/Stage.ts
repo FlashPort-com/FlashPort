@@ -23,7 +23,6 @@ import { KeyboardEvent } from "../events/KeyboardEvent";
 import { Transform } from "../geom/Transform";
 import { Mouse } from "../ui/Mouse";
 import { Tweener } from "../../caurina/transitions/Tweener";
-//import { Tweener } from "../../caurina/transitions/Tweener";
 
 export class Stage extends DisplayObjectContainer
 {
@@ -431,7 +430,7 @@ export class Stage extends DisplayObjectContainer
 	}
 	
 	
-	private canvas_touchevent(e:Event):void 
+	private canvas_touchevent = (e:Event):void =>
 	{
 		var jsType:string = e.type;
 		var flashType:string = '';
