@@ -47,6 +47,7 @@ export class Loader extends DisplayObjectContainer
 	{
 		var bmd:BitmapData = new BitmapData(this.image.width, this.image.height, true, 0);
 		bmd.fromImage(this.image);
+		
 		if (this._ldInfo.content&&this._ldInfo.content.parent){
 			this._ldInfo.content.parent.removeChild(this._ldInfo.content);
 		}

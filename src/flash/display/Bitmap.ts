@@ -12,20 +12,12 @@ import { Rectangle } from "../geom/Rectangle";
 	export class Bitmap extends DisplayObject
 	{
 		private _bitmapData:BitmapData;
-		private _imageWidth:number = 0;
-		private _imageHeight:number = 0;
 		
-		constructor(bitmapData:BitmapData = null, pixelSnapping:string = "auto", smoothing:boolean = false){
-			super();
-			this.ctorbmp(bitmapData, pixelSnapping, smoothing);
-			
-		}
-		
-		private ctorbmp = (bitmapData:BitmapData, pixelSnapping:string, smoothing:boolean):void =>
+		constructor(bitmapData:BitmapData = null, pixelSnapping:string = "auto", smoothing:boolean = false)
 		{
+			super();
+			
 			this._bitmapData = bitmapData;
-			this._imageWidth = bitmapData.width;
-			this._imageHeight = bitmapData.height;
 		}
 		
 		public get pixelSnapping():string  { return null }
@@ -57,7 +49,7 @@ import { Rectangle } from "../geom/Rectangle";
 		
 		/*override*/ public getFullBounds = (v:DisplayObject):Rectangle =>
 		{
-			if (this.bitmapData) return this.bitmapData.rect;
+			if (this._bitmapData) return this._bitmapData.rect;
 			return new Rectangle();
 		}
 		

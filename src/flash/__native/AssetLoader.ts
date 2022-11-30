@@ -75,9 +75,9 @@ export class AssetLoader extends EventDispatcher
 		
 		name = name.replace(ext, "")
 		
-		if (extLC == ".png" || extLC == ".jpg")
+		if (extLC == ".png" || extLC == ".jpg" || extLC == ".webp")
 		{
-			var bm:Bitmap = (<Bitmap>loaderInfo.content );
+			var bm:Bitmap = (loaderInfo.content as Bitmap);
 			FlashPort.images[name] = bm.bitmapData;
 		}
 		else if (extLC == ".mp3" || extLC == ".wav")
