@@ -17,12 +17,14 @@ export class BitmapData implements IBitmapDrawable
 	private _lock:boolean = false;
 	public ctx:CanvasRenderingContext2D;
 	private _transparent:boolean;
+	private _fillColor:number;
 	private _width:number;
 	private _height:number;
 	
 	constructor(width:number, height:number, transparent:boolean = true, fillColor:number = 0xffffffff){
 		
 		this._transparent = transparent;
+		this._fillColor = fillColor;
 		this.image = (<HTMLCanvasElement>document.createElement("canvas") );
 		this.image.width = this._width = width;
 		this.image.height = this._height = height;
@@ -41,7 +43,14 @@ export class BitmapData implements IBitmapDrawable
 		this.__data = this.imageData.data;
 	}
 	
-	public clone():BitmapData  { return null }
+	public clone():BitmapData  
+	{ 
+		let bmdClone:BitmapData = new BitmapData(this.image.width, this.image.height, this._transparent, this._fillColor);
+		bmdClone.__data = this.__data;
+		bmdClone.image = this.image;
+		
+		return bmdClone 
+	}
 	
 	public get width():number  { return this._width }
 	
