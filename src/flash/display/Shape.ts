@@ -61,8 +61,12 @@ export class Shape extends DisplayObject
 					}
 					else
 					{
-						mat.scale(this.scaleX, this.scaleY);
-						mat.translate(offsetX, offsetY);
+						mat = this.transform.matrix.clone();
+						mat.concat(this.parent.transform.matrix);
+						mat.a = this.scaleX;
+						mat.d = this.scaleY;
+						//mat.scale(this.scaleX, this.scaleY);
+						mat.translate(offsetX - (this.x / 2), offsetY - (this.y/2));
 					}
 				}
 				

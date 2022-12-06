@@ -1,3 +1,5 @@
+import { DisplayObject } from "../display";
+import { Rectangle } from "../geom";
 import { BitmapFilter } from "./BitmapFilter";
 
 /**
@@ -668,7 +670,7 @@ export class DropShadowFilter extends BitmapFilter
 	 *   myFilter = new flash.filters.DropShadowFilter()
 	 *   </pre>
 	 */
-	constructor(distance:number = 4, angle:number = 45, color:number = 0, alpha:number = 1, blurX:number = 4, blurY:number = 4, strength:number = 1, quality:number = 1, inner:boolean = false, knockout:boolean = false, hideObject:boolean = false){
+	constructor(distance:number = 4, angle:number = 45, color:number = 0, alpha:number = 1, blurX:number = 4, blurY:number = 4, strength:number = 1, quality:number = 1, inner:boolean | number = false, knockout:boolean | number = false, hideObject:boolean | number = false){
 		super();
 
 		this._distance = distance;
@@ -679,21 +681,60 @@ export class DropShadowFilter extends BitmapFilter
 		this._blurY = blurY;
 		this._strength = strength;
 		this._quality = quality;
-		this._inner = inner;
-		this._knockout = knockout;
-		this._hideObject = hideObject;
+		this._inner = (inner == true || inner == 1);
+		this._knockout = (knockout == true || knockout == 1);
+		this._hideObject = (hideObject == true || hideObject == 1);
 		
 		var radians:number = Math.PI / 180 * angle;
-		this._offsetX = distance * Math.cos(radians);
-		this._offsetY = distance * Math.sin(radians);
+		this._offsetX = (distance - 1) * Math.cos(radians);
+		this._offsetY = (distance - 1) * Math.sin(radians);
 		
 		this._rgba = "rgba(" + (color >> 16 & 0xff) + "," + (color >> 8 & 0xff) + "," + (color & 0xff) + "," + alpha + ")";
 		this._blur = Math.max(blurX, blurY);
 	}
 	
-	public _applyFilter(ctx:CanvasRenderingContext2D, hasFills:boolean, hasStrokes:boolean, isText:boolean):void
+	public _applyFilter(ctx:CanvasRenderingContext2D, displayObject:DisplayObject, hasFills:boolean, hasStrokes:boolean, isText:boolean):void
 	{
-		ctx.shadowOffsetX = this.offsetX;
+		// copy canvas
+		var bounds:Rectangle = displayObject.getFullBounds(displayObject);
+		let offsetX:number = -(displayObject.x + bounds.x);
+		let offsetY:number = -(displayObject.y + bounds.y);
+		if (displayObject.cacheAsBitmap || isText)
+		{
+			offsetX = -((ctx.canvas.width - bounds.width)/2);
+			offsetY = -((ctx.canvas.height - bounds.height)/2)
+		}
+		
+		// create canvas and fill with color
+		let copyCanvas = document.createElement("canvas");
+		copyCanvas.width = bounds.width;
+		copyCanvas.height = bounds.height;
+		var copyCtx:CanvasRenderingContext2D = copyCanvas.getContext("2d");
+		copyCtx.fillStyle = this.rgba;
+		copyCtx.globalCompositeOperation = "color";
+		copyCtx.fillRect(0, 0, copyCanvas.width, copyCanvas.height);
+		// use drawing as mask
+		copyCtx.globalCompositeOperation = "destination-in";
+		copyCtx.filter = 'blur(' + this.blur + 'px)';
+		copyCtx.drawImage(ctx.canvas, offsetX, offsetY); 
+		copyCtx.globalCompositeOperation = "source-over";
+		
+		if (displayObject.name == "RightArm")
+		{
+			console.log("offsetX: " + offsetX + ", offsetY: " + offsetY);
+			console.log("canvas w: " + ctx.canvas.width + " copy w: " + copyCanvas.width);
+			console.log("x: " + displayObject.x + ", y: " + displayObject.y);
+		}
+
+		ctx.save();
+		ctx.globalCompositeOperation = "destination-over";
+		ctx.drawImage(copyCanvas, Math.floor(bounds.x - (copyCanvas.width / 2)) + 24, Math.floor(bounds.y - (copyCanvas.height / 2) + 31));
+		ctx.restore();
+
+		
+		
+		
+		/* ctx.shadowOffsetX = this.offsetX;
 		ctx.shadowOffsetY = this.offsetY;
 		ctx.shadowColor = this.rgba;
 		ctx.shadowBlur = this.blur;
@@ -711,7 +752,6 @@ export class DropShadowFilter extends BitmapFilter
 			if (hasStrokes) ctx.stroke();
 		}
 		
-
-		ctx.shadowBlur = 0;
+		ctx.shadowBlur = 0; */
 	}
 }

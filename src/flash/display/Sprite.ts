@@ -86,8 +86,8 @@ export class Sprite extends DisplayObjectContainer
 	
 	public set cacheAsBitmap(value:boolean) 
 	{
-		super.cacheAsBitmap = value;
-		
+		this._cacheAsBitmap = value;
+
 		if (value)
 		{
 			if (!this._cacheImage) this._cacheImage = new BitmapData(1, 1);
@@ -102,18 +102,13 @@ export class Sprite extends DisplayObjectContainer
 			this._cacheCanvas.height = this._cacheHeight = Math.ceil(this.cacheBounds.height);
 			this._cacheCTX = this._cacheCanvas.getContext('2d') as CanvasRenderingContext2D;
 			
-			if (this.name == "circle")
-			{
-				//this._cacheCTX.fillStyle = "rgba(255, 255, 255, .25)";
-				//this._cacheCTX.fillRect(0, 0, this._cacheCanvas.width, this._cacheCanvas.height);
-			}
-			
 			// reset alpha before drawing
 			var currAlpha:number = this.alpha;
 			var currRotation:number = this.rotation;
 			this.alpha = 1;				
 			this.rotation = 0;
 			
+			// render children.
 			this.__update(this._cacheCTX, this._cacheOffsetX, this._cacheOffsetY);
 			
 			this.rotation = currRotation;
@@ -224,7 +219,7 @@ export class Sprite extends DisplayObjectContainer
 					this.graphics.draw(ctx, mat, this.blendMode, this.transform.concatenatedColorTransform, this._cacheAsBitmap, this._cacheImage);
 				}
 				
-				this.ApplyFilters(ctx, this.graphics.lastFill != null, this.graphics.lastStroke != null);  // TODO probably move after restore()
+				//this.ApplyFilters(ctx, this.graphics.lastFill != null, this.graphics.lastStroke != null);  // TODO probably move after restore()
 			}
 		}
 		
@@ -232,6 +227,7 @@ export class Sprite extends DisplayObjectContainer
 		if ((!this._cacheAsBitmap && !this._off) || (parentIsCached && !this._parentCached) || firstCache)
 		{
 			super.__update(ctx, (this._cacheAsBitmap ? childOffsetX : offsetX), (this._cacheAsBitmap ? childOffsetY : offsetY), (parentIsCached || firstCache));
+			this.ApplyFilters(ctx, this.hasFills, this.hasStrokes);
 		}
 		
 		if (firstCache) this._childrenCached = true;
@@ -299,8 +295,9 @@ export class Sprite extends DisplayObjectContainer
 	{
 		if (this._dragLockCenter)
 		{
-			this.x = this.parent.mouseX - (this.width / 2);
-			this.y = this.parent.mouseY - (this.height / 2);
+			var bnds:Rectangle = this.getBounds(this);
+			this.x = this.parent.mouseX - (this.width / 2 + bnds.left);
+			this.y = this.parent.mouseY - (this.height / 2 + bnds.top);
 		}
 		else
 		{

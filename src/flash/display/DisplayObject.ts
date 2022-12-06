@@ -485,7 +485,7 @@ export class DisplayObject extends EventDispatcher implements IBitmapDrawable
 		{
 			if (filter instanceof DropShadowFilter && !noShadows)
 			{
-				(filter as DropShadowFilter)._applyFilter(ctx, hasFills, hasStrokes, isText)
+				(filter as DropShadowFilter)._applyFilter(ctx, this, hasFills, hasStrokes, isText)
 			}
 			else if (filter instanceof GlowFilter && !shadowsOnly)
 			{

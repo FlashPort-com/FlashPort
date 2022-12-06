@@ -95,7 +95,7 @@ export class MovieClip extends Sprite
 		
 		this._currentFrame = (frame + 1 > this._totalFrames) ? 1 : frame + 1;
 		this._frame = (frame > this._totalFrames - 1) ? 0 : frame;
-		
+
 		if (this._keyframes[this._frame] != undefined) this._currentKeyFrame = this._frame;
 		
 		// call frame script code if there is any.
@@ -136,7 +136,7 @@ export class MovieClip extends Sprite
 			}
 			
 			this._prevKeyframe = this._currentKeyFrame;
-			this.updateTweens(this._currentKeyFrame);
+			this.updateTweens(this._frame);
 			FlashPort.dirtyGraphics = true;
 			
 			// play timeline sounds
@@ -174,6 +174,7 @@ export class MovieClip extends Sprite
 	
 	private updateTweens = (currentKeyFrame:number):void =>
 	{
+		//console.log("currentKayframe", currentKeyFrame);
 		var twArr:any[] = this._tweens[currentKeyFrame];
 		if (!twArr) twArr = this._tweenEnds[currentKeyFrame];
 
@@ -191,7 +192,6 @@ export class MovieClip extends Sprite
 				{
 					if (p != "time" && p != "transition")
 					{
-						
 						var propValue:number = tw.props[p];
 						var percent:number = ((this._frame - tw.start) / (tw.end - tw.start));
 						if (currentKeyFrame != this._frame) propValue *= percent;
@@ -205,7 +205,9 @@ export class MovieClip extends Sprite
 						{
 							tw.props.transition = Equations.easeNone;
 							tw.props.time = t;
+							tw.currProps = tw.props;
 							Tweener.addTween(tw.obj, tw.props);
+							//console.log("addTween", tw.props, this._currentFrame);
 						}
 					}
 				}
@@ -366,7 +368,7 @@ export class MovieClip extends Sprite
 	 * @playerversion	Flash 9
 	 * @playerversion	Lite 4
 	 */
-	public gotoAndPlay = (frame:any, scene:string = null):void =>
+	public gotoAndPlay = (frame:any, scene?:string):void =>
 	{
 		this._isPlaying = true;
 		if (frame instanceof String)
@@ -415,7 +417,7 @@ export class MovieClip extends Sprite
 	 * @throws	ArgumentError If the scene or frame specified are
 	 *   not found in this movie clip.
 	 */
-	public gotoAndStop = (frame:any, scene:string = null):void =>
+	public gotoAndStop = (frame:any, scene?:string):void =>
 	{
 		this._isPlaying = false;
 		if (frame instanceof String)

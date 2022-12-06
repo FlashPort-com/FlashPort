@@ -3,12 +3,15 @@ import { DisplayObject } from "./DisplayObject";
 import { MouseEvent } from "../events/MouseEvent";
 import { Point } from "../geom/Point";
 import { Rectangle } from "../geom/Rectangle";
+import { Graphics } from "./Graphics";
 
 export class DisplayObjectContainer extends InteractiveObject
 {
-	private children:Array<any> = [];
-	private _mouseChildren:boolean = true;
+	protected children:DisplayObject[] = [];
 	protected _childrenCached:boolean = false;
+	private _mouseChildren:boolean = true;
+	public hasFills:boolean = false;
+	public hasStrokes:boolean = false;
 	
 	constructor()
 	{
@@ -131,12 +134,19 @@ export class DisplayObjectContainer extends InteractiveObject
 			for (var i:number = 0; i < len; i++)
 			{
 				var c:DisplayObject = this.children[i];
+				var gfx:Graphics = Object(c).graphics;
 				if (!c.parentCached)
 				{
 					c.__update(ctx, offsetX, offsetY, parentIsCached);
+					if ((gfx && gfx.lastFill) || (c instanceof DisplayObjectContainer && (c as DisplayObjectContainer).hasFills)) this.hasFills = true;
+					if ((gfx && gfx.lastStroke) || (c instanceof DisplayObjectContainer && (c as DisplayObjectContainer).hasStrokes)) this.hasStrokes = true;
+					//if (!this['graphics'].lastFill && !this['graphics'].lastStroke) this.ApplyFilters(ctx, this.hasFills, this.hasStrokes);
 				}
 			}
+
+			
 		}
+		
 	}
 	
 	public updateTransforms = ():void =>
@@ -155,7 +165,7 @@ export class DisplayObjectContainer extends InteractiveObject
 		{
 			for (var i:number = this.children.length - 1; i >= 0; i--)
 			{
-				var obj:DisplayObject = this.children[i].__doMouse(e);
+				var obj:DisplayObject = (this.children[i] as DisplayObjectContainer).__doMouse(e);
 				if (obj) return obj;
 			}
 		}
