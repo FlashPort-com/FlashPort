@@ -581,7 +581,7 @@
 		
 		public static get physicalKeyboardType():string
 		{
-			return null;
+			return '';
 		}
 	}
 
