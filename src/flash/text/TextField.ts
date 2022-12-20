@@ -96,7 +96,6 @@ export class TextField extends InteractiveObject {
   }
 
   private removedFromStage = (e: AEvent): void => {
-    console.log("Removed from stage!!");
     if (this.input && this.input.parentElement) {
       this.input.parentElement.removeChild(this.input);
     }

@@ -25,8 +25,9 @@ export class DisplayObjectContainer extends InteractiveObject {
     var i: number = this.children.indexOf(child);
     if (i != -1) this.children.splice(i, 1);
     this.children.splice(index, 0, child);
-    //child.stage = this._stage;
+    child.stage = this.stage;
     child._parent = this;
+    child.dispatchEvent(new AEvent(AEvent.ADDED));
     this.updateTransforms();
     return child;
   };
