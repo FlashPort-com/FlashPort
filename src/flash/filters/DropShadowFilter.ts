@@ -705,53 +705,27 @@ export class DropShadowFilter extends BitmapFilter
 			offsetY = -((ctx.canvas.height - bounds.height)/2)
 		}
 		
+		const padding:number = 40;
+		const halfPad:number = padding / 2;
+
 		// create canvas and fill with color
 		let copyCanvas = document.createElement("canvas");
-		copyCanvas.width = bounds.width;
-		copyCanvas.height = bounds.height;
+		copyCanvas.width = bounds.width + padding;
+		copyCanvas.height = bounds.height + padding;
 		var copyCtx:CanvasRenderingContext2D = copyCanvas.getContext("2d");
 		copyCtx.fillStyle = this.rgba;
 		copyCtx.globalCompositeOperation = "color";
 		copyCtx.fillRect(0, 0, copyCanvas.width, copyCanvas.height);
+		
 		// use drawing as mask
 		copyCtx.globalCompositeOperation = "destination-in";
 		copyCtx.filter = 'blur(' + this.blur + 'px)';
-		copyCtx.drawImage(ctx.canvas, offsetX, offsetY); 
+		copyCtx.drawImage(ctx.canvas, offsetX + halfPad, offsetY + halfPad); 
 		copyCtx.globalCompositeOperation = "source-over";
-		
-		if (displayObject.name == "RightArm")
-		{
-			console.log("offsetX: " + offsetX + ", offsetY: " + offsetY);
-			console.log("canvas w: " + ctx.canvas.width + " copy w: " + copyCanvas.width);
-			console.log("x: " + displayObject.x + ", y: " + displayObject.y);
-		}
 
 		ctx.save();
 		ctx.globalCompositeOperation = "destination-over";
-		ctx.drawImage(copyCanvas, Math.floor(bounds.x - (copyCanvas.width / 2)) + 24, Math.floor(bounds.y - (copyCanvas.height / 2) + 31));
+		ctx.drawImage(copyCanvas, Math.round(bounds.x - halfPad) + this._offsetX, Math.round(bounds.y - halfPad) + this._offsetY);
 		ctx.restore();
-
-		
-		
-		
-		/* ctx.shadowOffsetX = this.offsetX;
-		ctx.shadowOffsetY = this.offsetY;
-		ctx.shadowColor = this.rgba;
-		ctx.shadowBlur = this.blur;
-		
-		if (!isText)
-		{
-			if (!hasFills && hasStrokes) ctx.stroke();
-			if (hasFills) ctx.fill();
-			// clear the shadow
-			ctx.shadowColor = "0";
-			ctx.shadowOffsetX = 0; 
-			ctx.shadowOffsetY = 0;
-			ctx.shadowBlur = 0;
-			// restroke w/o the shadow
-			if (hasStrokes) ctx.stroke();
-		}
-		
-		ctx.shadowBlur = 0; */
 	}
 }

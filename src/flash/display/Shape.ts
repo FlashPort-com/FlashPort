@@ -17,28 +17,30 @@ export class Shape extends DisplayObject
 	private _cacheCanvas:HTMLCanvasElement;
 	private _cacheCTX:CanvasRenderingContext2D;
 	private _cacheImage:BitmapData;
-	private _cacheMatrix:Matrix;
-	private _cacheOffsetX:number = 0;
-	private _cacheOffsetY:number = 0;
 	private _cacheWidth:number = 0;
 	private _cacheHeight:number = 0;
+	private _cacheBounds:Rectangle = new Rectangle();
 	
 	constructor(){
 		super();
 	}
 	
-	/*override*/ public __update = (ctx:CanvasRenderingContext2D, offsetX:number = 0, offsetY:number = 0, parentIsCached:boolean = false):void =>
+	/*override*/
+	public __update = (ctx:CanvasRenderingContext2D, offsetX:number = 0, offsetY:number = 0, parentIsCached:boolean = false):void =>
 	{
+		var childOffsetX:number = (this._cacheBounds.width - this._cacheBounds.right - this.x);
+		var childOffsetY:number = (this._cacheBounds.height - this._cacheBounds.bottom - this.y);
+		
 		if (!this._off && this.visible && this.graphics.graphicsData.length && !this._parentCached)
 		{
-			if (this.filters.length && !this.cacheAsBitmap && !this.parent.cacheAsBitmap) this.cacheAsBitmap = true;
+			if (this.filters.length && !this._cacheAsBitmap && !parentIsCached) this.cacheAsBitmap = true;
 			
 			var mat:Matrix = this.transform.concatenatedMatrix.clone();
 			var colorTrans:ColorTransform = this.transform.concatenatedColorTransform;
 			
 			if (this.cacheAsBitmap && !this.parent.cacheAsBitmap && !parentIsCached)
 			{
-				FlashPort.renderer.renderImage(ctx, this._cacheImage, mat, this.blendMode, colorTrans, -this.x - this._cacheOffsetX, -this.y - this._cacheOffsetY);
+				FlashPort.renderer.renderImage(ctx, this._cacheImage, mat, this.blendMode, colorTrans, -this.x - childOffsetX, -this.y - childOffsetY);
 			}
 			else
 			{
@@ -57,7 +59,6 @@ export class Shape extends DisplayObject
 						//mat.scale(scaleX / parent.scaleX, scaleY / parent.scaleY);
 						mat.a = this.scaleX;
 						mat.d = this.scaleY;
-						mat.translate(offsetX, offsetY);
 					}
 					else
 					{
@@ -66,7 +67,7 @@ export class Shape extends DisplayObject
 						mat.a = this.scaleX;
 						mat.d = this.scaleY;
 						//mat.scale(this.scaleX, this.scaleY);
-						mat.translate(offsetX - (this.x / 2), offsetY - (this.y/2));
+						mat.translate(this.x / 2, this.y / 2);
 					}
 				}
 				
@@ -79,7 +80,8 @@ export class Shape extends DisplayObject
 		this._parentCached = parentIsCached;
 	}
 	
-	/*override*/ public set cacheAsBitmap(value:boolean) 
+	/*override*/
+	public set cacheAsBitmap(value:boolean) 
 	{
 		this._cacheAsBitmap = value;
 		
@@ -87,11 +89,12 @@ export class Shape extends DisplayObject
 		{
 			if (!this._cacheImage) this._cacheImage = new BitmapData(1, 1);
 			
-			var bounds:Rectangle = this.getFullBounds(this);
-			//if (name == "inner_frame") trace("Shape bounds: " + bounds);
+			this._cacheBounds = this.getFullBounds(this);
+			this._cacheBounds.inflate(50, 50); // add extra padding for filters.  TODO make exact
+			
 			this._cacheCanvas = document.createElement("canvas");
-			this._cacheCanvas.width = this._cacheWidth = Math.ceil(bounds.width); // TODO Add padding for Dropshadow
-			this._cacheCanvas.height = this._cacheHeight = Math.ceil(bounds.height);
+			this._cacheCanvas.width = this._cacheWidth = Math.ceil(this._cacheBounds.width); // TODO Add padding for Dropshadow
+			this._cacheCanvas.height = this._cacheHeight = Math.ceil(this._cacheBounds.height);
 			this._cacheCTX = (<CanvasRenderingContext2D>this._cacheCanvas.getContext('2d') );
 			if (FlashPort.debug)
 			{
@@ -99,27 +102,19 @@ export class Shape extends DisplayObject
 				this._cacheCTX.fillRect(0, 0, this._cacheCanvas.width, this._cacheCanvas.height);
 			}
 			
-			// offsets to center the drawn graphics
-			this._cacheOffsetX = -bounds.left;
-			this._cacheOffsetY = -bounds.top;
-			//if (name == "inner_frame") trace("Shape Offset: " + _cacheOffsetX + ", " + _cacheOffsetY);
 			// reset alpha before drawing
 			var currAlpha:number = this.alpha;
 			this.alpha = 1;
 			
 			var mat:Matrix = this.transform.concatenatedMatrix.clone();
 			mat.scale((!this.parent ? 1 : this.scaleX) / mat.a, (!this.parent ? 1 : this.scaleY) / mat.d);
-			mat.tx = this._cacheOffsetX;
-			mat.ty = this._cacheOffsetY;
+			// offsets to center the drawn graphics
+			mat.tx = -this._cacheBounds.left;
+			mat.ty = -this._cacheBounds.top;
 			this.graphics.draw(this._cacheCTX, mat, this.blendMode, this.transform.concatenatedColorTransform);
-			
+			// reset alpha
 			this.alpha = currAlpha;
-			
-			this._cacheOffsetX = bounds.left;
-			this._cacheOffsetY = bounds.top;
-			
-			//if (parent.name == "startShortcut" && name == "rightArrow") trace("Shape startShortcut:  _cacheOffsetX: " + _cacheOffsetX + ", _cacheOffsetY: " + _cacheOffsetY + ", x: " + x + ", y: " + y, bounds);
-			
+
 			this._cacheImage.image = this._cacheCanvas;
 			
 			this.ApplyFilters(this._cacheCTX, this.graphics.lastFill != null, this.graphics.lastStroke != null);
@@ -130,6 +125,12 @@ export class Shape extends DisplayObject
 			this._cacheCanvas = null;
 			this._cacheCTX = null;
 		}
+	}
+
+	/*override*/
+	public get cacheAsBitmap():boolean
+	{
+		return this._cacheAsBitmap;
 	}
 	
 	/*override*/ protected __doMouse = (e:MouseEvent):DisplayObject =>
@@ -146,16 +147,6 @@ export class Shape extends DisplayObject
 	public get cacheImage():BitmapData 
 	{
 		return this._cacheImage;
-	}
-	
-	public get cacheOffsetX():number 
-	{
-		return this._cacheOffsetX;
-	}
-	
-	public get cacheOffsetY():number 
-	{
-		return this._cacheOffsetY;
 	}
 	
 	public get cacheWidth():number 

@@ -26,8 +26,6 @@ export class Sprite extends DisplayObjectContainer
 	private _cacheCanvas:HTMLCanvasElement;
 	private _cacheCTX:CanvasRenderingContext2D;
 	private _cacheImage:BitmapData;
-	private _cacheOffsetX:number = 0;
-	private _cacheOffsetY:number = 0;
 	private _cacheWidth:number = 0;
 	private _cacheHeight:number = 0;
 	private _buttonMode:boolean = false;
@@ -109,7 +107,7 @@ export class Sprite extends DisplayObjectContainer
 			this.rotation = 0;
 			
 			// render children.
-			this.__update(this._cacheCTX, this._cacheOffsetX, this._cacheOffsetY);
+			this.__update(this._cacheCTX);
 			
 			this.rotation = currRotation;
 			this.alpha = currAlpha;
@@ -133,16 +131,6 @@ export class Sprite extends DisplayObjectContainer
 	public get cacheImage():BitmapData 
 	{
 		return this._cacheImage;
-	}
-	
-	public get cacheOffsetX():number 
-	{
-		return this._cacheOffsetX;
-	}
-	
-	public get cacheOffsetY():number 
-	{
-		return this._cacheOffsetY;
 	}
 	
 	public get cacheWidth():number 
