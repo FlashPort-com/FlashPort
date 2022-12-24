@@ -33,6 +33,7 @@ export class Shape extends DisplayObject
 		
 		if (!this._off && this.visible && this.graphics.graphicsData.length && !this._parentCached)
 		{
+			if (this._blurFilter && !this.cacheAsBitmap) this._blurFilter._applyFilter(ctx);
 			if (this.filters.length && !this._cacheAsBitmap && !parentIsCached) this.cacheAsBitmap = true;
 			
 			var mat:Matrix = this.transform.concatenatedMatrix.clone();
@@ -101,6 +102,9 @@ export class Shape extends DisplayObject
 				this._cacheCTX.fillStyle = "rgba(255,0,0,.5)";
 				this._cacheCTX.fillRect(0, 0, this._cacheCanvas.width, this._cacheCanvas.height);
 			}
+
+			// apply blur before drawing
+			if (this._blurFilter) this._blurFilter._applyFilter(this._cacheCTX);
 			
 			// reset alpha before drawing
 			var currAlpha:number = this.alpha;

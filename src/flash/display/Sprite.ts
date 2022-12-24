@@ -106,6 +106,8 @@ export class Sprite extends DisplayObjectContainer
 			this.alpha = 1;				
 			this.rotation = 0;
 			
+			if (this._blurFilter) this._blurFilter._applyFilter(this._cacheCTX);
+
 			// render children.
 			this.__update(this._cacheCTX);
 			
@@ -158,7 +160,7 @@ export class Sprite extends DisplayObjectContainer
 		
 		if (!this._off && this.visible && (this.graphics.graphicsData.length || this.numChildren) && !this._parentCached)
 		{
-			if (this._blurFilter) this._blurFilter._applyFilter(ctx);
+			if (this._blurFilter && !this.cacheAsBitmap) this._blurFilter._applyFilter(ctx);
 			
 			if (this.filters.length && !this._cacheAsBitmap && !(this.parent && this.parent.cacheAsBitmap) && !this._parentCached && !parentIsCached)
 			{
@@ -206,8 +208,6 @@ export class Sprite extends DisplayObjectContainer
 				{
 					this.graphics.draw(ctx, mat, this.blendMode, this.transform.concatenatedColorTransform, this._cacheAsBitmap, this._cacheImage);
 				}
-				
-				//this.ApplyFilters(ctx, this.graphics.lastFill != null, this.graphics.lastStroke != null);  // TODO probably move after restore()
 			}
 		}
 		
