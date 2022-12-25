@@ -1,22 +1,14 @@
 export class ColorTransform extends Object
 {
-	
+	private _hexColor:number;
 	private _redMultiplier:number;
-	
 	private _greenMultiplier:number;
-	
 	private _blueMultiplier:number;
-	
 	private _alphaMultiplier:number;
-	
 	public redOffset:number;
-	
 	public greenOffset:number;
-	
 	public blueOffset:number;
-	
 	public alphaOffset:number;
-	
 	public tint:number = 0xffffffff;
 	
 	constructor(redMultiplier:number = 1.0, greenMultiplier:number = 1.0, blueMultiplier:number = 1.0, alphaMultiplier:number = 1.0, redOffset:number = 0, greenOffset:number = 0, blueOffset:number = 0, alphaOffset:number = 0)
@@ -34,7 +26,7 @@ export class ColorTransform extends Object
 	
 	public get color():number
 	{
-		return this.redOffset << 16 | this.greenOffset << 8 | this.blueOffset;
+		return this.redOffset << 16 | this.greenOffset << 8 | this.blueOffset;  // use toString(16) for input format. Ex 0xFFFFFF
 	}
 	
 	public set color(newColor:number)

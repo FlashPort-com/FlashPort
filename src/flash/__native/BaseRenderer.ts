@@ -14,25 +14,33 @@ import { TextFormat } from "../text/TextFormat";
 
 export class BaseRenderer extends IRenderer
 {
-
+	private buffer:HTMLCanvasElement;
+	private bCTX:CanvasRenderingContext2D;
 	protected endFillInstance:GraphicsEndFill = new GraphicsEndFill;
 
 	constructor()
 	{
 		super();
+		this.buffer = document.createElement('canvas');
+		document.body.prepend(this.buffer);
+		this.buffer.style.position = "absolute";
+		this.buffer.style.zIndex = "1";
 	}
 	
-	/*override*/ public getCssColor = (color:number,alpha:number, ct:ColorTransform,toarr:any[]):string =>
+	/*override*/
+	public getCssColor = (color:number,alpha:number, ct:ColorTransform,toarr:any[]):string =>
 	{
 		return "rgba(" + Number((color >> 16 & 0xff)*ct.redMultiplier+ct.redOffset) + "," + Number((color >> 8 & 0xff)*ct.greenMultiplier+ct.greenOffset) + "," + Number((color & 0xff)*ct.greenMultiplier+ct.greenOffset) + "," + (alpha*ct.alphaMultiplier+ct.alphaOffset) + ")";
 	}
 	
-	/*override*/ public createPath = ():GraphicsPath =>
+	/*override*/
+	public createPath = ():GraphicsPath =>
 	{
 		return new GraphicsPath;
 	}
 	
-	/*override*/ public renderGraphics = (ctx:CanvasRenderingContext2D, g:Graphics, m:Matrix, blendMode:string, colorTransform:ColorTransform):void =>
+	/*override*/
+	public renderGraphics = (ctx:CanvasRenderingContext2D, g:Graphics, m:Matrix, blendMode:string, colorTransform:ColorTransform):void =>
 	{
 		ctx.setTransform(m.a, m.b, m.c, m.d, m.tx, m.ty);
 		ctx.globalCompositeOperation = <any>blendMode;
@@ -58,10 +66,27 @@ export class BaseRenderer extends IRenderer
 	
 	/*override*/ public renderImage = (ctx:CanvasRenderingContext2D,img:BitmapData,m:Matrix,blendMode:string,colorTransform:ColorTransform, offsetX:number = 0, offsetY:number = 0):void =>
 	{
+		const hasColorTransform:boolean = new ColorTransform().toString() != colorTransform.toString();
+		
+		if (hasColorTransform)
+		{
+			// fill buffer canvas with colorTransorm color
+			this.buffer.width = img.image.width;
+			this.buffer.height = img.image.height;
+			let bCTX:CanvasRenderingContext2D = this.buffer.getContext('2d');
+			bCTX.fillStyle = "rgba(" + colorTransform.redOffset + "," + colorTransform.greenOffset + "," + colorTransform.blueOffset + "," + colorTransform.alphaMultiplier + ")";
+			bCTX.globalCompositeOperation = "color";
+			bCTX.fillRect(0, 0, this.buffer.width, this.buffer.height);
+
+			// use drawing as mask
+			bCTX.globalCompositeOperation = "destination-in";
+			bCTX.drawImage(img.image, 0, 0); 
+		}
+		
 		ctx.globalAlpha = colorTransform.alphaMultiplier;
 		ctx.globalCompositeOperation = <any>blendMode;
 		ctx.setTransform(m.a, m.b, m.c, m.d, m.tx, m.ty);
-		ctx.drawImage(img.image, offsetX, offsetY);
+		ctx.drawImage(hasColorTransform ? this.buffer : img.image, offsetX, offsetY);
 	}
 	
 	/*override*/ public renderVideo = (ctx:CanvasRenderingContext2D,video:HTMLVideoElement,m:Matrix, width:number, height:number, blendMode:string, colorTransform:ColorTransform):void =>

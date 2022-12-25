@@ -106,8 +106,6 @@ export class BitmapData implements IBitmapDrawable
 		}
 	}
 	
-	//native public function applyFilter(param1:BitmapData, param2:Rectangle, param3:Point, param4:BitmapFilter) : void;
-	
 	public colorTransform(rect:Rectangle, ct:ColorTransform) : void {
 		
 	}
@@ -126,7 +124,9 @@ export class BitmapData implements IBitmapDrawable
 		this.unlock();
 	}
 	
-	public dispose():void  {/**/ }
+	public dispose():void  {
+		throw Error("dispose method not implemented yet");
+	}
 	
 	public draw(source:IBitmapDrawable, matrix:Matrix = null, colorTransform:ColorTransform = null, blendMode:string = null, clipRect:Rectangle = null, smoothing:boolean = false):void  {
 		this.drawWithQuality(source, matrix, colorTransform, blendMode, clipRect, smoothing);

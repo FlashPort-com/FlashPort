@@ -28,7 +28,6 @@ export class Stage extends DisplayObjectContainer
 {
 	private static _instance:Stage;
 	private static _instantiate:boolean = false;
-	private static kInvalidParamError:number = 2004;
 	
 	public __rootHtmlElement:HTMLElement;
 	public __htmlWrapper:HTMLElement;
@@ -178,16 +177,17 @@ export class Stage extends DisplayObjectContainer
 			FlashPort.stageHeight = (FlashPort.rootHTMLElement) ? FlashPort.rootHTMLElement.clientHeight : window.innerHeight;
 		}
 		
+		let dpi:number = window.devicePixelRatio;
 		this._stageWidth = FlashPort.stageWidth;
 		this._stageHeight = FlashPort.stageHeight;
 		this._canvas.width = this._stageWidth;
 		this._canvas.height = this._stageHeight;
-		this._canvas.style.width = this._stageWidth + "px";
-		this._canvas.style.height = this._stageHeight + "px";
+		this._canvas.style.width = (this._stageWidth * dpi) + "px";
+		this._canvas.style.height = (this._stageHeight * dpi) + "px";
 		this._stage3Ds[0].canvas.width = this._stageWidth;
 		this._stage3Ds[0].canvas.height = this._stageHeight;
-		this._stage3Ds[0].canvas.style.width = this._stageWidth + "px";
-		this._stage3Ds[0].canvas.style.height = this._stageHeight + "px";
+		this._stage3Ds[0].canvas.style.width = (this._stageWidth * dpi) + "px";
+		this._stage3Ds[0].canvas.style.height = (this._stageHeight * dpi) + "px";
 
 		if (Stage._instance && Stage._instance.root)
 		{
