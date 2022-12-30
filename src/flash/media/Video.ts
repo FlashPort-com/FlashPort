@@ -7,6 +7,7 @@ import { Rectangle } from "../geom/Rectangle";
 import { NetStream } from "../net/NetStream";
 import { Camera } from "./Camera";
 import { Bitmap } from "../display/Bitmap"; 
+import { IRenderer } from "../__native/IRenderer";
 
 /**
  * The Video class displays live or recorded video in an application 
@@ -51,7 +52,7 @@ import { Bitmap } from "../display/Bitmap";
  * and click OK.</li><li class="- topic/li ">Drag the Video object to the Stage and use the Property Inspector to give it
  * a unique instance name, such as <codeph class="+ topic/ph pr-d/codeph ">my_video</codeph>.(Do not name it Video.)</li></ol><p class="- topic/p ">In AIR applications on the desktop, playing video in fullscreen mode disables any power and screen saving
  * features(when allowed by the operating system).</p><p class="- topic/p "><b class="+ topic/ph hi-d/b ">Note:</b> 
- * The Video class is not a subclass of the InteractiveObject class, so
+ * The Video class is not a subclass of the DisplayObjectContainer class, so
  * it cannot dispatch mouse events. However, you can call the <codeph class="+ topic/ph pr-d/codeph ">addEventListener()</codeph> method
  * on the display object container that contains the Video object.
  * </p>
@@ -365,7 +366,7 @@ export class Video extends DisplayObject
 		if (this._videoElement && this.visible)
 		{
 			var m:Matrix = this.transform.concatenatedMatrix;
-			FlashPort.renderer.renderVideo(ctx, this._videoElement, m, this._videoElement.width, this._videoElement.height, this.blendMode, this.transform.concatenatedColorTransform);
+			(FlashPort.renderer as IRenderer).renderVideo(ctx, this._videoElement, m, this._videoElement.width, this._videoElement.height, this.blendMode, this.transform.concatenatedColorTransform);
 			FlashPort.drawCounter++;
 		}
 		

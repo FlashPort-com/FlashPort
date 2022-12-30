@@ -1,5 +1,3 @@
-import { IRenderer } from "./IRenderer";
-
 import { BitmapData } from "../display/BitmapData";
 import { Graphics } from "../display/Graphics";
 import { GraphicsEndFill } from "../display/GraphicsEndFill";
@@ -8,11 +6,10 @@ import { IGraphicsData } from "../display/IGraphicsData";
 import { ColorTransform } from "../geom/ColorTransform";
 import { Matrix } from "../geom/Matrix";
 import { TextField } from "../text/TextField";
-import { TextFieldType } from "../text/TextFieldType";
 import { TextFormat } from "../text/TextFormat";
 	
 
-export class BaseRenderer extends IRenderer
+export class BaseRenderer
 {
 	private buffer:HTMLCanvasElement;
 	private bCTX:CanvasRenderingContext2D;
@@ -20,23 +17,17 @@ export class BaseRenderer extends IRenderer
 
 	constructor()
 	{
-		super();
 		this.buffer = document.createElement('canvas');
 		document.body.prepend(this.buffer);
 		this.buffer.style.position = "absolute";
 		this.buffer.style.zIndex = "1";
+		console.log("BaseRenderer");
 	}
 	
 	/*override*/
 	public getCssColor = (color:number,alpha:number, ct:ColorTransform,toarr:any[]):string =>
 	{
 		return "rgba(" + Number((color >> 16 & 0xff)*ct.redMultiplier+ct.redOffset) + "," + Number((color >> 8 & 0xff)*ct.greenMultiplier+ct.greenOffset) + "," + Number((color & 0xff)*ct.greenMultiplier+ct.greenOffset) + "," + (alpha*ct.alphaMultiplier+ct.alphaOffset) + ")";
-	}
-	
-	/*override*/
-	public createPath = ():GraphicsPath =>
-	{
-		return new GraphicsPath;
 	}
 	
 	/*override*/

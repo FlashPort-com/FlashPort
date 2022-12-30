@@ -58,7 +58,6 @@ export class Loader extends DisplayObjectContainer
 	
 	private onIOError = (e:any):void =>
 	{
-		console.log("e: ", e);
 		this._ldInfo.dispatchEvent(new IOErrorEvent(IOErrorEvent.IO_ERROR, false, false, e));
 	}
 

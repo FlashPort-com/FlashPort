@@ -24,7 +24,6 @@ export * from './IGraphicsFill';
 export * from './IGraphicsPath';
 export * from './IGraphicsStroke';
 export * from './IStage';
-export * from './InteractiveObject';
 export * from './InterpolationMethod';
 export * from './JointStyle';
 export * from './LineScaleMode';

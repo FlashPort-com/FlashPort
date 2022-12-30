@@ -8,6 +8,7 @@ import { ColorTransform } from "../geom/ColorTransform";
 import { Matrix } from "../geom/Matrix";
 import { Point } from "../geom/Point";
 import { Rectangle } from "../geom/Rectangle";
+import { IRenderer } from "../__native/IRenderer";
 	
 	export class Bitmap extends DisplayObject
 	{
@@ -82,7 +83,7 @@ import { Rectangle } from "../geom/Rectangle";
 						m.ty += offsetY;
 					}
 					
-					FlashPort.renderer.renderImage(ctx, this._bitmapData, m, this.blendMode, this.transform.concatenatedColorTransform);
+					(FlashPort.renderer as IRenderer).renderImage(ctx, this._bitmapData, m, this.blendMode, this.transform.concatenatedColorTransform);
 					FlashPort.drawCounter++;
 					if (this.mask) ctx.restore();
 					
@@ -92,7 +93,8 @@ import { Rectangle } from "../geom/Rectangle";
 			this._parentCached = parentIsCached;
 		}
 		
-		/*override*/ protected __doMouse = (e:MouseEvent):DisplayObject =>
+		/*override*/
+		protected __doMouse = (e:MouseEvent):DisplayObject =>
 		{
 			if (this.visible) 
 			{
@@ -103,7 +105,8 @@ import { Rectangle } from "../geom/Rectangle";
 			return null;
 		}
 		
-		/*override*/ public hitTestPoint = (x:number, y:number, shapeFlag:boolean = false):boolean =>
+		/*override*/
+		public hitTestPoint = (x:number, y:number, shapeFlag:boolean = false):boolean =>
 		{
 			var rect:Rectangle = new Rectangle(0, 0, this.width * this.scaleX, this.height * this.scaleY);
 			var gToL:Point  = this.globalToLocal(new Point(x, y));

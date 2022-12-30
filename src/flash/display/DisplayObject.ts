@@ -10,8 +10,6 @@ import { AEvent } from "../events/AEvent";
 import { TouchEvent } from "../events/TouchEvent";
 import { EventDispatcher } from "../events/EventDispatcher";
 import { MouseEvent } from "../events/MouseEvent";
-import { DropShadowFilter } from "../filters/DropShadowFilter";
-import { GlowFilter } from "../filters/GlowFilter";
 import { Matrix } from "../geom/Matrix";
 import { Point } from "../geom/Point";
 import { Rectangle } from "../geom/Rectangle";
@@ -19,6 +17,7 @@ import { Transform } from "../geom/Transform";
 import { Vector3D } from "../geom/Vector3D";
 import { getTimer } from "../utils/getTimer";
 import { BlurFilter } from "../filters";
+import { Canvas, Surface } from "canvaskit-wasm";
 
 export class DisplayObject extends EventDispatcher implements IBitmapDrawable {
   static _globalStage: Stage;
@@ -37,8 +36,11 @@ export class DisplayObject extends EventDispatcher implements IBitmapDrawable {
   public _parent: DisplayObjectContainer;
   private _mask: DisplayObject;
   private _visible: boolean = true;
+  private _mouseEnabled:boolean = true;
+	private _doubleClickEnabled:boolean = false;
   private lastMouseOverObj: DisplayObject;
   private _blendMode: string;
+  private _opaqueBackground:number;
   protected _cacheAsBitmap: boolean = false;
   protected _parentCached: boolean = false;
   private _loaderInfo: LoaderInfo;
@@ -66,23 +68,13 @@ export class DisplayObject extends EventDispatcher implements IBitmapDrawable {
       this._name = "instance" + this.innerID;
 
       if (this.innerID === 0) {
-        //_globalStage.addChild(this);
         DisplayObject._globalStage.setRoot(this);
         this._stage = DisplayObject._globalStage;
-        //console.log("Set sprite stage", this._stage);
-        //offscreenCanvas = new window['OffscreenCanvas'](_stage.stageWidth, _stage.stageHeight);
-        //ocCTX = offscreenCanvas.getContext('2d');
 
         this._stage.addEventListener(AEvent.ENTER_FRAME, this.__enterFrame);
         this._stage.addEventListener(MouseEvent.CLICK, this.__mouseevent);
-        this._stage.addEventListener(
-          MouseEvent.CONTEXT_MENU,
-          this.__mouseevent
-        );
-        this._stage.addEventListener(
-          MouseEvent.DOUBLE_CLICK,
-          this.__mouseevent
-        );
+        this._stage.addEventListener(MouseEvent.CONTEXT_MENU, this.__mouseevent);
+        this._stage.addEventListener(MouseEvent.DOUBLE_CLICK,this.__mouseevent);
         this._stage.addEventListener(MouseEvent.MOUSE_DOWN, this.__mouseevent);
         this._stage.addEventListener(MouseEvent.MOUSE_MOVE, this.__mouseevent);
         this._stage.addEventListener(MouseEvent.MOUSE_UP, this.__mouseevent);
@@ -347,15 +339,14 @@ export class DisplayObject extends EventDispatcher implements IBitmapDrawable {
 
   public set cacheAsBitmap(v: boolean) {
     this._cacheAsBitmap = v;
-    if (FlashPort.wmode.indexOf("gpu") != -1) this._cacheAsBitmap = false;
   }
 
-  public get opaqueBackground(): Object {
-    return null;
+  public get opaqueBackground(): number {
+    return this._opaqueBackground;
   }
 
-  public set opaqueBackground(v: Object) {
-    /**/
+  public set opaqueBackground(v: number) {
+    this._opaqueBackground = v;
   }
 
   public get scrollRect(): Rectangle {
@@ -535,52 +526,29 @@ export class DisplayObject extends EventDispatcher implements IBitmapDrawable {
     return this._filterOffsetY;
   }
 
-  protected ApplyFilters = (
-    ctx: CanvasRenderingContext2D,
-    hasFills: boolean,
-    hasStrokes: boolean,
-    isText: boolean = false,
-    shadowsOnly: boolean = false,
-    noShadows: boolean = false
-  ): void => {
+  protected ApplyFilters = (ctx: Canvas| CanvasRenderingContext2D): void => 
+  {
     for (let filter of this._filters) {
-      if (filter instanceof DropShadowFilter && !noShadows) {
-        (filter as DropShadowFilter)._applyFilter(
-          ctx,
-          this,
-          hasFills,
-          hasStrokes,
-          isText
-        );
-      } else if (filter instanceof GlowFilter && !shadowsOnly) {
-        (filter as GlowFilter)._applyFilter(ctx, this, isText);
-      } else if (filter instanceof BlurFilter) {
-        (filter as BlurFilter)._applyFilter(ctx);
-      }
-    }
+      filter._applyFilter(ctx);
+    } 
   };
 
   public __update(
-    ctx: CanvasRenderingContext2D,
+    ctx: CanvasRenderingContext2D | Canvas,
     offsetX: number = 0,
     offsetY: number = 0,
     parentIsCached: boolean = false
   ): void {}
 
   private __enterFrame = (e: Event): void => {
-    if (FlashPort.dirtyGraphics) {
+    if (FlashPort.dirtyGraphics && this._stage.surface) {
       FlashPort.dirtyGraphics = false;
-      var ctx: CanvasRenderingContext2D = this._stage
-        .ctx as CanvasRenderingContext2D;
-      ctx.setTransform(1, 0, 0, 1, 0, 0);
-      ctx.clearRect(0, 0, this._stage.stageWidth, this._stage.stageHeight);
+      var ctx:Canvas = this._stage.surface.getCanvas();
+      var clearColor:Float32Array = FlashPort.canvasKit.Color((this._stage.opaqueBackground >> 16 & 255), (this._stage.opaqueBackground >> 8 & 0xff), (this._stage.opaqueBackground & 0xff), 1);
+      this.stage.skiaCanvas.clear(clearColor);
+
       FlashPort.drawCounter = 0;
-      FlashPort.renderer.start(ctx);
-      //__update(ocCTX);
-      //ocCTX['transferToImageBitmap']();
-      //ctx.canvas['transferToImageBitmap'](ocCTX['transferToImageBitmap']());
       this.__update(ctx);
-      FlashPort.renderer.finish(ctx);
     }
   };
 
@@ -676,8 +644,6 @@ export class DisplayObject extends EventDispatcher implements IBitmapDrawable {
     }
 
     if (obj) obj.dispatchEvent(e);
-
-    if (FlashPort.debug) console.log("__dispatchmouseevent", getTimer() - time);
   };
 
   protected __doMouse(e: MouseEvent): DisplayObject {
@@ -693,4 +659,44 @@ export class DisplayObject extends EventDispatcher implements IBitmapDrawable {
 
     return b;
   };
+
+
+
+  public get tabEnabled():boolean  { return true }
+	
+	public set tabEnabled(param1:boolean)  {/**/ }
+	
+	public get tabIndex():number  { return 0 }
+	
+	public set tabIndex(param1:number)  {/**/ }
+	
+	public get focusRect():Object  { return {} }
+	
+	public set focusRect(param1:Object)  {/**/ }
+	
+	public get mouseEnabled():boolean  { return this._mouseEnabled }
+	
+	public set mouseEnabled(v:boolean)  { this._mouseEnabled = v; }
+	
+	public get doubleClickEnabled():boolean  { return this._doubleClickEnabled }
+	
+	public set doubleClickEnabled(v:boolean)  { this._doubleClickEnabled = v; }
+	
+	// public function get accessibilityImplementation() : AccessibilityImplementation;
+	
+	//public function set accessibilityImplementation(param1:AccessibilityImplementation) : void;
+	
+	public get softKeyboardInputAreaOfInterest():Rectangle  { return new Rectangle() }
+	
+	public set softKeyboardInputAreaOfInterest(param1:Rectangle)  {/**/ }
+	
+	public get needsSoftKeyboard():boolean  { return false }
+	
+	public set needsSoftKeyboard(param1:boolean)  {/**/ }
+	
+	public requestSoftKeyboard():boolean  { return false }
+
+	//public function get contextMenu() : ContextMenu;
+
+	//public function set contextMenu(param1:ContextMenu) : void;
 }

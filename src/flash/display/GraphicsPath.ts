@@ -1,19 +1,19 @@
 import { IGraphicsPath } from "./IGraphicsPath";
 import { IGraphicsData } from "./IGraphicsData";
 import { GraphicsPathCommand } from "./GraphicsPathCommand";
-
-import { GLCanvasRenderingContext2D } from "../__native/GLCanvasRenderingContext2D";
-import { GLPath2D } from "../__native/GLPath2D";
 import { ColorTransform } from "../geom/ColorTransform";
+import { Canvas, Paint, Path } from "canvaskit-wasm";
+import { FlashPort } from "../../FlashPort";
+import { Matrix } from "../geom";
 	
 export class GraphicsPath extends Object implements IGraphicsPath, IGraphicsData
 {
+	public paint: Paint;
+	public path: Path;
+	public graphicType:string = "PATH";
 	public gpuPath2DDirty:boolean = true;
-	
 	public commands:any[] = [];
-	
 	public data:any[] = [];
-	
 	public tris:any[] = [];
 	
 	private _winding:string;
@@ -160,9 +160,49 @@ export class GraphicsPath extends Object implements IGraphicsPath, IGraphicsData
 		}
 	}
 	
-	public gldraw = (ctx:GLCanvasRenderingContext2D, colorTransform:ColorTransform):void =>
+	public skiaDraw = (ctx:Canvas, colorTransform:ColorTransform, mat?:Matrix):void =>
 	{
-		ctx.drawPath(this, colorTransform);
+		if (this.commands.length) {
+			this.path = new FlashPort.canvasKit.Path();
+			
+			var p:number = 0;
+			var trip:number = 0;
+			var len:number = this.commands.length;
+			for (var i:number = 0; i < len;i++ ){
+				var cmd:number = this.commands[i];
+				switch (cmd)
+				{
+				case GraphicsPathCommand.MOVE_TO: 
+					this.path.moveTo(this.data[p++], this.data[p++]);
+					break;
+				case GraphicsPathCommand.LINE_TO: 
+					this.path.lineTo(this.data[p++], this.data[p++]);
+					break;
+				case GraphicsPathCommand.CURVE_TO: 
+					this.path.quadTo(this.data[p++], this.data[p++], this.data[p++], this.data[p++]);
+					break;
+				case GraphicsPathCommand.CUBIC_CURVE_TO: 
+					this.path.cubicTo(this.data[p++], this.data[p++], this.data[p++], this.data[p++], this.data[p++], this.data[p++]);
+					break;
+				case GraphicsPathCommand.WIDE_MOVE_TO:
+					p += 2;
+					this.path.moveTo(this.data[p++], this.data[p++]);
+					break;
+				case GraphicsPathCommand.WIDE_LINE_TO: 
+					p += 2;
+					this.path.lineTo(this.data[p++], this.data[p++]);
+					break;
+				case GraphicsPathCommand.ARC: 
+					this.path.arc(this.data[p++], this.data[p++], this.data[p++], this.data[p++], this.data[p++]);
+					break;
+				case GraphicsPathCommand.CLOSE_PATH: 
+					this.path.close();
+					break;
+				}
+			}
+
+			//ctx.drawPath(path, );
+		}
 	}
 	
 	public closePath = ():void =>

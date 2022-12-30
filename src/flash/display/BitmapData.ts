@@ -5,7 +5,6 @@ import { ColorTransform } from "../geom/ColorTransform";
 import { Matrix } from "../geom/Matrix";
 import { Point } from "../geom/Point";
 import { Rectangle } from "../geom/Rectangle";
-import { BitmapTexture } from "../__native/BitmapTexture";
 import { ByteArray } from "../utils/ByteArray";
 
 export class BitmapData implements IBitmapDrawable
@@ -38,7 +37,6 @@ export class BitmapData implements IBitmapDrawable
 	public fromImage(img:any,dx:number=0,dy:number=0,opt_dw:number=0,opt_dy:number=0):void {
 		this.ctx.drawImage(img, dx, dy);
 		FlashPort.dirtyGraphics = true;
-		this.clearTexture();
 		this.imageData = this.ctx.getImageData(0, 0, this._width, this._height);
 		this.__data = this.imageData.data;
 	}
@@ -87,7 +85,6 @@ export class BitmapData implements IBitmapDrawable
 		if (!this._lock) {
 			this.ctx.putImageData(this.imageData, 0, 0);
 			FlashPort.dirtyGraphics = true;
-			this.clearTexture();
 		}
 	}
 	
@@ -102,7 +99,6 @@ export class BitmapData implements IBitmapDrawable
 		if (!this._lock) {
 			this.ctx.putImageData(this.imageData,0,0);
 			FlashPort.dirtyGraphics = true;
-			this.clearTexture();
 		}
 	}
 	
@@ -306,7 +302,6 @@ export class BitmapData implements IBitmapDrawable
 		if (!this._lock) {
 			this.ctx.putImageData(this.imageData,0,0);
 			FlashPort.dirtyGraphics = true;
-			this.clearTexture();
 		}
 		//setVector(rect, vec);
 	}
@@ -337,14 +332,6 @@ export class BitmapData implements IBitmapDrawable
 		this._lock = false;
 		this.ctx.putImageData(this.imageData, 0, 0);
 		FlashPort.dirtyGraphics = true;
-		this.clearTexture();
-	}
-	
-	private clearTexture():void{
-		if (this.image&&this.image["_texture"]){
-			var t:BitmapTexture = (<BitmapTexture>this.image["_texture"] );
-			t.dirty = true;
-		}
 	}
 	
 	public histogram(param1:Rectangle = null):any[]  { return null }

@@ -2,10 +2,8 @@ import { TweenListObj } from "./TweenListObj";
 import { PropertyInfoObj } from "./PropertyInfoObj";
 import { AuxFunctions } from "./AuxFunctions";
 import { SpecialPropertySplitter } from "./SpecialPropertySplitter";
-import { Equations } from "./Equations";
 import { SpecialProperty } from "./SpecialProperty";
 import { SpecialPropertyModifier } from "./SpecialPropertyModifier";
-import { DisplayObject } from "../../flash/display/DisplayObject";
 import { AEvent } from "../../flash/events/AEvent";
 import { getTimer } from "../../flash/utils/getTimer";
 /**
@@ -45,8 +43,8 @@ http://code.google.com/p/tweener/wiki/License
 
 export class Tweener {
 
-	private static _mainTimeline:DisplayObject;
-	private static __tweener_controller__:DisplayObject;	// Used to ensure the stage copy is always accessible (garbage collection)
+	private static _mainTimeline:any;
+	private static __tweener_controller__:any;	// Used to ensure the stage copy is always accessible (garbage collection)
 	
 	private static _engineExists:boolean = false;		// Whether or not the engine is currently running
 	private static _inited:boolean = false;				// Whether or not the class has been initiated
@@ -913,7 +911,6 @@ export class Tweener {
 
 		// Registers all default equations
 		Tweener._transitionList = new Object();
-		Equations.init();
 
 		// Registers all default special properties
 		Tweener._specialPropertyList = new Object();
@@ -974,7 +971,7 @@ export class Tweener {
 		Tweener._specialPropertySplitterList[p_name] = sps;
 	}
 
-	public static setController(main:DisplayObject):void
+	public static setController(main:any):void
 	{
 		Tweener.__tweener_controller__ = main;
 	}

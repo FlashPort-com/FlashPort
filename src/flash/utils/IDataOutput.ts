@@ -1,4 +1,4 @@
-import { ByteArray } from "./ByteArray";
+import { IDataInput } from "./IDataInput";
 
 /**
  * The IDataOutput interface provides a set of methods for writing binary data.
@@ -65,6 +65,10 @@ import { ByteArray } from "./ByteArray";
  */
 export interface IDataOutput
 {
+	length: number;
+
+	position: number;
+	
 	/**
 	 * The byte order for the data, either the BIG_ENDIAN or LITTLE_ENDIAN
 	 * constant from the Endian class.
@@ -132,7 +136,7 @@ export interface IDataOutput
 	 * @playerversion	Lite 4
 	 * @throws	throws IOError An I/O error occurred?
 	 */
-	writeBytes (bytes:ByteArray, offset?:number, length?:number) : void;
+	writeBytes (bytes:IDataInput, offset?:number, length?:number) : void;
 
 	/**
 	 * Writes an IEEE 754 double-precision (64-bit) floating point number.

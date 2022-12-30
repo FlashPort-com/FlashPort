@@ -1,5 +1,7 @@
-import { DisplayObject } from "../display";
-import { Rectangle } from "../geom";
+import { Canvas, MaskFilter, Paint, Path } from "canvaskit-wasm";
+import { FlashPort } from "../../FlashPort";
+import { ColorTransform, Rectangle } from "../geom";
+import { IRenderer } from "../__native/IRenderer";
 import { BitmapFilter } from "./BitmapFilter";
 
 /**
@@ -98,6 +100,7 @@ import { BitmapFilter } from "./BitmapFilter";
  */
 export class DropShadowFilter extends BitmapFilter
 {
+	private paint:Paint;
 	private _alpha:number = 1;
 	private _angle:number = 0;
 	private _blurX:number = 0;
@@ -109,7 +112,6 @@ export class DropShadowFilter extends BitmapFilter
 	private _knockout:boolean = false;
 	private _quality:number = 1;
 	private _strength:number = 1;
-	private _rgba:string;
 	private _blur:number;
 
 	/**
@@ -555,8 +557,6 @@ export class DropShadowFilter extends BitmapFilter
 	 */
 	public get strength():number { return this._strength; }
 	public set strength(value:number) { this._strength = value; }
-	
-	public get rgba():string { return this._rgba; }
 	public get blur():number { return this._blur; }
 
 	/**
@@ -688,44 +688,23 @@ export class DropShadowFilter extends BitmapFilter
 		var radians:number = Math.PI / 180 * angle;
 		this._offsetX = (distance - 1) * Math.cos(radians);
 		this._offsetY = (distance - 1) * Math.sin(radians);
-		
-		this._rgba = "rgba(" + (color >> 16 & 0xff) + "," + (color >> 8 & 0xff) + "," + (color & 0xff) + "," + alpha + ")";
 		this._blur = Math.max(blurX, blurY);
+
+		let maskFilter:MaskFilter = FlashPort.canvasKit.MaskFilter.MakeBlur(
+			FlashPort.canvasKit.BlurStyle.Normal,
+			this._blur,
+			false
+		);
+		this.paint = new FlashPort.canvasKit.Paint();
+		this.paint.setColor((FlashPort.renderer as IRenderer).getRGBAColor(color, alpha, new ColorTransform()));
+		this.paint.setMaskFilter(maskFilter);
+
 	}
 	
-	public _applyFilter(ctx:CanvasRenderingContext2D, displayObject:DisplayObject, hasFills:boolean, hasStrokes:boolean, isText:boolean):void
+	public _applyFilter(ctx:Canvas, path:Path):void
 	{
-		// copy canvas
-		var bounds:Rectangle = displayObject.getFullBounds(displayObject);
-		let offsetX:number = -(displayObject.x + bounds.x);
-		let offsetY:number = -(displayObject.y + bounds.y);
-		if (displayObject.cacheAsBitmap || isText)
-		{
-			offsetX = -((ctx.canvas.width - bounds.width)/2);
-			offsetY = -((ctx.canvas.height - bounds.height)/2)
-		}
-		
-		const padding:number = 40;
-		const halfPad:number = padding / 2;
-
-		// create canvas and fill with color
-		let copyCanvas = document.createElement("canvas");
-		copyCanvas.width = bounds.width + padding;
-		copyCanvas.height = bounds.height + padding;
-		var copyCtx:CanvasRenderingContext2D = copyCanvas.getContext("2d");
-		copyCtx.fillStyle = this.rgba;
-		copyCtx.globalCompositeOperation = "color";
-		copyCtx.fillRect(0, 0, copyCanvas.width, copyCanvas.height);
-		
-		// use drawing as mask
-		copyCtx.globalCompositeOperation = "destination-in";
-		copyCtx.filter = 'blur(' + this.blur + 'px)';
-		copyCtx.drawImage(ctx.canvas, offsetX + halfPad, offsetY + halfPad); 
-		copyCtx.globalCompositeOperation = "source-over";
-
-		ctx.save();
-		ctx.globalCompositeOperation = "destination-over";
-		ctx.drawImage(copyCanvas, Math.round(bounds.x - halfPad) + this._offsetX, Math.round(bounds.y - halfPad) + this._offsetY);
-		ctx.restore();
+		path.offset(this._offsetX, this._offsetY);
+		ctx.drawPath(path, this.paint);
+		path.offset(-this._offsetX, -this._offsetY);
 	}
 }

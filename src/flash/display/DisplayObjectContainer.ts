@@ -1,12 +1,12 @@
-import { InteractiveObject } from "./InteractiveObject";
 import { DisplayObject } from "./DisplayObject";
 import { MouseEvent } from "../events/MouseEvent";
 import { Point } from "../geom/Point";
 import { Rectangle } from "../geom/Rectangle";
 import { Graphics } from "./Graphics";
 import { AEvent } from "../events";
+import { Canvas } from "canvaskit-wasm";
 
-export class DisplayObjectContainer extends InteractiveObject {
+export class DisplayObjectContainer extends DisplayObject {
   protected children: DisplayObject[] = [];
   protected _childrenCached: boolean = false;
   private _mouseChildren: boolean = true;
@@ -152,7 +152,7 @@ export class DisplayObjectContainer extends InteractiveObject {
   public stopAllMovieClips = (): void => {};
 
   public __update(
-    ctx: CanvasRenderingContext2D,
+    ctx: CanvasRenderingContext2D | Canvas,
     offsetX: number = 0,
     offsetY: number = 0,
     parentIsCached: boolean = false

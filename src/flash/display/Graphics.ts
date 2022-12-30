@@ -16,6 +16,9 @@ import { ColorTransform } from "../geom/ColorTransform";
 import { Matrix } from "../geom/Matrix";
 import { Rectangle } from "../geom/Rectangle";
 import { Vector3D } from "../geom/Vector3D";
+import { Canvas } from "canvaskit-wasm";
+import { IRenderer } from "../__native/IRenderer";
+import { BitmapFilter } from "../filters";
 
 export class Graphics extends Object
 {
@@ -52,21 +55,22 @@ export class Graphics extends Object
 	{
 		this.endStrokAndFill();
 		this.lastFill = new GraphicsSolidFill(color, alpha);
-		this.graphicsData.push(this.lastFill as IGraphicsData);
+		this.graphicsData.push(this.lastFill as GraphicsSolidFill);
+		
 	}
 	
 	public beginGradientFill = (type:string, colors:any[], alphas:any[], ratios:any[], matrix:Matrix = null, spreadMethod:string = "pad", interpolationMethod:string = "rgb", focalPointRatio:number = 0):void =>
 	{
 		this.endStrokAndFill();
 		this.lastFill = new GraphicsGradientFill(type, colors, alphas, ratios, this._bound, matrix, spreadMethod, interpolationMethod, focalPointRatio);
-		this.graphicsData.push(this.lastFill as IGraphicsData);
+		this.graphicsData.push(this.lastFill as GraphicsGradientFill);
 	}
 	
 	public beginBitmapFill = (bitmap:BitmapData, matrix:Matrix = null, repeat:boolean = true, smooth:boolean = false):void =>
 	{
 		this.endStrokAndFill();
 		this.lastFill = new GraphicsBitmapFill(bitmap, matrix, repeat, smooth);
-		this.graphicsData.push(this.lastFill as IGraphicsData);
+		this.graphicsData.push(this.lastFill as GraphicsBitmapFill);
 	}
 	
 	public endStrokAndFill = ():void =>
@@ -291,7 +295,7 @@ export class Graphics extends Object
 			var isInitial:boolean = false;
 			this.lastPath = this.pathPool[this.pathPoolPos];
 			if (this.lastPath==null){
-				this.lastPath = this.pathPool[this.pathPoolPos] = FlashPort.renderer.createPath();
+				this.lastPath = this.pathPool[this.pathPoolPos] = new GraphicsPath();
 				isInitial = true;
 			}
 			//lastPath.commands = null;
@@ -498,18 +502,12 @@ export class Graphics extends Object
 		return this._bound;
 	}
 	
-	public draw = (ctx:CanvasRenderingContext2D, m:Matrix, blendMode:string, colorTransform:ColorTransform, useCache:boolean = false, cacheImage:BitmapData = null):void =>
+	public draw = (ctx:CanvasRenderingContext2D | Canvas, m:Matrix, blendMode:string, colorTransform:ColorTransform, filters:BitmapFilter[]):void =>
 	{
-		if (this.graphicsData.length || useCache)
+		if (this.graphicsData.length)
 		{
-			if (useCache)
-			{
-				FlashPort.renderer.renderImage(ctx, cacheImage, m, blendMode, colorTransform);
-			}
-			else
-			{
-				FlashPort.renderer.renderGraphics(ctx, this, m, blendMode, colorTransform);
-			}
+			(FlashPort.renderer as IRenderer).renderGraphics(ctx, this.graphicsData, m, blendMode, colorTransform, filters);
+			
 			FlashPort.drawCounter++;
 		}
 	}

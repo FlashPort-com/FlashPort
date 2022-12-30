@@ -1,51 +1,22 @@
 
+import { Canvas, Color, Font, Paint } from "canvaskit-wasm";
+import { IGraphicsData } from "../display";
 import { BitmapData } from "../display/BitmapData";
-import { Graphics } from "../display/Graphics";
-import { GraphicsPath } from "../display/GraphicsPath";
+import { BitmapFilter } from "../filters";
 import { ColorTransform } from "../geom/ColorTransform";
 import { Matrix } from "../geom/Matrix";
-import { TextField } from "../text/TextField";
-import { TextFormat } from "../text/TextFormat";
 
-export class IRenderer 
+export interface IRenderer 
 {
+	getCssColor(color:number,alpha:number,ct:ColorTransform,toarr:Array<any>):string;
+
+	getRGBAColor(color:number,alpha:number, ct:ColorTransform):Color;
 	
-	constructor() 
-	{
-		
-	}
+	renderGraphics(ctx:Canvas | CanvasRenderingContext2D,g:IGraphicsData[],m:Matrix,blendMode:string,colorTransform:ColorTransform, filters:BitmapFilter[]):void;
 	
-	public createPath():GraphicsPath{
-		return null;
-	}
+	renderImage(ctx:Canvas | CanvasRenderingContext2D,img:BitmapData,m:Matrix,blendMode:string,colorTransform:ColorTransform, offsetX?:number, offsetY?:number):void;
 	
-	public getCssColor(color:number,alpha:number,ct:ColorTransform,toarr:Array<any>):string{
-		return null;
-	}
+	renderVideo(ctx:Canvas | CanvasRenderingContext2D,video:HTMLVideoElement,m:Matrix, width:number, height:number, blendMode:string,colorTransform:ColorTransform):void;
 	
-	public renderGraphics(ctx:CanvasRenderingContext2D,g:Graphics,m:Matrix,blendMode:string,colorTransform:ColorTransform):void{
-		
-	}
-	
-	public renderImage(ctx:CanvasRenderingContext2D,img:BitmapData,m:Matrix,blendMode:string,colorTransform:ColorTransform, offsetX:number = 0, offsetY:number = 0):void{
-		
-	}
-	
-	public renderVideo(ctx:CanvasRenderingContext2D,video:HTMLVideoElement,m:Matrix, width:number, height:number, blendMode:string,colorTransform:ColorTransform):void{
-		
-	}
-	
-	public renderText(ctx:CanvasRenderingContext2D,txt:string,textFormat:TextFormat, m:Matrix, blendMode:string, colorTransform:ColorTransform,x:number,y:number):void{
-		
-	}
-	
-	public renderRichText(ctx:CanvasRenderingContext2D,txt:TextField, offsetX:number = 0, offsetY:number = 0):void{
-	}
-	
-	public finish(ctx:CanvasRenderingContext2D):void{
-		
-	}
-	public start(ctx:CanvasRenderingContext2D):void{
-		
-	}
+	renderText(ctx:Canvas | CanvasRenderingContext2D,txt:string, paint:Paint, font:Font, m:Matrix, blendMode:string, colorTransform:ColorTransform,x:number,y:number):void;
 }

@@ -1,9 +1,11 @@
-import { ByteArray } from "./ByteArray";
 export interface IDataInput
 {
 	
 	bytesAvailable : number;
 
+	length: number;
+
+	position: number;
 	
 	endian : string;
 	/*function set endian (type:string) : void;*/
@@ -19,7 +21,7 @@ export interface IDataInput
 	readByte () : number;
 
 	
-	readBytes (bytes:ByteArray, offset?:number, length?:number) : void;
+	readBytes (bytes:IDataInput, offset?:number, length?:number) : void;
 
 	
 	readDouble () : number;

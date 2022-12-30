@@ -1,10 +1,6 @@
 import { DisplayObjectContainer } from "./DisplayObjectContainer";
 import { StageQuality } from "./StageQuality";
 import { FlashPort } from "../../FlashPort";
-import { BaseRenderer } from "../__native/BaseRenderer";
-import { GLCanvasRenderingContext2D } from "../__native/GLCanvasRenderingContext2D";
-import { WebGLRenderer } from "../__native/WebGLRenderer";
-import { InteractiveObject } from "./InteractiveObject";
 import { Rectangle } from "../geom/Rectangle";
 //import flash.media.StageVideo;
 import { Stage3D } from "./Stage3D";
@@ -14,15 +10,16 @@ import { AccessibilityImplementation } from "../accessibility/AccessibilityImple
 import { TextSnapshot } from "../text/TextSnapshot";
 import { ContextMenu } from "../ui/ContextMenu";
 import { StageAlign } from "./StageAlign";
-import { BlendMode } from "./BlendMode";
 import { StageScaleMode } from "./StageScaleMode";
 import { MouseEvent } from "../events/MouseEvent";
 import { AEvent } from "../events/AEvent";
 import { TouchEvent } from "../events/TouchEvent";
 import { KeyboardEvent } from "../events/KeyboardEvent";
 import { Transform } from "../geom/Transform";
-import { Mouse } from "../ui/Mouse";
 import { Tweener } from "../../caurina/transitions/Tweener";
+import { Canvas, CanvasKit, Surface } from "canvaskit-wasm";
+import { SkiaRenderer } from "../__native/SkiaRenderer";
+import { Equations } from "../../caurina/transitions/Equations";
 
 export class Stage extends DisplayObjectContainer
 {
@@ -33,14 +30,15 @@ export class Stage extends DisplayObjectContainer
 	public __htmlWrapper:HTMLElement;
 	
 	private _canvas:HTMLCanvasElement;
-	private _ctx:CanvasRenderingContext2D | GLCanvasRenderingContext2D;
+	private _skiaCanvas:Canvas;
+	private _canvasKit:CanvasKit;
+	private _surface:Surface;
+	private _ctx:CanvasRenderingContext2D;
 	private _ctx2d:CanvasRenderingContext2D;
 	
 	private prevTime:number;
 	private needSendMouseMove:Object;
 	private needSendTouchMove:Object = false;
-	private lastUpdateTime:number = -1000;
-	//private var requestAnimationFrameHander:number;
 	private origWidth:number = -1;
 	private origHeight:number = -1;
 	
@@ -51,12 +49,11 @@ export class Stage extends DisplayObjectContainer
 	private _color:number = 0xFFFFFF;
 	private _colorCorrection:string;
 	private _colorCorrectionSupport:string;
-	// private var _constructor:*;
 	private _contentsScaleFactor:number = 1;
 	private _contextMenu:ContextMenu;
 	private _displayContextInfo:string;
 	private _displayState:string;
-	private _focus:InteractiveObject;
+	private _focus:DisplayObjectContainer;
 	private _focusRect:Object;
 	private _frameRate:number;
 	private _fullScreenHeight:number;
@@ -65,7 +62,6 @@ export class Stage extends DisplayObjectContainer
 	private _mouseLock:boolean = false;
 	private _stageMouseX:number = 0;
 	private _stageMouseY:number = 0;
-	private _opaqueBackground:Object;
 	private _quality:string = StageQuality.BEST;
 	private _scaleMode:string = StageScaleMode.SHOW_ALL;
 	private _showDefaultContextMenu:boolean = true;
@@ -73,10 +69,9 @@ export class Stage extends DisplayObjectContainer
 	private _stage3Ds:Stage3D[];
 	private _stageFocusRec:boolean = true;
 	private _stageHeight:number = 0;
-	//private var _stageVideos:Vector.<StageVideo>;
+	//private _stageVideos:StageVideo[];
 	private _stageWidth:number = 0;
 	private _textSnapshot:TextSnapshot;
-	private _wmodeGPU:boolean = true;
 	private isButtonDown:boolean = false;
 	private _pauseRendering:boolean = false;
 	public __enterframeSprites:any[] = [];
@@ -91,6 +86,8 @@ export class Stage extends DisplayObjectContainer
 		if (Stage._instance && !Stage._instantiate) throw new Error("Stage is a singular instance and can't be instantiated twice. Access using instance.");
 		
 		console.log("Powered by FlashPort");
+
+		FlashPort.renderer = new SkiaRenderer(FlashPort.canvasKit);
 		
 		this.transform = new Transform(this as any);
 		this.prevTime = window.performance.now();
@@ -117,25 +114,21 @@ export class Stage extends DisplayObjectContainer
 			
 		this._frameRate = 60;
 		this._stage3Ds = Array<Stage3D>(new Stage3D, new Stage3D, new Stage3D, new Stage3D);
-		this._stage3Ds[0].__stage = this;
-		this._stage3Ds[1].__stage = this;
-		this._stage3Ds[2].__stage = this;
-		this._stage3Ds[3].__stage = this;
-		
-		this.createCanvas();
 
-		this.window_resize();
+		Stage._instance = this;
+		Stage._instance.name = "Stage";
+		Tweener.setController(this);
+		Equations.init();
 		
+		
+        this.createCanvas(FlashPort.canvasKit);
+		this.window_resize();
+
 		//window.addEventListener('focus', handleVisibilityChange);
 		//window.addEventListener('blur', handleVisibilityChange);
 		//document.addEventListener('visibilitychange', handleVisibilityChange);
 		window.addEventListener("resize", this.window_resize, false);
 		window.addEventListener("orientationchange", this.window_resize, false);
-		setTimeout(this._updateStage);
-		
-		Stage._instance = this;
-		Stage._instance.name = "Stage";
-		Tweener.setController(this);
 	}
 	
 	private handleVisibilityChange(e:Event):void 
@@ -150,7 +143,7 @@ export class Stage extends DisplayObjectContainer
 			this.prevTime = window.performance.now();
 			this._pauseRendering = false;
 			//Tweener.resumeAllTweens();
-			this._updateStage();
+			this._surface.requestAnimationFrame(this._updateStage);
 		}
 	}
 	
@@ -178,16 +171,16 @@ export class Stage extends DisplayObjectContainer
 		}
 		
 		let dpi:number = window.devicePixelRatio;
-		this._stageWidth = FlashPort.stageWidth;
-		this._stageHeight = FlashPort.stageHeight;
+		this._stageWidth = FlashPort.stageWidth * dpi;
+		this._stageHeight = FlashPort.stageHeight * dpi;
 		this._canvas.width = this._stageWidth;
 		this._canvas.height = this._stageHeight;
-		this._canvas.style.width = (this._stageWidth * dpi) + "px";
-		this._canvas.style.height = (this._stageHeight * dpi) + "px";
+		this._canvas.style.width = this._stageWidth + "px";
+		this._canvas.style.height = this._stageHeight + "px";
 		this._stage3Ds[0].canvas.width = this._stageWidth;
 		this._stage3Ds[0].canvas.height = this._stageHeight;
-		this._stage3Ds[0].canvas.style.width = (this._stageWidth * dpi) + "px";
-		this._stage3Ds[0].canvas.style.height = (this._stageHeight * dpi) + "px";
+		this._stage3Ds[0].canvas.style.width = this._stageWidth + "px";
+		this._stage3Ds[0].canvas.style.height = this._stageHeight + "px";
 
 		if (Stage._instance && Stage._instance.root)
 		{
@@ -207,15 +200,14 @@ export class Stage extends DisplayObjectContainer
 				Stage._instance.root.scaleY = FlashPort.stageHeight / this.origHeight;
 			}
 
+			
 			Stage._instance.dispatchEvent(new AEvent(AEvent.RESIZE));
 		}
 	}
 	
-	private _updateStage = ():void =>
+	private _updateStage = (canvas:Canvas):void =>
 	{
 		if (this._pauseRendering) return;
-		
-		FlashPort.requestAnimationFrame.call(window, this._updateStage);
 		
 		if(this._stageWidth != FlashPort.stageWidth || this._stageHeight != FlashPort.stageHeight){
 			this.window_resize(null);
@@ -241,7 +233,23 @@ export class Stage extends DisplayObjectContainer
 			
 			this.prevTime = now - (elapsed % fpsInterval);
 			this.dispatchEvent(new AEvent(AEvent.ENTER_FRAME, true));
+			
+			/* //this._mat.translate(1, 1);
+			//this._mat.rotate(.01);
+			let mat:number[] = [this._mat.a, this._mat.c, this._mat.tx, this._mat.b, this._mat.d, this._mat.ty, 0, 0, 1];
+			
+			// apply current matrix for path
+			this._thePath.transform(mat);
+			
+			canvas.drawPath(this._thePath, this._fillPaint);
+			canvas.drawPath(this._thePath, this._strokePaint);
+
+			// reset matrix
+			let invertedMat:number[] = this._canvasKit.Matrix.invert(mat);
+			this._thePath.transform(invertedMat); */
 		}
+
+		this._surface.requestAnimationFrame(this._updateStage);
 	}
 	
 	public get stageMouseX():number { return this._stageMouseX; }
@@ -303,8 +311,8 @@ export class Stage extends DisplayObjectContainer
 		}
 	}
 
-	public get focus ():InteractiveObject { return this._focus; }
-	public set focus (newFocus:InteractiveObject) { this._focus = newFocus; }
+	public get focus ():DisplayObjectContainer { return this._focus; }
+	public set focus (newFocus:DisplayObjectContainer) { this._focus = newFocus; }
 
 	
 	public get frameRate ():number { return this._frameRate; }
@@ -358,10 +366,6 @@ export class Stage extends DisplayObjectContainer
 	
 	public get textSnapshot ():TextSnapshot { return this._textSnapshot; }
 
-
-	
-	public get wmodeGPU ():boolean { return this._wmodeGPU; }
-
 	
 	public invalidate ():void
 	{
@@ -373,7 +377,7 @@ export class Stage extends DisplayObjectContainer
 		return false;
 	}
 	
-	private createCanvas = ():void =>
+	private createCanvas = (canvasKit:CanvasKit):void =>
 	{
 		if (!this._canvas)
 		{
@@ -386,7 +390,11 @@ export class Stage extends DisplayObjectContainer
 				this._canvas.style.left = "0px";
 				this._canvas.style.top = "0px";
 				this.__rootHtmlElement.appendChild(this._canvas);
+				this.window_resize();
 			}
+
+			this._surface = canvasKit.MakeCanvasSurface("flashportcanvas");
+			this._skiaCanvas = this._surface.getCanvas();
 			
 			this._canvas.addEventListener("click", this.canvas_mouseevent,false);
 			this._canvas.addEventListener("contextmenu", this.canvas_mouseevent,false);
@@ -405,6 +413,8 @@ export class Stage extends DisplayObjectContainer
 			this._canvas.addEventListener("touchstart", this.canvas_touchevent,this.supportsPassive ? {passive: true} : false);
 			document.addEventListener("keydown", this.canvas_keyevent,false);
 			document.addEventListener("keyup", this.canvas_keyevent, false);
+			
+			this._surface.requestAnimationFrame(this._updateStage); // start the render loop
 		}
 	}
 
@@ -564,21 +574,8 @@ export class Stage extends DisplayObjectContainer
 		}
 	}
 	
-	public get ctx():CanvasRenderingContext2D | GLCanvasRenderingContext2D
+	public get ctx():CanvasRenderingContext2D
 	{
-		if (!this._ctx)
-		{
-			if (FlashPort.wmode==="gpu") {
-				this._ctx = new GLCanvasRenderingContext2D(this);
-				FlashPort.renderer = new WebGLRenderer;
-			}else if (FlashPort.wmode==="gpu batch"){
-				this._ctx = new GLCanvasRenderingContext2D(this, true);
-				FlashPort.renderer = new WebGLRenderer;
-			}else{
-				this._ctx = (<CanvasRenderingContext2D>this._canvas.getContext("2d") );
-				FlashPort.renderer = new BaseRenderer();
-			}
-		}
 		return this._ctx;
 	}
 	
@@ -591,6 +588,20 @@ export class Stage extends DisplayObjectContainer
 		return this._ctx2d;
 	}
 	
+	public get surface():Surface
+	{
+		return this._surface;
+	}
+
+	public get canvasKit():CanvasKit
+	{
+		return this._canvasKit;
+	}
+
+	public get skiaCanvas():Canvas
+	{
+		return this._skiaCanvas;
+	}
 	
 	public setRoot = (value:DisplayObject):void =>
 	{
