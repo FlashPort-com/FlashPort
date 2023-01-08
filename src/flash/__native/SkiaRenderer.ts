@@ -1,10 +1,11 @@
 import { IGraphicsData } from "../display/IGraphicsData";
 import { ColorTransform } from "../geom/ColorTransform";
 import { Matrix } from "../geom/Matrix";
-import { Canvas, CanvasKit, Color, Font, Paint } from "canvaskit-wasm";
+import { Canvas, CanvasKit, Color, Font, Image, InputMatrix, Paint } from "canvaskit-wasm";
 import { IRenderer } from "./IRenderer";
 import { IBitmapDrawable } from "../display";
 import { BitmapFilter, BlurFilter } from "../filters";
+import { FlashPort } from "../../FlashPort";
 
 
 export class SkiaRenderer implements IRenderer
@@ -32,7 +33,7 @@ export class SkiaRenderer implements IRenderer
         return rgbaColor;
 	}
 
-    public renderGraphics(ctx: Canvas, graphicsData: IGraphicsData[], m: Matrix, blendMode: string, colorTransform: ColorTransform, filters:BitmapFilter[]): void {
+    public renderGraphics(ctx: Canvas, graphicsData: IGraphicsData[], m: Matrix, blendMode: string, colorTransform: ColorTransform, filters:BitmapFilter[], firstRender:boolean = false): void {
         //ctx.transform(m.a, m.b, m.c, m.d, m.tx, m.ty);
 		//ctx.globalCompositeOperation = <any>blendMode;
         let blurFilter:BlurFilter;
@@ -75,14 +76,21 @@ export class SkiaRenderer implements IRenderer
                 } 
 
                 // reset matrix
-			    let invertedMat:number[] = this._canvasKit.Matrix.invert(mat);
+			    let invertedMat:number[] = this._canvasKit.Matrix.invert(mat) || mat;
 			    igd.path.transform(invertedMat);
+                if (!igd['isMask']) igd.path.delete();  // TODO run mask before delete
             }
 		}
+
+
     }
 
-    public renderImage(ctx: Canvas, img: IBitmapDrawable, m: Matrix, blendMode: string, colorTransform: ColorTransform, offsetX?: number, offsetY?: number): void {
-        throw new Error("Method not implemented.");
+    public renderImage(ctx: Canvas, img: Image, m: Matrix, blendMode: string, colorTransform: ColorTransform, offsetX?: number, offsetY?: number): void {
+        let mat:InputMatrix = [m.a, m.c, m.tx, m.b, m.d, m.ty, 0, 0, 1];
+        ctx.concat(mat);
+        ctx.drawImageOptions(img, 0, 0, FlashPort.canvasKit.FilterMode.Linear, FlashPort.canvasKit.MipmapMode.Linear);
+        let invertedMat:InputMatrix = this._canvasKit.Matrix.invert(mat) || mat;
+        ctx.concat(invertedMat);
     }
 
     public renderVideo(ctx: Canvas, video: HTMLVideoElement, m: Matrix, width: number, height: number, blendMode: string, colorTransform: ColorTransform): void {
@@ -90,8 +98,6 @@ export class SkiaRenderer implements IRenderer
     }
 
     public renderText(ctx: Canvas, txt: string, paint:Paint, font:Font, m: Matrix, blendMode: string, colorTransform: ColorTransform, x: number, y: number): void {
-        
-        
         ctx.drawText(txt, m.tx - 2, m.ty + font.getSize() - 7, paint, font);
     }
 }

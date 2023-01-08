@@ -8,7 +8,11 @@ import { Matrix } from "../geom/Matrix";
 import { Point } from "../geom/Point";
 import { Rectangle } from "../geom/Rectangle";
 import { MouseEvent } from "../events/MouseEvent";
-import { Canvas } from "canvaskit-wasm";
+import { Canvas, Path } from "canvaskit-wasm";
+import { BlendMode } from "./BlendMode";
+import { ColorTransform } from "../geom/ColorTransform";
+import { GraphicsPath } from "./GraphicsPath";
+import { FlashPort } from "../../FlashPort";
 
 export class Sprite extends DisplayObjectContainer
 {
@@ -101,31 +105,35 @@ export class Sprite extends DisplayObjectContainer
 		return this._cacheHeight;
 	}
 	
-	public __update(ctx:CanvasRenderingContext2D | Canvas, offsetX:number = 0, offsetY:number = 0, parentIsCached:boolean = false):void
+	public __update(ctx:Canvas, offsetX:number = 0, offsetY:number = 0, parentIsCached:boolean = false):void
 	{
-		var bounds:Rectangle = this.cacheBounds;
-		var gOffsetX:number = parentIsCached ? offsetX : -bounds.left;
-		var gOffsetY:number = parentIsCached ? offsetY : -bounds.top;
-		
 		if (!this._off && this.visible && (this.graphics.graphicsData.length || this.numChildren))
 		{
-			//if (this._blurFilter && !this.cacheAsBitmap) this._blurFilter._applyFilter(ctx);
-			
 			this.transform.updateColorTransforms();
-				
+			let mat:Matrix = this.transform.concatenatedMatrix;
+			let path:Path;
+			
 			if (this.mask)
 			{
-				var mat:Matrix = this.mask.transform.concatenatedMatrix.clone();
-				//ctx.save();
-				//this.mask['graphics'].draw(ctx, mat, BlendMode.NORMAL, new ColorTransform());
-				//ctx.clip();
+				var maskMat:Matrix = this.mask.transform.concatenatedMatrix.clone();
+				ctx.save();
+				this.mask['graphics'].draw(ctx, maskMat, BlendMode.NORMAL, new ColorTransform(), []);
+				path = (this.mask['graphics'].lastPath as GraphicsPath).path;
+				let pathMat:number[] = [maskMat.a, maskMat.c, maskMat.tx, maskMat.b, maskMat.d, maskMat.ty, 0, 0, 1];
+				path.transform(pathMat)
+				path.setFillType(FlashPort.canvasKit.FillType.Winding);
+				ctx.clipPath(path, FlashPort.canvasKit.ClipOp.Intersect, true);
 			}
 			
-			mat = this.transform.concatenatedMatrix;
 			this.graphics.draw(ctx, mat, this.blendMode, this.transform.concatenatedColorTransform, this.filters);
 			
 			super.__update(ctx, offsetX, offsetY, false);
-			//this.ApplyFilters(ctx);
+			
+			if (this.mask)
+			{
+				ctx.restore();
+				path.delete();
+			} 
 		}
 	}
 	

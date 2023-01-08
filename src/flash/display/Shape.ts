@@ -6,15 +6,14 @@ import { Matrix } from "../geom/Matrix";
 import { Point } from "../geom/Point";
 import { Rectangle } from "../geom/Rectangle";
 import { MouseEvent } from "../events/MouseEvent";
-import { Canvas } from "canvaskit-wasm";
+import { Canvas, Path } from "canvaskit-wasm";
+import { BlendMode } from "./BlendMode";
+import { GraphicsPath } from "./GraphicsPath";
+import { FlashPort } from "../../FlashPort";
 
 export class Shape extends DisplayObject
 {
 	public graphics:Graphics;
-	
-	private _cacheImage:BitmapData;
-	private _cacheWidth:number = 0;
-	private _cacheHeight:number = 0;
 	
 	constructor()
 	{
@@ -24,18 +23,32 @@ export class Shape extends DisplayObject
 	}
 	
 	/*override*/
-	public __update = (ctx:CanvasRenderingContext2D | Canvas, offsetX:number = 0, offsetY:number = 0, parentIsCached:boolean = false):void =>
+	public __update = (ctx:Canvas, offsetX:number = 0, offsetY:number = 0, parentIsCached:boolean = false):void =>
 	{
 		if (!this._off && this.visible && this.graphics.graphicsData.length)
-		{
-			//if (this._blurFilter && !this.cacheAsBitmap) this._blurFilter._applyFilter(ctx);
-			
+		{	
 			var mat:Matrix = this.transform.concatenatedMatrix.clone();
 			var colorTrans:ColorTransform = this.transform.concatenatedColorTransform;
-			
+			let path:Path;
+			if (this.mask)
+			{
+				var maskMat:Matrix = this.mask.transform.concatenatedMatrix;
+				
+				ctx.save();
+				this.mask['graphics'].draw(ctx, maskMat, BlendMode.NORMAL, new ColorTransform(), []);
+				path = (this.mask['graphics'].lastPath as GraphicsPath).path;
+				let pathMat:number[] = [maskMat.a, maskMat.c, maskMat.tx, maskMat.b, maskMat.d, maskMat.ty, 0, 0, 1];
+				path.transform(pathMat)
+				path.setFillType(FlashPort.canvasKit.FillType.Winding);
+				ctx.clipPath(path, FlashPort.canvasKit.ClipOp.Intersect, true);
+			}
 			this.graphics.draw(ctx, mat, this.blendMode, colorTrans, this.filters);
-			//if (this.mask) ctx.restore();
-			//this.ApplyFilters(ctx, this.graphics.lastFill != null, this.graphics.lastStroke != null);
+			
+			if (this.mask)
+			{
+				ctx.restore();
+				path.delete();
+			} 
 		}
 	}
 	
@@ -54,28 +67,11 @@ export class Shape extends DisplayObject
 	/*override*/
 	protected __doMouse = (e:MouseEvent):DisplayObject =>
 	{
-		if (this.visible) 
-		{
-			if (this.hitTestPoint(this.stage.mouseX, this.stage.mouseY)) {
-				return this;
-			}
+		if (this.visible && this.hitTestPoint(this.stage.mouseX, this.stage.mouseY)) {
+			return this;
 		}
+		
 		return null;
-	}
-	
-	public get cacheImage():BitmapData 
-	{
-		return this._cacheImage;
-	}
-	
-	public get cacheWidth():number 
-	{
-		return this._cacheWidth;
-	}
-	
-	public get cacheHeight():number 
-	{
-		return this._cacheHeight;
 	}
 	
 	/*override*/

@@ -88,6 +88,8 @@ export class BlurFilter extends BitmapFilter
 	private _blurX:number = 0;
 	private _blurY:number = 0;
 	private _quality:number = 1;
+
+	private paints:any = {};
 	
 	/**
 	 * The amount of horizontal blur. Valid values are from 0 to 255 (floating point). The
@@ -285,9 +287,6 @@ export class BlurFilter extends BitmapFilter
 			Math.max(this._blurX, this._blurY),
 			false
 		);
-		this.paint = new FlashPort.canvasKit.Paint();
-		this.paint.setColor(FlashPort.canvasKit.Color(255, 255, 255, 1));
-		this.paint.setMaskFilter(this.maskFilter);
 	}
 
 	/**

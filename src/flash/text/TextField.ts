@@ -19,7 +19,7 @@ import { FocusEvent } from "../events/FocusEvent";
 import { Matrix } from "../geom/Matrix";
 import { Rectangle } from "../geom/Rectangle";
 import { DisplayObject } from "../display/DisplayObject";
-import { Canvas, Font, FontMgr, Paint, Paragraph, ParagraphBuilder, ParagraphStyle } from "canvaskit-wasm";
+import { Canvas, EmbindEnumEntity, Font, FontMgr, Paint, Paragraph, ParagraphBuilder, ParagraphStyle } from "canvaskit-wasm";
 import { IRenderer } from "../__native/IRenderer";
 import { ColorTransform } from "../geom";
 
@@ -68,24 +68,22 @@ export class TextField extends DisplayObject
   public tagas: any[] = [];
   private href: string;
   private _htmlText: string;
+  private robotoData:ArrayBuffer;
 
   constructor() {
     super();
 
+    fetch('https://storage.googleapis.com/skia-cdn/google-web-fonts/Roboto-Regular.ttf').then((resp) => {
+      resp.arrayBuffer().then((buffer:ArrayBuffer) => {
+        this.robotoData = buffer;
+      });
+    });
+
     this.textPaint = new FlashPort.canvasKit.Paint();
     this.textPaint.setColor(FlashPort.canvasKit.Color(40, 0, 0, 1.0));
     this.textPaint.setAntiAlias(true);
-    this.font = new FlashPort.canvasKit.Font(null, 30);
-
-    /* this.paraStyle = new FlashPort.canvasKit.ParagraphStyle(null);
-
-    this.paraFontMgr = new FlashPort.canvasKit.FontMgr.FromData()
+    this.font = new FlashPort.canvasKit.Font(null, 12);
     
-    this.paraBuilder = FlashPort.canvasKit.ParagraphBuilder.Make(
-      this.paraStyle,
-      this.paraFontMgr
-    ); */
-
     this.textColor = 0x000000;
     this.addEventListener(AEvent.REMOVED_FROM_STAGE, this.removedFromStage);
   }
@@ -990,76 +988,75 @@ export class TextField extends DisplayObject
     super.__update(ctx, offsetX, offsetY);
 
     if (this._text != null && this.visible) {
-      (FlashPort.renderer as IRenderer).renderText(ctx, this._text, this.textPaint, this.font, this.transform.matrix, this.blendMode, new ColorTransform(),  offsetX, offsetY);
+      
+      if (!this.paragraph)
+      {
+        this.__draw(ctx, this.transform.concatenatedMatrix);
+        //this.paraBuilder.delete();
+        //this.paraFontMgr.delete();
+      }
+      //console.log("dirty!!");
+      
+
+      if (this.paragraph)
+      {
+        if (this.robotoData) ctx.drawParagraph(this.paragraph, this.transform.concatenatedMatrix.tx, this.transform.concatenatedMatrix.ty);
+      }
+
       FlashPort.drawCounter++;
     }
 
   };
 
-  public __updateCanvas = (ctx: CanvasRenderingContext2D, offsetX: number = 0, offsetY: number = 0): void => 
-  {
-      if (this._type != TextFieldType.INPUT)
-      {
-        FlashPort.renderer.renderImage(
-          ctx,
-          this._cacheImage,
-          this.transform.concatenatedMatrix,
-          this.blendMode,
-          this.transform.concatenatedColorTransform,
-          -this.x - this._cacheOffsetX,
-          -this.y - this._cacheOffsetY
-        );
-      } 
-      else 
-      {
-        var mat: Matrix = this.transform.concatenatedMatrix.clone();
-        mat.tx += offsetX;
-        mat.ty += offsetY;
-        this.__draw(ctx, mat);
-      }
-  };
-
-  public __draw = (ctx: CanvasRenderingContext2D, m: Matrix): void => 
+  public __draw = (ctx: Canvas, m: Matrix): void => 
   {
     if (this._border || this._background) 
     {
-      if (this.graphicsDirty) {
-        this.graphicsDirty = false;
-        this.graphics.clear();
-        if (this.border) this.graphics.lineStyle(0, this.borderColor);
-        if (this.background) this.graphics.beginFill(this.backgroundColor);
-        this.graphics.drawRect(-2, 0, this.width + 4, this.height + 2);
-      }
+      this.graphics.clear();
+      if (this.border) this.graphics.lineStyle(0, this.borderColor);
+      if (this.background) this.graphics.beginFill(this.backgroundColor);
+      this.graphics.drawRect(-2, 0, this.width + 4, this.height + 2);
 
       FlashPort.renderer.renderGraphics(ctx, this.graphics, m, this.blendMode, this.transform.concatenatedColorTransform);
-      this.ApplyFilters(ctx);
+      //this.ApplyFilters(ctx);
     }
 
     if (this.type == TextFieldType.DYNAMIC)
     {
-      if (!this._background) this.ApplyFilters(ctx);
+      //if (!this._background) this.ApplyFilters(ctx);
 
-      for (var i: number = 0; i < this.lines.length; i++) 
+      if (this.robotoData)
       {
-        //var textYpos:number = i * int(defaultTextFormat.size) * scaleY;
-        var size: number = Number(this.defaultTextFormat.size);
-        var textYpos: number = i * size * this.scaleY;
-        var textXpos: number =
-          this.defaultTextFormat.align == "right"
-            ? this.width / this.scaleX
-            : this.defaultTextFormat.align == "center"
-            ? (this._width - this._textWidth) / 2 / this.scaleX
-            : 2;
+        let color = (FlashPort.renderer as IRenderer).getRGBAColor(this._textFormat.color, this.alpha, this.transform.colorTransform);
+        let alignment:EmbindEnumEntity = this._textFormat.align == "left" ? FlashPort.canvasKit.TextAlign.Left : (this._textFormat.align == "right" ? FlashPort.canvasKit.TextAlign.Right : FlashPort.canvasKit.TextAlign.Center);
+        
+        this.paraStyle = new FlashPort.canvasKit.ParagraphStyle(
+          {
+            textStyle: {
+              color: color,
+              fontFamilies:['Roboto'],
+              fontSize: this._textFormat.size,
+              fontStyle: {
+                weight: this._textFormat.bold ? FlashPort.canvasKit.FontWeight.Bold : FlashPort.canvasKit.FontWeight.Normal,
+                slant: this._textFormat.italic ? FlashPort.canvasKit.FontSlant.Italic : FlashPort.canvasKit.FontSlant.Upright
+              }
+            },
+            textAlign: alignment
+          }
+        );
 
-        FlashPort.renderer.renderText(ctx, this.lines[i], this.defaultTextFormat, m, this.blendMode, this.transform.concatenatedColorTransform, textXpos, textYpos + 4);
+        this.paraFontMgr = FlashPort.canvasKit.FontMgr.FromData(this.robotoData);
+        this.paraBuilder = FlashPort.canvasKit.ParagraphBuilder.Make(this.paraStyle, this.paraFontMgr);
+        this.paraBuilder.addText(this._text);
+        this.paragraph = this.paraBuilder.build();
+        this.paragraph.layout(this._textFormat.size * this._text.length);
       }
 
-      if (!this._background) this.ApplyFilters(ctx);
+      //if (!this._background) this.ApplyFilters(ctx);
         
     } 
     else 
     {
-      //var posX:number = m.tx + ((width - textWidth) / 2);
       this.input.style.left = m.tx + "px";
       this.input.style.top = m.ty + "px";
       this.input.style.width = this.width + "px";
@@ -1070,11 +1067,13 @@ export class TextField extends DisplayObject
       this.input.addEventListener("mousedown", this.handleHTMLMouseDown);
       //input.style.textAlign = defaultTextFormat.align;
       if (this.input.value != this.text) this.input.value = this.text;
-      //input.style.transform = "matrix("+m.a+","+m.b+","+m.c+","+m.d+","+m.tx+","+m.ty+")";
+      
       if (this.input.parentElement == null) {
         this.stage.__htmlWrapper.appendChild(this.input);
       }
     }
+
+    this.graphicsDirty = false;
   };
 
   private handleHTMLMouseDown = (e: Event): void => {

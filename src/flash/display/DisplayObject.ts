@@ -16,8 +16,8 @@ import { Rectangle } from "../geom/Rectangle";
 import { Transform } from "../geom/Transform";
 import { Vector3D } from "../geom/Vector3D";
 import { getTimer } from "../utils/getTimer";
-import { BlurFilter } from "../filters";
-import { Canvas, Surface } from "canvaskit-wasm";
+import { BitmapFilter, BlurFilter } from "../filters";
+import { Canvas, Paint, Surface } from "canvaskit-wasm";
 
 export class DisplayObject extends EventDispatcher implements IBitmapDrawable {
   static _globalStage: Stage;
@@ -44,7 +44,7 @@ export class DisplayObject extends EventDispatcher implements IBitmapDrawable {
   protected _cacheAsBitmap: boolean = false;
   protected _parentCached: boolean = false;
   private _loaderInfo: LoaderInfo;
-  private _filters: any[] = [];
+  private _filters: BitmapFilter[] = [];
   protected _filterOffsetX: number = 0;
   protected _filterOffsetY: number = 0;
   protected _blurFilter: BlurFilter;
@@ -134,6 +134,7 @@ export class DisplayObject extends EventDispatcher implements IBitmapDrawable {
   public set mask(v: DisplayObject) {
     if (this._mask && this._mask != v) this._mask.visible = true;
     this._mask = v;
+    v['graphics'].lastPath.isMask = true;
     v.visible = false;
   }
 
@@ -526,11 +527,12 @@ export class DisplayObject extends EventDispatcher implements IBitmapDrawable {
     return this._filterOffsetY;
   }
 
-  protected ApplyFilters = (ctx: Canvas| CanvasRenderingContext2D): void => 
+  protected ApplyFilters = (ctx: Canvas, paint:Paint): void => 
   {
-    for (let filter of this._filters) {
-      filter._applyFilter(ctx);
-    } 
+    for (let i:number = 0; i < this._filters.length; i++)
+    {
+      this._filters[i]._applyFilter(ctx, null, paint);
+    }
   };
 
   public __update(

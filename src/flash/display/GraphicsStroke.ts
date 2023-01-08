@@ -12,7 +12,6 @@ import { IRenderer } from "../__native/IRenderer";
 
 export class GraphicsStroke extends Object implements IGraphicsStroke, IGraphicsData
 {
-	public fill:IGraphicsFill;
 	public graphicType:string = "STROKE";
 	public paint: Paint;
 	public path: Path;
@@ -22,6 +21,7 @@ export class GraphicsStroke extends Object implements IGraphicsStroke, IGraphics
 	private _caps:string;
 	private _joints:string;
 	private _scaleMode:string;
+	private _fill:IGraphicsFill;
 	
 	constructor(thickness:number = NaN, pixelHinting:boolean = false, scaleMode:string = "normal", caps:string = "none", joints:string = "round", miterLimit:number = 3.0, fill:IGraphicsFill = null){
 		super();
@@ -31,14 +31,28 @@ export class GraphicsStroke extends Object implements IGraphicsStroke, IGraphics
 		this._joints = joints;
 		this.miterLimit = miterLimit;
 		this._scaleMode = scaleMode;  // TODO implement scaleMode
-		this.fill = fill;
+		this._fill = fill ? fill : new GraphicsSolidFill(0x000000, 1);
 		
-		this.paint = new FlashPort.canvasKit.Paint();
+		this.paint = this.fill.paint;
 		this.paint.setColor(FlashPort.canvasKit.Color(0, 0, 0, 0));
 		this.paint.setStyle(FlashPort.canvasKit.PaintStyle.Stroke);
 		this.paint.setStrokeWidth(thickness);
 		this.paint.setStrokeCap(FlashPort.canvasKit.StrokeCap.Square);
 		this.paint.setAntiAlias(true);
+	}
+
+	public get fill():IGraphicsFill
+	{
+		return this._fill;
+	}
+
+	public set fill(value:IGraphicsFill)
+	{
+		this._fill = value;
+		this.paint = this._fill.paint;
+		this.paint.setStyle(FlashPort.canvasKit.PaintStyle.Stroke);
+		this.paint.setStrokeWidth(this.thickness);
+		this.paint.setStrokeCap(FlashPort.canvasKit.StrokeCap.Square);
 	}
 	
 	public get caps():string
@@ -103,8 +117,15 @@ export class GraphicsStroke extends Object implements IGraphicsStroke, IGraphics
 
 	public skiaDraw(ctx:Canvas, colorTransform:ColorTransform, mat?:Matrix):void
 	{
-		var sf:GraphicsSolidFill = this.fill as GraphicsSolidFill;
-		var rgba:Color = (FlashPort.renderer as IRenderer).getRGBAColor(sf.color, sf.alpha, colorTransform);
-		this.paint.setColor(rgba);
+		if (this._fill instanceof GraphicsSolidFill)
+		{
+			var sf:GraphicsSolidFill = this._fill as GraphicsSolidFill;
+			var rgba:Color = (FlashPort.renderer as IRenderer).getRGBAColor(sf.color, sf.alpha, colorTransform);
+			this.paint.setColor(rgba);
+		}
+		else
+		{
+			this._fill.skiaDraw(ctx, colorTransform, mat);
+		}
 	}
 }

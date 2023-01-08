@@ -101,8 +101,7 @@ export class Graphics extends Object
 		if (this.lastStroke)
 		{
 			this.endFill();
-			var gs:GraphicsStroke = this.lastStroke;
-			gs.fill = new GraphicsGradientFill(type, colors, alphas, ratios, this._bound, matrix, spreadMethod, interpolationMethod, focalPointRatio);
+			this.lastStroke.fill = new GraphicsGradientFill(type, colors, alphas, ratios, this._bound, matrix, spreadMethod, interpolationMethod, focalPointRatio);
 		}
 	}
 	
@@ -127,7 +126,6 @@ export class Graphics extends Object
 		this.lineTo(x + width, y + height);
 		this.lineTo(x, y + height);
 		this.lastPath.closePath();
-		//lineTo(x, y);
 		this.lockBound = false;
 		this.inflateBound(x, y);
 		this.inflateBound(x + width, y + height);

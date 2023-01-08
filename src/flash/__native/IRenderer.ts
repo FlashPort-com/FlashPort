@@ -1,5 +1,5 @@
 
-import { Canvas, Color, Font, Paint } from "canvaskit-wasm";
+import { Canvas, Color, Font, Image, Paint } from "canvaskit-wasm";
 import { IGraphicsData } from "../display";
 import { BitmapData } from "../display/BitmapData";
 import { BitmapFilter } from "../filters";
@@ -12,9 +12,9 @@ export interface IRenderer
 
 	getRGBAColor(color:number,alpha:number, ct:ColorTransform):Color;
 	
-	renderGraphics(ctx:Canvas | CanvasRenderingContext2D,g:IGraphicsData[],m:Matrix,blendMode:string,colorTransform:ColorTransform, filters:BitmapFilter[]):void;
+	renderGraphics(ctx:Canvas | CanvasRenderingContext2D,g:IGraphicsData[],m:Matrix,blendMode:string,colorTransform:ColorTransform, filters:BitmapFilter[], firstRender?:boolean):void;
 	
-	renderImage(ctx:Canvas | CanvasRenderingContext2D,img:BitmapData,m:Matrix,blendMode:string,colorTransform:ColorTransform, offsetX?:number, offsetY?:number):void;
+	renderImage(ctx:Canvas,img:Image,m:Matrix,blendMode:string,colorTransform:ColorTransform, offsetX?:number, offsetY?:number):void;
 	
 	renderVideo(ctx:Canvas | CanvasRenderingContext2D,video:HTMLVideoElement,m:Matrix, width:number, height:number, blendMode:string,colorTransform:ColorTransform):void;
 	

@@ -10,6 +10,7 @@ export class GraphicsPath extends Object implements IGraphicsPath, IGraphicsData
 {
 	public paint: Paint;
 	public path: Path;
+	public isMask:Boolean = false;
 	public graphicType:string = "PATH";
 	public gpuPath2DDirty:boolean = true;
 	public commands:any[] = [];
@@ -200,8 +201,6 @@ export class GraphicsPath extends Object implements IGraphicsPath, IGraphicsData
 					break;
 				}
 			}
-
-			//ctx.drawPath(path, );
 		}
 	}
 	
