@@ -1,15 +1,18 @@
 import { IGraphicsFill } from "./IGraphicsFill";
 import { IGraphicsData } from "./IGraphicsData";
 import { GraphicsBitmapFill } from "./GraphicsBitmapFill";
-
-import { GLCanvasRenderingContext2D } from "../__native/GLCanvasRenderingContext2D";
 import { ColorTransform } from "../geom/ColorTransform";
 import { Matrix } from "../geom/Matrix";
+import { Canvas, Paint, Path } from "canvaskit-wasm";
 
 export class GraphicsEndFill extends Object implements IGraphicsFill, IGraphicsData
 {
+	public paint: Paint;
+	public path:Path;
 	public fill:IGraphicsFill;
+	public graphicType:string = "FILL";
 	public _worldMatrix:Matrix = new Matrix;
+
 	constructor(){
 		super();
 	}
@@ -36,32 +39,9 @@ export class GraphicsEndFill extends Object implements IGraphicsFill, IGraphicsD
 			}
 		}
 	}
-	
-	public gldraw(ctx:GLCanvasRenderingContext2D, colorTransform:ColorTransform):void{
-		if (this.fill) {
-			/*if(fill is GraphicsBitmapFill){
-				var bfill:GraphicsBitmapFill = fill as GraphicsBitmapFill;
-				if (bfill.matrix) {
-					var m:Matrix = bfill.matrix;
-				}
-				ctx.globalAlpha = colorTransform.alphaMultiplier;
-			}else{
-				ctx.globalAlpha = 1;
-			}*/
-			var m:Matrix = this.fill["matrix"];
-			if(m){
-				//ctx.save();
-				this._worldMatrix.copyFrom(m);
-			}else{
-				this._worldMatrix.identity();
-			}
-			var temp:Matrix = ctx.matr;
-			ctx.transform2(this._worldMatrix);
-			ctx.fill();
-			ctx.matr = temp;
-			//if (m) {
-				//ctx.restore();
-			//}
-		}
+
+	public skiaDraw(ctx:Canvas, colorTransform:ColorTransform, mat?:Matrix):void
+	{
+		
 	}
 }

@@ -2,6 +2,10 @@ import { DisplayObject } from "../display/DisplayObject";
 import { BitmapFilter } from "./BitmapFilter";
 import { Rectangle } from "../geom/Rectangle";
 import { TextField } from "../text/TextField";
+import { Canvas, EmbindEnumEntity, MaskFilter, Paint, Path } from "canvaskit-wasm";
+import { FlashPort } from "../../FlashPort";
+import { IRenderer } from "../__native/IRenderer";
+import { ColorTransform } from "../geom/ColorTransform";
 
 /**
  * The GlowFilter class lets you apply a glow effect to display objects.
@@ -100,6 +104,7 @@ import { TextField } from "../text/TextField";
  */
 export class GlowFilter extends BitmapFilter
 {
+	private paint:Paint;	
 	private _color:number;
 	private _alpha:number;
 	private _blurX:number;
@@ -656,133 +661,35 @@ export class GlowFilter extends BitmapFilter
 		this._red = color >> 16 & 0xff;
 		this._green = color >> 8 & 0xff;
 		this._blue = color & 0xff;
-		this._rgba = "rgba(" + this._red + "," + this._green + "," + this._blue + "," + this._alpha + ")";
 		this._offsetX = this._offsetY = this._blur = Math.max(blurX, blurY);
+
+		let style:EmbindEnumEntity = FlashPort.canvasKit.BlurStyle.Normal;
+		if (inner) style = FlashPort.canvasKit.BlurStyle.Inner;
+		if (knockout) style = FlashPort.canvasKit.BlurStyle.Outer;
+
+		let maskFilter:MaskFilter = FlashPort.canvasKit.MaskFilter.MakeBlur(
+			style,
+			this._blur,
+			false
+		);
+		this.paint = new FlashPort.canvasKit.Paint();
+		if (this._inner) this.paint.setStyle(FlashPort.canvasKit.PaintStyle.Stroke);
+		this.paint.setColor((FlashPort.renderer as IRenderer).getRGBAColor(color, alpha, new ColorTransform()));
+		this.paint.setMaskFilter(maskFilter);
 	}
 	
-	private blurFilter(amount:number, canvas:HTMLCanvasElement):HTMLCanvasElement
+	public _applyFilter = (ctx:Canvas, path:Path):void =>
 	{
-		amount -= 3; // adjusted to match Flash API
-		
-		this._offsetX = amount + this._blur;
-		this._offsetY = amount + this._blur;
-		
-		// create bigger canvas with enough space to show all of the glow.
-		this.biggerCanvas = document.createElement("canvas");
-		this.biggerCanvas.width = canvas.width + this._offsetX + 20;
-		this.biggerCanvas.height = canvas.height + this._offsetY + 20;
-		var bgCtx:CanvasRenderingContext2D = this.biggerCanvas.getContext("2d");
-		
-		// fill with grey for testing only.
-		//bgCtx.fillStyle = 'gainsboro';  // light grey
-		//bgCtx.fillRect(0, 0, this.biggerCanvas.width, this.biggerCanvas.height);
-		
-		var blurDiff:number = 1 - (this._blur / 6);
-		//blurDiff = 1;
-		let strengthX:number = 1 + (this.strength / 20);
-		let strengthY:number = 1 + (this.strength / 20);
-		bgCtx.scale(strengthX, strengthY);
-		bgCtx.filter = 'blur(' + this._blur / 6 + "px)";
-		//bgCtx.scale(-strengthX, -strengthY);
-
-	 	let diffX:number = Math.ceil((((canvas.width + this._offsetX + 20) / strengthX) - canvas.width) / 2);
-		//console.log("diffX: " + diffX + ", strengthX: " + strengthX);
-
-		var strengthDiff:number = 2 / this.strength;
-		// draw the duplicate drawing centered in the new bigger canvas that allows space for glow.
-		//bgCtx.drawImage(canvas, Math.ceil(1 - strengthX + (.5 * strengthDiff) - (1.15 * blurDiff + (.5 * strengthDiff))), Math.ceil(1 - strengthY + (.5 * strengthDiff) - (1.15 * blurDiff)));
-		bgCtx.drawImage(canvas, diffX, diffX);
-
-		return this.biggerCanvas;
-	}
-	
-	
-	public _applyFilter = (ctx:CanvasRenderingContext2D, displayObject:DisplayObject, isText:boolean = false):void =>
-	{
-		var bounds:Rectangle = displayObject.getFullBounds(displayObject);
-		this.origImage = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
-		var dData:Uint8ClampedArray = this.origImage.data;
-		
-		this.copyCanvas = document.createElement("canvas");
-		this.copyCanvas.width = bounds.width;
-		this.copyCanvas.height = bounds.height;
-		
-		var copyCtx:CanvasRenderingContext2D = this.copyCanvas.getContext("2d");
-		
-		// fill with grey for testing only.
-		//copyCtx.fillStyle = 'gainsboro';
-		//copyCtx.fillRect(0, 0, this.copyCanvas.width, this.copyCanvas.height);
-		
-		this.copyData = copyCtx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
-		var copyDataArr:Uint8ClampedArray = this.copyData.data;
-		
-		// duplicate drawing as a solid color
-		var len:number = dData.length;
-		for (var i:number = 0; i < len; i += 4) 
-		{
-			var ia:number = i + 3;
-			var currentAlpha:number = dData[ia];
-			
-			if (!this._inner) {
-				if (currentAlpha !== 0) {
-					copyDataArr[i] = this._red;
-					copyDataArr[i + 1] = this._green;
-					copyDataArr[i + 2] = this._blue;
-					copyDataArr[ia] = currentAlpha;
-				}
-			} else {
-				if (currentAlpha !== 255) {
-					copyDataArr[i] = this._red;
-					copyDataArr[i + 1] = this._green;
-					copyDataArr[i + 2] = this._blue;
-					copyDataArr[ia] = 255 - currentAlpha;
-				}
-			}
-		}
-		
-		if (displayObject.cacheAsBitmap || isText)
-		{
-			copyCtx.putImageData(this.copyData, -((ctx.canvas.width - this.copyCanvas.width)/2), -((ctx.canvas.height - this.copyCanvas.height)/2)); // cached version
-		}
-		else
-		{
-			copyCtx.putImageData(this.copyData, -(displayObject.x + bounds.x), -(displayObject.y + bounds.y)); // no cached version	
-		}
-		
-		//document.body.append(this.copyCanvas);
-
-		// blur the duplicate solid color drawing
-		var glowCanvas:HTMLCanvasElement = this.blurFilter(this._strength, this.copyCanvas);
-		
-		var gco:string;
+		/* var gco:string;
 		if (this._knockout) {
 			gco = (this._inner) ? "source-in" : "source-out";
 		} else {
 			gco = (this._inner) ? "source-atop" : "destination-over";
-		}
-
-		var diffX:number = (glowCanvas.width - ctx.canvas.width) * 3;
-		var diffY:number = (glowCanvas.height - ctx.canvas.height) * 3;
-		//ctx.canvas.width = glowCanvas.width;
-		//ctx.canvas.height = glowCanvas.height;
-		
-		ctx.save();
-		ctx.globalAlpha = this._alpha;
-		ctx.globalCompositeOperation = <any>gco;
-		var diff:number = (glowCanvas.width - this.copyCanvas.width) / 2;
-		ctx.drawImage(glowCanvas, Math.floor(bounds.x - diff), Math.floor(bounds.y - diff));
-		//ctx.drawImage(glowCanvas, 0,0);
-		
-		
-		//ctx.drawImage(glowCanvas, bounds.x - 7, bounds.y - 7); // 11.5
-		
-		//console.log("bounds: " + bounds.toString());
-		//console.log("glowCanvas: w: " + glowCanvas.width + ", h: " + glowCanvas.height);
-		//console.log("offsetX: " + this._offsetX + ", offsetY: " + this._offsetY);
-		
-		ctx.restore();
-		
-		// clear shadow blur before next redraw or else double shadow blur.
-		//ctx.shadowBlur = 0;
-	}
+		} */
+		if (this._inner)
+		{
+			//this.paint.setBlendMode(FlashPort.canvasKit.BlendMode.Dst);
+		} 
+		ctx.drawPath(path, this.paint);
+	} 
 }

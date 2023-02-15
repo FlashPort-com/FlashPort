@@ -2,34 +2,31 @@ import { IGraphicsFill } from "./IGraphicsFill";
 import { IGraphicsData } from "./IGraphicsData";
 import { FlashPort } from "../../FlashPort";
 import { GradientType } from "./GradientType";
-
-import { GLCanvasRenderingContext2D } from "../__native/GLCanvasRenderingContext2D";
 import { ColorTransform } from "../geom/ColorTransform";
 import { Matrix } from "../geom/Matrix";
 import { Point } from "../geom/Point";
 import { Rectangle } from "../geom/Rectangle";
+import { Canvas, Color, Paint, Path, Shader, TileMode } from "canvaskit-wasm";
+import { IRenderer } from "../__native/IRenderer";
 
 export class GraphicsGradientFill extends Object implements IGraphicsFill, IGraphicsData
 {
-	
-	private _type:string;
-	
+	public paint: Paint;
+	public graphicType:string = "FILL";
+	public path: Path;
+
 	public colors:any[];
-	
 	public alphas:any[];
-	
 	public ratios:any[];
-	
-	private _bounds:Rectangle;
-	
 	public matrix:Matrix;
-	
-	private _spreadMethod:string;
-	
-	private _interpolationMethod:string;
-	
 	public focalPointRatio:number;
 	
+	private _shader:Shader;
+	private _type:string;
+	private _bounds:Rectangle;
+	private _spreadMethod:string;
+	private _tileMode:TileMode;
+	private _interpolationMethod:string;
 	private _gradient:CanvasGradient;
 	private _startPoint:Point;
 	private _endPoint:Point;
@@ -50,6 +47,10 @@ export class GraphicsGradientFill extends Object implements IGraphicsFill, IGrap
 		this._spreadMethod = spreadMethod;
 		this._interpolationMethod = interpolationMethod;
 		this.focalPointRatio = focalPointRatio;
+
+		this.paint = new FlashPort.canvasKit.Paint();
+		this.paint.setAntiAlias(true);
+		this._tileMode = spreadMethod == "pad" ? FlashPort.canvasKit.TileMode.Clamp : (spreadMethod == "repeat" ? FlashPort.canvasKit.TileMode.Repeat : FlashPort.canvasKit.TileMode.Mirror);
 		
 		// convert ratios
 		this._convertedRatios = [];
@@ -60,14 +61,16 @@ export class GraphicsGradientFill extends Object implements IGraphicsFill, IGrap
 		
 		this.transformGradient();
 	}
-	
-	private prepareColors():void 
+
+	private getShaderColors():Color[]
 	{
-		this._convertedColors = [];
+		let shaderColors:Color[] = [];
 		for (var i:number = 0; i < this.colors.length; i++) 
 		{
-			this._convertedColors.push((<String>FlashPort.renderer.getCssColor(this.colors[i], this.alphas[i], this._colorTransform, null) ));
+			var shadColor:Color = (FlashPort.renderer as IRenderer).getRGBAColor(this.colors[i], this.alphas[i], this._colorTransform);
+			shaderColors.push(shadColor);
 		}
+		return shaderColors;
 	}
 	
 	private transformGradient():void 
@@ -140,10 +143,10 @@ export class GraphicsGradientFill extends Object implements IGraphicsFill, IGrap
 		var delta:number = a * d - b * c;
 
 		var result:Object = {
-		translation: new Array(e, f),
-		rotation: 0,
-		scale: {x:0, y:0},
-		skew: new Array(0,0)
+			translation: new Array(e, f),
+			rotation: 0,
+			scale: {x:0, y:0},
+			skew: new Array(0,0)
 		};
 
 		// Apply the QR-like decomposition.
@@ -191,10 +194,6 @@ export class GraphicsGradientFill extends Object implements IGraphicsFill, IGrap
 	
 	public set type(value:string)
 	{
-		/*if(value != GradientType.LINEAR && value != GradientType.RADIAL)
-			{
-			Error.throwError(null,2008,"type");
-			}*/
 		this._type = value;
 	}
 	
@@ -205,10 +204,6 @@ export class GraphicsGradientFill extends Object implements IGraphicsFill, IGrap
 	
 	public set spreadMethod(value:string)
 	{
-		/*if(value != "none" && value != SpreadMethod.PAD && value != SpreadMethod.REFLECT && value != SpreadMethod.REPEAT)
-			{
-			Error.throwError(null,2008,"spreadMethod");
-			}*/
 		this._spreadMethod = value;
 	}
 	
@@ -219,10 +214,6 @@ export class GraphicsGradientFill extends Object implements IGraphicsFill, IGrap
 	
 	public set interpolationMethod(value:string)
 	{
-		/* if(value != InterpolationMethod.LINEAR_RGB && value != InterpolationMethod.RGB)
-			{
-			Error.throwError(null,2008,"interpolationMethod");
-			}*/
 		this._interpolationMethod = value;
 	}
 	
@@ -255,34 +246,37 @@ export class GraphicsGradientFill extends Object implements IGraphicsFill, IGrap
 	
 	public draw(ctx:CanvasRenderingContext2D, colorTransform:ColorTransform):void
 	{
-		if (this._gradient == null || !this._colorTransform || this.colorsChanged(colorTransform))
-		{
-			if (this.type === GradientType.LINEAR) {
-				this._gradient = ctx.createLinearGradient(this._startPoint.x, this._startPoint.y, this._endPoint.x, this._endPoint.y);
-			}else {
-				this._gradient = ctx.createRadialGradient(this._startPoint.x, this._startPoint.y, 0, this._endPoint.x, this._endPoint.y, this._radius2 >= this._radius1 ? (this._radius2 / 2) : (this._radius1 / 2));
-			}
-			
-			this._colorTransform = colorTransform;
-			this.prepareColors();
-			
-			for (var i:number = 0; i < this.colors.length; i++) 
-			{
-				this._gradient.addColorStop(this._convertedRatios[i], this._convertedColors[i]);
-			}
-		}
-		ctx.fillStyle = this._gradient;
+		
 	}
-	
-	public gldraw(ctx:GLCanvasRenderingContext2D, colorTransform:ColorTransform):void{
-		if (this._gradient == null) {
-			if (this.type==GradientType.LINEAR) {
-				this._gradient = ctx.createLinearGradient(0, 0, 1, 1);
+
+	public skiaDraw(ctx:Canvas, colorTransform:ColorTransform, mat?:Matrix):void
+	{
+		this._colorTransform = colorTransform;
+		let m:number[] = [mat.a, mat.c, mat.tx, mat.b, mat.d, mat.ty, 0, 0, 1];
+		//console.log(this.getShaderColorPoints());
+		if (this._gradient == null || !this._colorTransform || this.colorsChanged(colorTransform))
+		{	
+			if (this.type === GradientType.LINEAR) {
+				this._shader = FlashPort.canvasKit.Shader.MakeLinearGradient(
+					[this._startPoint.x, this._startPoint.y],
+					[this._endPoint.x, this._endPoint.y],
+					this.getShaderColors(),
+					this._convertedRatios,
+					this._tileMode,
+					m
+				);
 			}else {
-				this._gradient = ctx.createRadialGradient(0, 0, 1, 0, 0, 1);
+				this._shader = FlashPort.canvasKit.Shader.MakeRadialGradient(
+					[this._startPoint.x, this._startPoint.y],
+					this._radius2 >= this._radius1 ? (this._radius2 / 2) : (this._radius1 / 2),
+					this.getShaderColors(),
+					this._convertedRatios,
+					this._tileMode,
+					m
+				);
 			}
 		}
-		ctx.fillStyle = this._gradient;
-		ctx.fillStyleIsImage = false;
+
+		this.paint.setShader(this._shader);
 	}
 }

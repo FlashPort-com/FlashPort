@@ -1,3 +1,4 @@
+import { Canvas, Paint, Path } from "canvaskit-wasm";
 
 /**
  * The BitmapFilter class is the base class for all image filter effects.
@@ -77,6 +78,11 @@ export class BitmapFilter extends Object
 	
 	constructor (){
 		super();
+	}
+
+	public _applyFilter(ctx:Canvas, path:Path, blurPain?:Paint):void
+	{
+		
 	}
 
 	/**

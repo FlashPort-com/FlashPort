@@ -1,8 +1,8 @@
-import { IDataInput2 } from "./IDataInput2";
-import { IDataOutput2 } from "./IDataOutput2";
+import { IDataInput } from "./IDataInput";
+import { IDataOutput } from "./IDataOutput";
 import { Endian } from "./Endian";
 
-export class ByteArray implements IDataInput2, IDataOutput2
+export class ByteArray implements IDataInput, IDataOutput
 {
 	private static _defaultObjectEncoding:number;
 	public dataView:DataView;
@@ -18,12 +18,12 @@ export class ByteArray implements IDataInput2, IDataOutput2
 	
 	public static set defaultObjectEncoding(param1:number)  {/**/ }
 	
-	public readBytes(b:ByteArray, offset:number = 0, length:number = 0):void  {
+	public readBytes(b:IDataInput & IDataOutput, offset:number = 0, length:number = 0):void  {
 		b.position = offset;
 		b.writeBytes(this, this.position, length);
 	}
 	
-	public writeBytes(b:ByteArray, offset:number = 0, length:number = 0):void  {
+	public writeBytes(b:IDataInput, offset:number = 0, length:number = 0):void  {
 		if (length===0) {
 			length = b.length - offset;
 		}

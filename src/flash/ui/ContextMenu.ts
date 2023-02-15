@@ -21,7 +21,7 @@
 	 * (Macintosh) Flash Player. You can use the methods and properties of the ContextMenu class to 
 	 * add custom menu items, control the display of the built-in context menu items (for example, Zoom In, 
 	 * and Print), or create copies of menus. In AIR, there are no built-in items and no standard context menu.</p><p class="- topic/p ">In Flash Professional, you can attach a ContextMenu object to a specific button, movie clip, or text
-	 * field object, or to an entire movie level. You use the <codeph class="+ topic/ph pr-d/codeph ">contextMenu</codeph> property of the InteractiveObject
+	 * field object, or to an entire movie level. You use the <codeph class="+ topic/ph pr-d/codeph ">contextMenu</codeph> property of the DisplayObjectContainer
 	 * class to do this.</p><p class="- topic/p ">In Flex or Flash Builder, only top-level components in the application can have context menus.
 	 * For example, if a DataGrid control is a child of a TabNavigator or VBox container, the DataGrid control
 	 * cannot have its own context menu.</p><p class="- topic/p ">To add new items to a ContextMenu object, you create a ContextMenuItem object, and then add that

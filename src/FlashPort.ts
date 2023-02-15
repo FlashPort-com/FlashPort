@@ -1,5 +1,4 @@
-import { BaseRenderer } from "./flash/__native/BaseRenderer";
-import { IRenderer } from "./flash/__native/IRenderer";
+import { CanvasKit } from "canvaskit-wasm";
 
 export class FlashPort 
 {
@@ -10,15 +9,16 @@ export class FlashPort
 	public static drawCounter:number;
 	public static batDrawCounter:number;
 	public static debug:boolean = false;
-	public static wmode:string = "direct";//direct,gpu
 	public static rootHTMLElement:HTMLElement;
-	public static renderer:IRenderer = new BaseRenderer();
+	public static renderer:any;
+	public static canvasKit:CanvasKit;
 	public static dirtyGraphics:Boolean = true;
 	
 	// assets
 	public static images:object = {};
 	public static sounds:object = {};
 	public static videos:object = {};
+	public static fonts:object = {};
 	
 	public static requestAnimationFrame:Function =
 		window["requestAnimationFrame"]       ||
@@ -29,10 +29,4 @@ export class FlashPort
 		function(callback:Function):void {
 			window["setTimeout"](callback, 1000 / 60);
 		};
-
-	constructor ()
-	{
-
-	}
-	
 }

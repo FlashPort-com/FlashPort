@@ -3,15 +3,17 @@ import { Graphics } from "./Graphics";
 import { BitmapData } from "./BitmapData";
 import { DisplayObject } from "./DisplayObject";
 import { Stage } from "./Stage";
-import { FlashPort } from "../../FlashPort";
-import { BlendMode } from "./BlendMode";
-
 import { AEvent } from "../events/AEvent";
-import { ColorTransform } from "../geom/ColorTransform";
 import { Matrix } from "../geom/Matrix";
 import { Point } from "../geom/Point";
 import { Rectangle } from "../geom/Rectangle";
 import { MouseEvent } from "../events/MouseEvent";
+import { Canvas, Path } from "canvaskit-wasm";
+import { BlendMode } from "./BlendMode";
+import { ColorTransform } from "../geom/ColorTransform";
+import { GraphicsPath } from "./GraphicsPath";
+import { FlashPort } from "../../FlashPort";
+import { BitmapFilter } from "../filters";
 
 export class Sprite extends DisplayObjectContainer
 {
@@ -22,9 +24,6 @@ export class Sprite extends DisplayObjectContainer
 	private _downY:number;
 	private _dragRect:Rectangle;
 	private _dragLockCenter:boolean;
-	
-	private _cacheCanvas:HTMLCanvasElement;
-	private _cacheCTX:CanvasRenderingContext2D;
 	private _cacheImage:BitmapData;
 	private _cacheWidth:number = 0;
 	private _cacheHeight:number = 0;
@@ -85,44 +84,6 @@ export class Sprite extends DisplayObjectContainer
 	public set cacheAsBitmap(value:boolean) 
 	{
 		this._cacheAsBitmap = value;
-
-		if (value)
-		{
-			if (!this._cacheImage) this._cacheImage = new BitmapData(1, 1);
-			this.cacheBounds = this.getFullBounds(this);
-			this.cacheBounds.inflate(50, 50); // add extra padding for filters.  TODO make exact
-			
-			this._cacheCanvas = document.createElement("canvas");
-			/*var oc:* = new window['OffscreenCanvas'](500, 500);
-			var ocCTX:* = oc.getContext("2d");*/
-			
-			this._cacheCanvas.width = this._cacheWidth = Math.ceil(this.cacheBounds.width); // TODO add filter padding
-			this._cacheCanvas.height = this._cacheHeight = Math.ceil(this.cacheBounds.height);
-			this._cacheCTX = this._cacheCanvas.getContext('2d') as CanvasRenderingContext2D;
-			
-			// reset alpha before drawing
-			var currAlpha:number = this.alpha;
-			var currRotation:number = this.rotation;
-			this.alpha = 1;				
-			this.rotation = 0;
-			
-			if (this._blurFilter) this._blurFilter._applyFilter(this._cacheCTX);
-
-			// render children.
-			this.__update(this._cacheCTX);
-			
-			this.rotation = currRotation;
-			this.alpha = currAlpha;
-			
-			this._cacheImage.image = this._cacheCanvas;
-			
-			this.updateTransforms();
-		}
-		else
-		{
-			this._cacheCanvas = null;
-			this._cacheCTX = null;
-		}
 	}
 
 	public get cacheAsBitmap():boolean
@@ -145,86 +106,41 @@ export class Sprite extends DisplayObjectContainer
 		return this._cacheHeight;
 	}
 	
-	public __getRect = ():Rectangle =>
+	public __update(ctx:Canvas, offsetX:number = 0, offsetY:number = 0, filters: BitmapFilter[] = []):void
 	{
-		return this.graphics.bound;
-	}
-	
-	public __update(ctx:CanvasRenderingContext2D, offsetX:number = 0, offsetY:number = 0, parentIsCached:boolean = false):void
-	{
-		var bounds:Rectangle = this.cacheBounds;
-		var gOffsetX:number = parentIsCached ? offsetX : -bounds.left;
-		var gOffsetY:number = parentIsCached ? offsetY : -bounds.top;
-		var childOffsetX:number = (bounds.width - bounds.right - this.x);
-		var childOffsetY:number = (bounds.height - bounds.bottom - this.y);
-		
-		if (!this._off && this.visible && (this.graphics.graphicsData.length || this.numChildren) && !this._parentCached)
+		if (!this._off && this.visible && (this.graphics.graphicsData.length || this.numChildren))
 		{
-			if (this._blurFilter && !this.cacheAsBitmap) this._blurFilter._applyFilter(ctx);
+			this.transform.updateColorTransforms();
+			let mat:Matrix = this.transform.concatenatedMatrix;
+			let path:Path;
 			
-			if (this.filters.length && !this._cacheAsBitmap && !(this.parent && this.parent.cacheAsBitmap) && !this._parentCached && !parentIsCached)
+			if (this.mask)
 			{
-				this.cacheAsBitmap = true;
+				var maskMat:Matrix = this.mask.transform.concatenatedMatrix.clone();
+				ctx.save();
+				this.mask['graphics'].draw(ctx, maskMat, BlendMode.NORMAL, new ColorTransform(), []);
+				path = (this.mask['graphics'].lastPath as GraphicsPath).path;
+				let pathMat:number[] = [maskMat.a, maskMat.c, maskMat.tx, maskMat.b, maskMat.d, maskMat.ty, 0, 0, 1];
+				path.transform(pathMat)
+				path.setFillType(FlashPort.canvasKit.FillType.Winding);
+				ctx.clipPath(path, FlashPort.canvasKit.ClipOp.Intersect, true);
+			}
+			
+			var filts:BitmapFilter[] = this.filters.concat(filters);
+			this.graphics.draw(ctx, mat, this.blendMode, this.transform.concatenatedColorTransform, filts);
+			
+			super.__update(ctx, offsetX, offsetY, filts);
+			
+			if (this.mask)
+			{
+				ctx.restore();
+				path.delete();
 			} 
-			
-			if (this._cacheAsBitmap && this._childrenCached && !parentIsCached) 
-			{
-				FlashPort.renderer.renderImage(ctx, this._cacheImage, this.transform.concatenatedMatrix, this.blendMode, this.transform.concatenatedColorTransform, -this.x - childOffsetX, -this.y - childOffsetY);
-			}
-			else
-			{
-				this.transform.updateColorTransforms();
-				
-				if (this.mask)
-				{
-					var mat:Matrix = this.mask.transform.concatenatedMatrix.clone();
-					if (parentIsCached)
-					{
-						mat.tx += gOffsetX;
-						mat.ty += gOffsetY;
-						mat.scale((!this.parent ? 1 : this.scaleX) / mat.a, (!this.parent ? 1 : this.scaleY) / mat.d);
-					}
-					
-					ctx.save();
-					this.mask['graphics'].draw(ctx, mat, BlendMode.NORMAL, new ColorTransform());
-					ctx.clip();
-				}
-				
-				mat = this.transform.concatenatedMatrix.clone();
-				if (parentIsCached)
-				{
-					//mat.scale(scaleX, scaleY);
-					mat.translate(gOffsetX, gOffsetY);
-				}
-				
-				if (this._cacheAsBitmap && !this._childrenCached)
-				{
-					mat.scale((!this.parent ? 1 : this.scaleX) / mat.a, (!this.parent ? 1 : this.scaleY) / mat.d);
-					mat.tx = gOffsetX;
-					mat.ty = gOffsetY;
-					this.graphics.draw(ctx, mat, this.blendMode, this.transform.concatenatedColorTransform);
-				}
-				else
-				{
-					this.graphics.draw(ctx, mat, this.blendMode, this.transform.concatenatedColorTransform, this._cacheAsBitmap, this._cacheImage);
-				}
-			}
 		}
-		
-		let firstCache:boolean = (this._cacheAsBitmap && !this._childrenCached);
-		if ((!this._cacheAsBitmap && !this._off) || (parentIsCached && !this._parentCached) || firstCache)
-		{
-			super.__update(ctx, (this._cacheAsBitmap ? childOffsetX : offsetX), (this._cacheAsBitmap ? childOffsetY : offsetY), (parentIsCached || firstCache));
-			this.ApplyFilters(ctx, this.hasFills, this.hasStrokes);
-		}
-		
-		if (firstCache) this._childrenCached = true;
-		this._parentCached = parentIsCached;
-		if (this.mask) ctx.restore();
-		ctx.filter = 'none';
 	}
 	
-	/*override*/ protected __doMouse = (e:MouseEvent):DisplayObject =>
+	/*override*/
+	protected __doMouse = (e:MouseEvent):DisplayObject =>
 	{
 		Stage.instance.canvas.style.cursor = "default";
 
@@ -255,11 +171,11 @@ export class Sprite extends DisplayObjectContainer
 			return hitObject;
 		}
 		
-		
 		return null;
 	}
 	
-	/*override*/ public hitTestPoint = (x:number, y:number, shapeFlag:boolean = false):boolean =>
+	/*override*/
+	public hitTestPoint = (x:number, y:number, shapeFlag:boolean = false):boolean =>
 	{
 		if (!this.graphics || !this.graphics.bound) return false;
 		var rect:Rectangle = this.graphics.bound;

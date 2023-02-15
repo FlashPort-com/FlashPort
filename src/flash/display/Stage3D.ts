@@ -1,11 +1,10 @@
 import { EventDispatcher } from "../events/EventDispatcher";
 import { AEvent } from "../events/AEvent";
 import { Context3D } from "../display3D/Context3D";
-import { Stage } from "./Stage";
+import { FlashPort } from "../../FlashPort";
 
 export class Stage3D extends EventDispatcher
-{
-	public __stage:Stage;
+{;
 	public canvas:HTMLCanvasElement;
 	private _context3D:Context3D;
 	private static ID:number = 0;
@@ -29,7 +28,7 @@ export class Stage3D extends EventDispatcher
 	{
 		if (!this._context3D)
 		{
-			this.__stage.__rootHtmlElement.appendChild(this.canvas);
+			FlashPort.rootHTMLElement.appendChild(this.canvas);
 			this._context3D = new Context3D();
 			this._context3D.canvas = this.canvas;
 			this._context3D.gl = (<WebGLRenderingContext>(this.canvas.getContext("webgl",{alpha:false,antialias:false}) || this.canvas.getContext("experimental-webgl",{alpha:false,antialias:false})) );

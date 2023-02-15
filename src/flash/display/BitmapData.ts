@@ -5,15 +5,17 @@ import { ColorTransform } from "../geom/ColorTransform";
 import { Matrix } from "../geom/Matrix";
 import { Point } from "../geom/Point";
 import { Rectangle } from "../geom/Rectangle";
-import { BitmapTexture } from "../__native/BitmapTexture";
 import { ByteArray } from "../utils/ByteArray";
+import { Image } from "canvaskit-wasm";
 
 export class BitmapData implements IBitmapDrawable
 {
 	public __data:Uint8ClampedArray;
+	public image:Image;
 	//private var data32:Uint32Array;
 	private imageData:ImageData;
-	public image:HTMLCanvasElement;
+	private imageSource:CanvasImageSource;
+
 	private _lock:boolean = false;
 	public ctx:CanvasRenderingContext2D;
 	private _transparent:boolean;
@@ -25,11 +27,11 @@ export class BitmapData implements IBitmapDrawable
 		
 		this._transparent = transparent;
 		this._fillColor = fillColor;
-		this.image = (<HTMLCanvasElement>document.createElement("canvas") );
-		this.image.width = this._width = width;
-		this.image.height = this._height = height;
-		this.ctx = (<CanvasRenderingContext2D>this.image.getContext("2d", {willReadFrequently: true}) );
-		this.imageData = this.ctx.getImageData(0, 0, this.image.width, this.image.height);
+		this.imageSource = (<HTMLCanvasElement>document.createElement("canvas") );
+		this.imageSource.width = this._width = width;
+		this.imageSource.height = this._height = height;
+		this.ctx = (<CanvasRenderingContext2D>this.imageSource.getContext("2d", {willReadFrequently: true}) );
+		this.imageData = this.ctx.getImageData(0, 0, this.imageSource.width, this.imageSource.height);
 		this.__data = this.imageData.data;
 		//data32 = new Uint32Array(imageData.data);
 		this.fillRect(this.rect, fillColor);
@@ -38,14 +40,14 @@ export class BitmapData implements IBitmapDrawable
 	public fromImage(img:any,dx:number=0,dy:number=0,opt_dw:number=0,opt_dy:number=0):void {
 		this.ctx.drawImage(img, dx, dy);
 		FlashPort.dirtyGraphics = true;
-		this.clearTexture();
 		this.imageData = this.ctx.getImageData(0, 0, this._width, this._height);
 		this.__data = this.imageData.data;
+		this.image = FlashPort.canvasKit.MakeImageFromCanvasImageSource(this.imageSource);
 	}
 	
 	public clone():BitmapData  
 	{ 
-		let bmdClone:BitmapData = new BitmapData(this.image.width, this.image.height, this._transparent, this._fillColor);
+		let bmdClone:BitmapData = new BitmapData((this.imageSource as HTMLCanvasElement).width, (this.imageSource as HTMLCanvasElement).height, this._transparent, this._fillColor);
 		bmdClone.__data = this.__data;
 		bmdClone.image = this.image;
 		
@@ -86,8 +88,8 @@ export class BitmapData implements IBitmapDrawable
 		data32[p] = 0xff000000 | color;*/
 		if (!this._lock) {
 			this.ctx.putImageData(this.imageData, 0, 0);
+			this.image = FlashPort.canvasKit.MakeImageFromCanvasImageSource(this.imageSource);
 			FlashPort.dirtyGraphics = true;
-			this.clearTexture();
 		}
 	}
 	
@@ -101,8 +103,8 @@ export class BitmapData implements IBitmapDrawable
 		data32[p] = color;*/
 		if (!this._lock) {
 			this.ctx.putImageData(this.imageData,0,0);
+			this.image = FlashPort.canvasKit.MakeImageFromCanvasImageSource(this.imageSource);
 			FlashPort.dirtyGraphics = true;
-			this.clearTexture();
 		}
 	}
 	
@@ -306,7 +308,6 @@ export class BitmapData implements IBitmapDrawable
 		if (!this._lock) {
 			this.ctx.putImageData(this.imageData,0,0);
 			FlashPort.dirtyGraphics = true;
-			this.clearTexture();
 		}
 		//setVector(rect, vec);
 	}
@@ -336,15 +337,8 @@ export class BitmapData implements IBitmapDrawable
 	public unlock(param1:Rectangle = null):void  {
 		this._lock = false;
 		this.ctx.putImageData(this.imageData, 0, 0);
+		this.image = FlashPort.canvasKit.MakeImageFromCanvasImageSource(this.imageSource);
 		FlashPort.dirtyGraphics = true;
-		this.clearTexture();
-	}
-	
-	private clearTexture():void{
-		if (this.image&&this.image["_texture"]){
-			var t:BitmapTexture = (<BitmapTexture>this.image["_texture"] );
-			t.dirty = true;
-		}
 	}
 	
 	public histogram(param1:Rectangle = null):any[]  { return null }

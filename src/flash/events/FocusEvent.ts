@@ -1,6 +1,6 @@
 
 
-import { InteractiveObject } from "../display/InteractiveObject";
+import { DisplayObjectContainer } from "../display/DisplayObjectContainer";
 import { AEvent } from "./AEvent";
 
 /// @eventType	flash.events.FocusEvent.FOCUS_IN
@@ -143,7 +143,7 @@ export class FocusEvent extends AEvent
 	/**
 	 * Defines the value of the type property of a focusIn event object. 
 	 * This event has the following properties:PropertyValuebubblestruecancelablefalse; there is no default behavior to cancel.currentTargetThe object that is actively processing the Event 
-	 * object with an event listener.keyCode0; applies only to keyFocusChange events.relatedObjectThe complementary InteractiveObject instance that is affected by the change in focus.shiftKeyfalse; applies only to keyFocusChange events.targetThe InteractiveObject instance that has just received focus. 
+	 * object with an event listener.keyCode0; applies only to keyFocusChange events.relatedObjectThe complementary DisplayObjectContainer instance that is affected by the change in focus.shiftKeyfalse; applies only to keyFocusChange events.targetThe DisplayObjectContainer instance that has just received focus. 
 	 * The target is not always the object in the display list 
 	 * that registered the event listener. Use the currentTarget 
 	 * property to access the object in the display list that is currently processing the event.
@@ -161,7 +161,7 @@ export class FocusEvent extends AEvent
 	/**
 	 * Defines the value of the type property of a focusOut event object. 
 	 * This event has the following properties:PropertyValuebubblestruecancelablefalse; there is no default behavior to cancel.currentTargetThe object that is actively processing the Event 
-	 * object with an event listener.keyCode0; applies only to keyFocusChange events.relatedObjectThe complementary InteractiveObject instance that is affected by the change in focus.shiftKeyfalse; applies only to keyFocusChange events.targetThe InteractiveObject instance that has just lost focus. 
+	 * object with an event listener.keyCode0; applies only to keyFocusChange events.relatedObjectThe complementary DisplayObjectContainer instance that is affected by the change in focus.shiftKeyfalse; applies only to keyFocusChange events.targetThe DisplayObjectContainer instance that has just lost focus. 
 	 * The target is not always the object in the display list 
 	 * that registered the event listener. Use the currentTarget 
 	 * property to access the object in the display list that is currently processing the event.
@@ -177,7 +177,7 @@ export class FocusEvent extends AEvent
 	 *   This event has the following properties:PropertyValuebubblestruecancelabletrue; call the preventDefault() method
 	 * to cancel default behavior.currentTargetThe object that is actively processing 
 	 * the Event 
-	 * object with an event listener.keyCodeThe key code value of the key pressed to trigger a keyFocusChange event.relatedObjectThe complementary InteractiveObject instance that is affected by the change in focus.shiftKeytrue if the Shift key modifier is activated; false otherwise.targetThe InteractiveObject instance that currently has focus. 
+	 * object with an event listener.keyCodeThe key code value of the key pressed to trigger a keyFocusChange event.relatedObjectThe complementary DisplayObjectContainer instance that is affected by the change in focus.shiftKeytrue if the Shift key modifier is activated; false otherwise.targetThe DisplayObjectContainer instance that currently has focus. 
 	 * The target is not always the object in the display list 
 	 * that registered the event listener. Use the currentTarget 
 	 * property to access the object in the display list that is currently processing the event.
@@ -191,7 +191,7 @@ export class FocusEvent extends AEvent
 	 * Defines the value of the type property of a mouseFocusChange event object. 
 	 * This event has the following properties:PropertyValuebubblestruecancelabletrue; call the preventDefault() method 
 	 * to cancel default behavior.currentTargetThe object that is actively processing the Event 
-	 * object with an event listener.keyCode0; applies only to keyFocusChange events.relatedObjectThe complementary InteractiveObject instance that is affected by the change in focus.shiftKeyfalse; applies only to keyFocusChange events.targetThe InteractiveObject instance that currently has focus. 
+	 * object with an event listener.keyCode0; applies only to keyFocusChange events.relatedObjectThe complementary DisplayObjectContainer instance that is affected by the change in focus.shiftKeyfalse; applies only to keyFocusChange events.targetThe DisplayObjectContainer instance that currently has focus. 
 	 * The target is not always the object in the display list 
 	 * that registered the event listener. Use the currentTarget 
 	 * property to access the object in the display list that is currently processing the event.
@@ -233,9 +233,9 @@ export class FocusEvent extends AEvent
 	}
 
 	/**
-	 * A reference to the complementary InteractiveObject instance that is affected by the
+	 * A reference to the complementary DisplayObjectContainer instance that is affected by the
 	 * change in focus. For example, when a focusOut event occurs, the
-	 * relatedObject represents the InteractiveObject instance that has gained focus.
+	 * relatedObject represents the DisplayObjectContainer instance that has gained focus.
 	 * The value of this property can be null in two circumstances: if there no related object, 
 	 * or there is a related object, but it is in a security sandbox to which you don't have access.
 	 * Use the isRelatedObjectInaccessible() property to determine which of these reasons applies.
@@ -243,10 +243,10 @@ export class FocusEvent extends AEvent
 	 * @playerversion	Flash 9
 	 * @playerversion	Lite 4
 	 */
-	public get relatedObject () : InteractiveObject{
+	public get relatedObject () : DisplayObjectContainer{
 		return null;
 	}
-	public set relatedObject (value:InteractiveObject){
+	public set relatedObject (value:DisplayObjectContainer){
 		
 	}
 
@@ -283,7 +283,7 @@ export class FocusEvent extends AEvent
 	 *   FocusEvent.FOCUS_IN, FocusEvent.FOCUS_OUT, FocusEvent.KEY_FOCUS_CHANGE, and FocusEvent.MOUSE_FOCUS_CHANGE.
 	 * @param	bubbles	Determines whether the Event object participates in the bubbling stage of the event flow.
 	 * @param	cancelable	Determines whether the Event object can be canceled.
-	 * @param	relatedObject	Indicates the complementary InteractiveObject instance that is affected by the change in focus. For example, when a focusIn event occurs, relatedObject represents the InteractiveObject that has lost focus.
+	 * @param	relatedObject	Indicates the complementary DisplayObjectContainer instance that is affected by the change in focus. For example, when a focusIn event occurs, relatedObject represents the DisplayObjectContainer that has lost focus.
 	 * @param	shiftKey	Indicates whether the Shift key modifier is activated.
 	 * @param	keyCode	Indicates the code of the key pressed to trigger a keyFocusChange event.
 	 * @param	direction	Indicates from which direction the target interactive object is being activated. Set to
@@ -292,7 +292,7 @@ export class FocusEvent extends AEvent
 	 * @playerversion	Flash 9
 	 * @playerversion	Lite 4
 	 */
-	constructor (type:string, bubbles:boolean = true, cancelable:boolean = false, relatedObject:InteractiveObject = null, shiftKey:boolean = false, keyCode:number = 0){
+	constructor (type:string, bubbles:boolean = true, cancelable:boolean = false, relatedObject:DisplayObjectContainer = null, shiftKey:boolean = false, keyCode:number = 0){
 		super(type, bubbles, cancelable);
 	}
 

@@ -4,52 +4,40 @@ import { TextFieldAutoSize } from "./TextFieldAutoSize";
 import { FlashPort } from "../../FlashPort";
 import { StyleSheet } from "./StyleSheet";
 import { TextLineMetrics } from "./TextLineMetrics";
-
-import { GLCanvasRenderingContext2D } from "../__native/GLCanvasRenderingContext2D";
 import { GLDrawable } from "../__native/GLDrawable";
 import { GLIndexBufferSet } from "../__native/GLIndexBufferSet";
-import { WebGLRenderer } from "../__native/WebGLRenderer";
 import { Char } from "../__native/te/Char";
 import { LineInfo } from "../__native/te/LineInfo";
 import { UVTexture } from "../__native/te/UVTexture";
 import { BitmapData } from "../display/BitmapData";
 import { BlendMode } from "../display/BlendMode";
 import { Graphics } from "../display/Graphics";
-import { InteractiveObject } from "../display/InteractiveObject";
 import { Sprite } from "../display/Sprite";
 import { AEvent } from "../events/AEvent";
 import { MouseEvent } from "../events/MouseEvent";
 import { FocusEvent } from "../events/FocusEvent";
 import { Matrix } from "../geom/Matrix";
-import { Point } from "../geom/Point";
 import { Rectangle } from "../geom/Rectangle";
 import { DisplayObject } from "../display/DisplayObject";
+import { Canvas, EmbindEnumEntity, Font, FontMgr, Paint, Paragraph, ParagraphBuilder, ParagraphStyle } from "canvaskit-wasm";
+import { IRenderer } from "../__native/IRenderer";
+import { ColorTransform } from "../geom";
+import { BitmapFilter } from "../filters/BitmapFilter";
+import { SkiaRenderer } from "../__native/SkiaRenderer";
 
-export class TextField extends InteractiveObject {
+export class TextField extends DisplayObject 
+{
+  private paragraph:Paragraph;
+  private paraBuilder:ParagraphBuilder;
+  private paraStyle:ParagraphStyle;
+  private paraFontMgr:FontMgr;
+  private font:Font;
+  private textPaint:Paint;
   private input: HTMLInputElement;
   private _type: string = TextFieldType.DYNAMIC;
   private graphics: Graphics = new Graphics();
   private graphicsDirty: boolean = true;
   private glDirty: boolean = false;
-  private static richTextFields: any[] = [
-    "font",
-    "size",
-    "color",
-    "bold",
-    "italic",
-    "underline",
-    "url",
-    "target",
-    "align",
-    "leftMargin",
-    "rightMargin",
-    "indent",
-    "leading",
-    "blockIndent",
-    "kerning",
-    "letterSpacing",
-    "display",
-  ];
   private _text: string = "";
   private lines: any[] = [];
   private _textFormat: TextFormat = new TextFormat();
@@ -60,13 +48,7 @@ export class TextField extends InteractiveObject {
   private _backgroundColor: number = 0xffffff;
   private _border: boolean = false;
   private _borderColor: number = 0x000000;
-  private boundHelpRect: Rectangle = new Rectangle();
-  private _fullBounds: Rectangle;
-
-  private _cacheCanvas: HTMLCanvasElement;
-  private _cacheCTX: CanvasRenderingContext2D;
   private _cacheImage: BitmapData;
-  private _cacheMatrix: Matrix;
   private _cacheOffsetX: number = 0;
   private _cacheOffsetY: number = 0;
 
@@ -91,6 +73,12 @@ export class TextField extends InteractiveObject {
 
   constructor() {
     super();
+
+    this.textPaint = new FlashPort.canvasKit.Paint();
+    this.textPaint.setColor(FlashPort.canvasKit.Color(40, 0, 0, 1.0));
+    this.textPaint.setAntiAlias(true);
+    this.font = new FlashPort.canvasKit.Font(null, 12);
+    
     this.textColor = 0x000000;
     this.addEventListener(AEvent.REMOVED_FROM_STAGE, this.removedFromStage);
   }
@@ -464,22 +452,6 @@ export class TextField extends InteractiveObject {
   }
 
   public set text(value: string) {
-    /*_text = txt; 
-		FlashPort.dirtyGraphics = true;
-		graphicsDirty = true;
-		
-		if (txt && txt.length > 0 && FlashPort.renderer is WebGLRenderer){
-			glDirty = true;
-			chars = [];
-			var l:number = txt.length;
-			for (var i:number = 0; i < l;i++ ){
-				var c:Char = new Char(txt.charAt(i),_textFormat.size as int,_textFormat.font,_textFormat.color as uint);//color font size etc
-				chars.push(c);
-				WebGLRenderer.textCharSet.add(c);
-			}
-		}else{
-			lines = txt.split("\n");
-		}*/
     if (value === null) {
       value = "";
     }
@@ -496,34 +468,15 @@ export class TextField extends InteractiveObject {
   public appendText = (value: string): void => {
     FlashPort.dirtyGraphics = true;
     this.graphicsDirty = true;
+
     if (this._text != null) {
       this._text += value;
     } else {
       this._text = value;
     }
 
-    if (
-      this._text &&
-      this._text.length > 0 &&
-      FlashPort.renderer instanceof WebGLRenderer
-    ) {
-      this.glDirty = true;
-      var tl: number = value.length;
-      this.chars = this.chars || [];
-      for (var i: number = 0; i < tl; i++) {
-        var c: Char = new Char(
-          value.charAt(i),
-          this._textFormat.size,
-          this._textFormat.font,
-          this._textFormat.color
-        ); //color font size etc
-        this.chars.push(c);
-        WebGLRenderer.textCharSet.add(c);
-      }
-    } else {
-      this.lines = this.lines || [];
-      this.lines = this.lines.concat(value.split("\n"));
-    }
+    this.lines = this.lines || [];
+    this.lines = this.lines.concat(value.split("\n"));
   };
 
   private static PUSH_POOL = (key: number, da: GLDrawable): void => {
@@ -762,26 +715,6 @@ export class TextField extends InteractiveObject {
     }
   };
 
-  public __updateGL = (ctx: GLCanvasRenderingContext2D): void => {
-    if (this.chars && this.chars.length > 0) {
-      this.__updateBuff();
-      //draw vbuff ibuff
-      if (this.num > 0) {
-        this.da.index = this.indexBufferSet;
-        this.da.numTriangles = this.num * 2;
-        ctx.renderImage(
-          WebGLRenderer.textCharSet.image,
-          this.da,
-          this.transform.concatenatedMatrix,
-          null,
-          false,
-          false,
-          true
-        );
-      }
-    }
-  };
-
   public get textColor(): number {
     return Number(this._textFormat.color);
   }
@@ -924,8 +857,6 @@ export class TextField extends InteractiveObject {
     h = h > bounds.height ? h - bounds.width : 0;
     bounds.inflate(w / 2, h / 2);
 
-    this._fullBounds = bounds.clone();
-
     return bounds;
   };
 
@@ -1031,196 +962,96 @@ export class TextField extends InteractiveObject {
     /**/
   }
 
-  /*override*/ public set cacheAsBitmap(value: boolean) {
-    if (value && this._type != TextFieldType.INPUT) {
-      if (!this._cacheImage) this._cacheImage = new BitmapData(1, 1);
-      var bounds: Rectangle = this.getFullBounds(this);
+  /*override*/
+  public __update = (ctx: Canvas, offsetX: number = 0, offsetY: number = 0, filters: BitmapFilter[] = []): void => 
+  {
+    super.__update(ctx, offsetX, offsetY, filters);
 
-      bounds.inflate(this._filterOffsetX, this._filterOffsetY); // add space for filter effects
+    if (this._text != null && this.visible)
+    {
+      this.__draw(ctx, this.transform.concatenatedMatrix);
 
-      this._cacheCanvas = <HTMLCanvasElement>document.createElement("canvas");
-      this._cacheCanvas.width = bounds.width;
-      this._cacheCanvas.height = bounds.height;
-      this._cacheCTX = <CanvasRenderingContext2D>(
-        this._cacheCanvas.getContext("2d")
-      );
-      //_cacheCTX.fillStyle = "blue";
-      //_cacheCTX.fillRect(0, 0, _cacheCanvas.width, _cacheCanvas.height);
-      this._cacheOffsetX = bounds.width - bounds.right - this.x - 2;
-      this._cacheOffsetY = bounds.height - bounds.bottom - this.y - 3;
-
-      if (this.parent) {
-        this._cacheOffsetX -= this.parent.x;
-        this._cacheOffsetY -= this.parent.y;
+      if (this.paragraph)
+      {
+        (FlashPort.renderer as SkiaRenderer).renderParagraph(ctx, this.paragraph, this.transform.concatenatedMatrix);
       }
 
-      var mat: Matrix = this.transform.concatenatedMatrix.clone();
-      mat.translate(this._cacheOffsetX, this._cacheOffsetY);
-
-      this.__draw(this._cacheCTX, mat);
-
-      this._cacheOffsetX = bounds.left + 2;
-      this._cacheOffsetY = bounds.top + 3;
-
-      this._cacheImage.image = this._cacheCanvas;
-      this.updateTransforms();
-
-      // cache after drawing all graphics
-      this._cacheAsBitmap = value;
-
-      this.graphicsDirty = true;
-    } else {
-      this._cacheCanvas = null;
-      this._cacheCTX = null;
-      this._cacheAsBitmap = false;
-      this.graphicsDirty = true;
-    }
-  }
-
-  public get cacheImage(): BitmapData {
-    return this._cacheImage;
-  }
-
-  public get cacheOffsetX(): number {
-    return this._cacheOffsetX;
-  }
-
-  public get cacheOffsetY(): number {
-    return this._cacheOffsetY;
-  }
-
-  /*override*/ public __update = (
-    ctx: CanvasRenderingContext2D,
-    offsetX: number = 0,
-    offsetY: number = 0,
-    parentIsCached: boolean = false
-  ): void => {
-    if (!parentIsCached || (parentIsCached && !this._parentCached)) {
-      super.__update(ctx, offsetX, offsetY, parentIsCached);
-      if (this._text != null && this.visible) {
-        FlashPort.renderer.renderRichText(ctx, this, offsetX, offsetY);
-        FlashPort.drawCounter++;
-      }
+      FlashPort.drawCounter++;
     }
 
-    this._parentCached = parentIsCached;
   };
 
-  public __updateCanvas = (
-    ctx: CanvasRenderingContext2D,
-    offsetX: number = 0,
-    offsetY: number = 0
-  ): void => {
-    if (!this._parentCached) {
-      if (
-        this.filters.length &&
-        !this.cacheAsBitmap &&
-        !this.parent.cacheAsBitmap
-      )
-        this.cacheAsBitmap = true;
+  public __draw = (ctx: Canvas, m: Matrix): void => 
+  {
+    if (this._border || this._background) 
+    {
+      this.graphics.clear();
+      if (this.border) this.graphics.lineStyle(0, this.borderColor);
+      if (this.background) this.graphics.beginFill(this.backgroundColor);
+      this.graphics.drawRect(-2, 0, this.width + 4, this.height + 2);
 
-      if (
-        this.cacheAsBitmap &&
-        !this.parent.cacheAsBitmap &&
-        this._type != TextFieldType.INPUT
-      ) {
-        FlashPort.renderer.renderImage(
-          ctx,
-          this._cacheImage,
-          this.transform.concatenatedMatrix,
-          this.blendMode,
-          this.transform.concatenatedColorTransform,
-          -this.x - this._cacheOffsetX,
-          -this.y - this._cacheOffsetY
-        );
-      } else {
-        var mat: Matrix = this.transform.concatenatedMatrix.clone();
-        mat.tx += offsetX;
-        mat.ty += offsetY;
-        this.__draw(ctx, mat);
-      }
-    }
-  };
-
-  public __draw = (ctx: CanvasRenderingContext2D, m: Matrix): void => {
-    if ((this._border || this._background) && !this.cacheAsBitmap) {
-      if (this.graphicsDirty) {
-        this.graphicsDirty = false;
-        this.graphics.clear();
-        if (this.border) this.graphics.lineStyle(0, this.borderColor);
-        if (this.background) this.graphics.beginFill(this.backgroundColor);
-        this.graphics.drawRect(-2, 0, this.width + 4, this.height + 2);
-      }
-      FlashPort.renderer.renderGraphics(
-        ctx,
-        this.graphics,
-        m,
-        this.blendMode,
-        this.transform.concatenatedColorTransform
-      );
-      this.ApplyFilters(
-        ctx,
-        this.graphics.lastFill != null,
-        this.graphics.lastStroke != null
-      );
+      FlashPort.renderer.renderGraphics(ctx, this.graphics, m, this.blendMode, this.transform.concatenatedColorTransform);
+      //this.ApplyFilters(ctx);
     }
 
-    if (this.type == TextFieldType.DYNAMIC) {
-      if (!this._background)
-        this.ApplyFilters(
-          ctx,
-          this.graphics.lastFill != null,
-          this.graphics.lastStroke != null,
-          true,
-          true
-        ); // shadows need to be applied before rendering text.
-      for (var i: number = 0; i < this.lines.length; i++) {
-        //var textYpos:number = i * int(defaultTextFormat.size) * scaleY;
-        var size: number = Number(this.defaultTextFormat.size);
-        var textYpos: number = i * size * this.scaleY;
-        var textXpos: number =
-          this.defaultTextFormat.align == "right"
-            ? this.width / this.scaleX
-            : this.defaultTextFormat.align == "center"
-            ? (this._width - this._textWidth) / 2 / this.scaleX
-            : 2;
-        FlashPort.renderer.renderText(
-          ctx,
-          this.lines[i],
-          this.defaultTextFormat,
-          m,
-          this.blendMode,
-          this.transform.concatenatedColorTransform,
-          textXpos,
-          textYpos + 4
+    if (this.graphicsDirty)
+    {
+      if (this.type == TextFieldType.DYNAMIC)
+      {
+        //if (!this._background) this.ApplyFilters(ctx);
+        
+        let color = (FlashPort.renderer as IRenderer).getRGBAColor(this._textFormat.color, this.alpha, this.transform.colorTransform);
+        let alignment:EmbindEnumEntity = this._textFormat.align == "left" ? FlashPort.canvasKit.TextAlign.Left : (this._textFormat.align == "right" ? FlashPort.canvasKit.TextAlign.Right : FlashPort.canvasKit.TextAlign.Center);
+        
+        this.paraStyle = new FlashPort.canvasKit.ParagraphStyle(
+          {
+            textStyle: {
+              color: color,
+              fontFamilies:[this._textFormat.font],
+              fontSize: this._textFormat.size,
+              fontStyle: {
+                weight: this._textFormat.bold ? FlashPort.canvasKit.FontWeight.Bold : FlashPort.canvasKit.FontWeight.Normal,
+                slant: this._textFormat.italic ? FlashPort.canvasKit.FontSlant.Italic : FlashPort.canvasKit.FontSlant.Upright
+              }
+            },
+            textAlign: alignment
+          }
         );
-      }
-      if (!this._background)
-        this.ApplyFilters(
-          ctx,
-          this.graphics.lastFill != null,
-          this.graphics.lastStroke != null,
-          true,
-          false,
-          true
-        );
-    } else {
-      //var posX:number = m.tx + ((width - textWidth) / 2);
-      this.input.style.left = m.tx + "px";
-      this.input.style.top = m.ty + "px";
-      this.input.style.width = this.width + "px";
-      this.input.style.height = this.height + "px";
-      this.input.style.fontFamily = this.defaultTextFormat.font;
-      this.input.style.fontSize = this.defaultTextFormat.size + "px";
-      this.input.style.color = this.defaultTextFormat.csscolor;
-      this.input.addEventListener("mousedown", this.handleHTMLMouseDown);
-      //input.style.textAlign = defaultTextFormat.align;
-      if (this.input.value != this.text) this.input.value = this.text;
-      //input.style.transform = "matrix("+m.a+","+m.b+","+m.c+","+m.d+","+m.tx+","+m.ty+")";
-      if (this.input.parentElement == null) {
-        this.stage.__htmlWrapper.appendChild(this.input);
+        
+        if (this.paragraph) this.paragraph.delete();
+        
+        this.paraFontMgr = FlashPort.canvasKit.FontMgr.FromData(FlashPort.fonts[this._textFormat.font]);
+        this.paraBuilder = FlashPort.canvasKit.ParagraphBuilder.Make(this.paraStyle, this.paraFontMgr);
+        this.paraBuilder.addText(this._text);
+        this.paragraph = this.paraBuilder.build();
+        this.paragraph.layout(this._textFormat.size * this._text.length);
+
+        this.paraFontMgr.delete();
+        this.paraBuilder.delete();
+        
+
+        //if (!this._background) this.ApplyFilters(ctx);
+      } 
+      else 
+      {
+        this.input.style.left = m.tx + "px";
+        this.input.style.top = m.ty + "px";
+        this.input.style.width = this.width + "px";
+        this.input.style.height = this.height + "px";
+        this.input.style.fontFamily = this.defaultTextFormat.font;
+        this.input.style.fontSize = this.defaultTextFormat.size + "px";
+        this.input.style.color = this.defaultTextFormat.csscolor;
+        this.input.addEventListener("mousedown", this.handleHTMLMouseDown);
+        //input.style.textAlign = defaultTextFormat.align;
+        if (this.input.value != this.text) this.input.value = this.text;
+        
+        if (this.input.parentElement == null) {
+          this.stage.__htmlWrapper.appendChild(this.input);
+        }
       }
     }
+
+    this.graphicsDirty = false;
   };
 
   private handleHTMLMouseDown = (e: Event): void => {
@@ -1249,15 +1080,6 @@ export class TextField extends InteractiveObject {
     //var rect:Rectangle = this.getRect(this);
     //if (rect) return rect.containsPoint(this.globalToLocal(new Point(x,y)));
     return false;
-  };
-
-  /*override*/ public __getRect = (): Rectangle => {
-    if (this.text && this.text != "") {
-      this.boundHelpRect.width = this.width;
-      this.boundHelpRect.height = this.height;
-      return this.boundHelpRect;
-    }
-    return null;
   };
 
   private getNextPow2 = (v: number): number => {

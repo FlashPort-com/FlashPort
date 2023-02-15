@@ -1,13 +1,15 @@
 import { IGraphicsFill } from "./IGraphicsFill";
 import { IGraphicsData } from "./IGraphicsData";
 import { BitmapData } from "./BitmapData";
-import { GLCanvasRenderingContext2D } from "../../flash/__native/GLCanvasRenderingContext2D";
 import { ColorTransform } from "../geom/ColorTransform";
 import { Matrix } from "../geom/Matrix";
+import { Canvas, Paint, Path } from "canvaskit-wasm";
 	
 export class GraphicsBitmapFill extends Object implements IGraphicsFill, IGraphicsData
 {
-	
+	public paint: Paint;
+	public graphicType:string = "FILL";
+	public path:Path;
 	public bitmapData:BitmapData;
 	
 	public matrix:Matrix;
@@ -34,13 +36,9 @@ export class GraphicsBitmapFill extends Object implements IGraphicsFill, IGraphi
 		
 		ctx.fillStyle = this.pattern;
 	}
-	
-	public gldraw(ctx:GLCanvasRenderingContext2D, colorTransform:ColorTransform):void
+
+	public skiaDraw(ctx:Canvas, colorTransform:ColorTransform, mat?:Matrix):void
 	{
-		if (this.pattern==null && this.bitmapData) {
-			this.pattern = ctx.createPattern(this.bitmapData.image, this.repeat ? "repeat" : "no-repeat");
-		}
-		ctx.fillStyleIsImage = true;
-		ctx.fillStyle = this.pattern.toString();
+
 	}
 }

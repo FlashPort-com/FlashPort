@@ -8,6 +8,10 @@ import { ColorTransform } from "../geom/ColorTransform";
 import { Matrix } from "../geom/Matrix";
 import { Point } from "../geom/Point";
 import { Rectangle } from "../geom/Rectangle";
+import { IRenderer } from "../__native/IRenderer";
+import { Canvas, Image, ImageInfo, Path } from "canvaskit-wasm";
+import { GraphicsPath } from "./GraphicsPath";
+import { BitmapFilter } from "../filters/BitmapFilter";
 	
 	export class Bitmap extends DisplayObject
 	{
@@ -53,46 +57,42 @@ import { Rectangle } from "../geom/Rectangle";
 			return new Rectangle();
 		}
 		
-		/*override*/ public __update(ctx:CanvasRenderingContext2D, offsetX:number = 0, offsetY:number = 0, parentIsCached:boolean = false):void
+		/*override*/
+		public __update(ctx:Canvas, offsetX:number = 0, offsetY:number = 0, filters: BitmapFilter[] = []):void
 		{
-			if (!this._off && this.visible && (!parentIsCached || (parentIsCached && !this._parentCached)))
+			if (!this._off && this.visible)
 			{
-				//if (this.name.indexOf("https") != -1) trace("Bitmap Update: " + this.name);
 				if (this._bitmapData && this._bitmapData.image)
 				{
+					let mat:Matrix = this.transform.concatenatedMatrix;
+					let path:Path;
 					if (this.mask)
 					{
-						var mat:Matrix = this.mask.transform.concatenatedMatrix.clone();
-						if (parentIsCached)
-						{
-							mat.tx += offsetX;
-							mat.ty += offsetY;
-							mat.scale((!this.parent ? 1 : this.scaleX) / mat.a, (!this.parent ? 1 : this.scaleY) / mat.d);
-						}
+						var maskMat:Matrix = this.mask.transform.concatenatedMatrix;
 						
 						ctx.save();
-						this.mask['graphics'].draw(ctx, mat, BlendMode.NORMAL, new ColorTransform());
-						ctx.clip();
+						this.mask['graphics'].draw(ctx, maskMat, BlendMode.NORMAL, new ColorTransform(), []);
+						path = (this.mask['graphics'].lastPath as GraphicsPath).path;
+						let pathMat:number[] = [maskMat.a, maskMat.c, maskMat.tx, maskMat.b, maskMat.d, maskMat.ty, 0, 0, 1];
+						path.transform(pathMat)
+						path.setFillType(FlashPort.canvasKit.FillType.Winding);
+						ctx.clipPath(path, FlashPort.canvasKit.ClipOp.Intersect, true);
 					}
 					
-					var m:Matrix = this.transform.concatenatedMatrix;
-					if (parentIsCached)
-					{
-						m.tx += offsetX;
-						m.ty += offsetY;
-					}
-					
-					FlashPort.renderer.renderImage(ctx, this._bitmapData, m, this.blendMode, this.transform.concatenatedColorTransform);
+					(FlashPort.renderer as IRenderer).renderImage(ctx, this._bitmapData.image, mat, this.blendMode, this.transform.concatenatedColorTransform);
 					FlashPort.drawCounter++;
-					if (this.mask) ctx.restore();
+					if (this.mask)
+					{
+						ctx.restore();
+						path.delete();
+					} 
 					
 				}
 			}
-			
-			this._parentCached = parentIsCached;
 		}
 		
-		/*override*/ protected __doMouse = (e:MouseEvent):DisplayObject =>
+		/*override*/
+		protected __doMouse = (e:MouseEvent):DisplayObject =>
 		{
 			if (this.visible) 
 			{
@@ -103,7 +103,8 @@ import { Rectangle } from "../geom/Rectangle";
 			return null;
 		}
 		
-		/*override*/ public hitTestPoint = (x:number, y:number, shapeFlag:boolean = false):boolean =>
+		/*override*/
+		public hitTestPoint = (x:number, y:number, shapeFlag:boolean = false):boolean =>
 		{
 			var rect:Rectangle = new Rectangle(0, 0, this.width * this.scaleX, this.height * this.scaleY);
 			var gToL:Point  = this.globalToLocal(new Point(x, y));

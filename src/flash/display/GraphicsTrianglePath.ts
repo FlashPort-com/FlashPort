@@ -1,18 +1,18 @@
 import { IGraphicsPath } from "./IGraphicsPath";
 import { IGraphicsData } from "./IGraphicsData";
-
-import { GLCanvasRenderingContext2D } from "../__native/GLCanvasRenderingContext2D";
 import { ColorTransform } from "../geom/ColorTransform";
+import { Canvas, Paint, Path } from "canvaskit-wasm";
+import { Matrix } from "../geom";
 
 export class GraphicsTrianglePath extends Object implements IGraphicsPath, IGraphicsData
 {
-	
+	public paint:Paint;
+	public graphicType:string = "PATH";
+	public path:Path;
+
 	public indices:number[];
-	
 	public vertices:number[];
-	
 	public uvtData:number[];
-	
 	private _culling:string;
 	
 	constructor(vertices:number[] = null, indices:number[] = null, uvtData:number[] = null, culling:string = "none"){
@@ -21,10 +21,6 @@ export class GraphicsTrianglePath extends Object implements IGraphicsPath, IGrap
 		this.indices = indices;
 		this.uvtData = uvtData;
 		this._culling = culling;
-	/*if(culling != TriangleCulling.NONE && culling != TriangleCulling.POSITIVE && culling != TriangleCulling.NEGATIVE)
-		{
-		Error.throwError(null,2008,"culling");
-		}*/
 	}
 	
 	public get culling():string
@@ -34,10 +30,6 @@ export class GraphicsTrianglePath extends Object implements IGraphicsPath, IGrap
 	
 	public set culling(value:string)
 	{
-		/* if(value != TriangleCulling.NONE && value != TriangleCulling.POSITIVE && value != TriangleCulling.NEGATIVE)
-			{
-			Error.throwError(null,2008,"culling");
-			}*/
 		this._culling = value;
 	}
 	
@@ -45,7 +37,9 @@ export class GraphicsTrianglePath extends Object implements IGraphicsPath, IGrap
 	{
 		console.log("tripath");
 	}
-	public gldraw(ctx:GLCanvasRenderingContext2D, colorTransform:ColorTransform):void{
+	
+	public skiaDraw(ctx:Canvas, colorTransform:ColorTransform, mat?:Matrix):void
+	{
 		
 	}
 }

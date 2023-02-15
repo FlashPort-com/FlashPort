@@ -36,16 +36,20 @@ export class AssetLoader extends EventDispatcher
 	{
 		if (this.queue.length > 0)
 		{
-			this.queueItem = this.queue.shift();
+			this.queueItem = this.queue.shift() || '';
 			var ext:string = this.queueItem.substr(this.queueItem.lastIndexOf(".")).toLowerCase();
 			
 			if (ext == ".ttf" || ext == ".woff" || ext == ".woff2")
 			{
 				var fontName:string = this.queueItem.replace(/_/g, " ");
-				fontName = fontName.substring(0, fontName.lastIndexOf("."));
-				//trace("fontName: " + fontName);
-				let fontFace:any = new FontFace(fontName, "url('" + this.queueItem + "')");
-				fontFace.load().catch(this.fontError).then(this.fontLoaded);
+				var startIndex = fontName.lastIndexOf('/');
+				if (startIndex != 0 ) startIndex += 1;
+				fontName = fontName.substring(startIndex, fontName.lastIndexOf("."));
+				fetch(this.queueItem).then((resp) => {
+					resp.arrayBuffer().then((buffer:ArrayBuffer) => {
+						this.fontLoaded(buffer, fontName);
+					});
+				});
 			}
 			else if (ext == ".mp3" || ext == ".wav" || ext == ".mp4" || ext == ".webm")
 			{
@@ -93,12 +97,11 @@ export class AssetLoader extends EventDispatcher
 		if (e) console.log("Failed to load font: " + e.message);
 	}
 
-	private fontLoaded = (e:any):void =>
+	private fontLoaded = (buffer:ArrayBuffer, fontName:string):void =>
 	{
-		if (e)
-		{
-			document.fonts.add(e); // adds the FontFace to the FontFaceSet to be usable in the current document.
-			//trace("font loaded: " + e.family);
+		if (buffer)
+		{		
+			FlashPort.fonts[fontName] = buffer;
 		}
 		this.load();
 	}

@@ -1,3 +1,5 @@
+import { Canvas, MaskFilter, Paint, Path } from "canvaskit-wasm";
+import { FlashPort } from "../../FlashPort";
 import { BitmapFilter } from "./BitmapFilter";
 
 /**
@@ -81,9 +83,13 @@ import { BitmapFilter } from "./BitmapFilter";
  */
 export class BlurFilter extends BitmapFilter
 {
+	private paint:Paint;
+	private maskFilter:MaskFilter;
 	private _blurX:number = 0;
 	private _blurY:number = 0;
 	private _quality:number = 1;
+
+	private paints:any = {};
 	
 	/**
 	 * The amount of horizontal blur. Valid values are from 0 to 255 (floating point). The
@@ -275,6 +281,12 @@ export class BlurFilter extends BitmapFilter
 		this._blurX = blurX;
 		this._blurY = blurY;
 		this._quality = quality;
+
+		this.maskFilter = FlashPort.canvasKit.MaskFilter.MakeBlur(
+			FlashPort.canvasKit.BlurStyle.Normal,
+			Math.max(this._blurX, this._blurY),
+			false
+		);
 	}
 
 	/**
@@ -339,8 +351,8 @@ export class BlurFilter extends BitmapFilter
 	/*public function clone () : flash.filters.BitmapFilter;*/
 
 
-	public _applyFilter(ctx:CanvasRenderingContext2D):void
+	public _applyFilter(ctx:Canvas, path:Path, blurPaint:Paint):void
 	{
-		ctx.filter = 'blur(' + this._blurX + 'px)';
+		blurPaint.setMaskFilter(this.maskFilter);
 	}
 }

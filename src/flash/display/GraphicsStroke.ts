@@ -4,27 +4,24 @@ import { IGraphicsFill } from "./IGraphicsFill";
 import { GraphicsSolidFill } from "./GraphicsSolidFill";
 import { FlashPort } from "../../FlashPort";
 import { GraphicsGradientFill } from "./GraphicsGradientFill";
-
-import { GLCanvasRenderingContext2D } from "../__native/GLCanvasRenderingContext2D";
 import { ColorTransform } from "../geom/ColorTransform";
 import { JointStyle } from "./JointStyle";
+import { Canvas, Color, Paint, Path } from "canvaskit-wasm";
+import { Matrix } from "../geom";
+import { IRenderer } from "../__native/IRenderer";
 
 export class GraphicsStroke extends Object implements IGraphicsStroke, IGraphicsData
 {
-	
+	public graphicType:string = "STROKE";
+	public paint: Paint;
+	public path: Path;
 	public thickness:number;
-	
 	public pixelHinting:boolean;
-	
-	private _caps:string;
-	
-	private _joints:string;
-	
 	public miterLimit:number;
-	
+	private _caps:string;
+	private _joints:string;
 	private _scaleMode:string;
-	
-	public fill:IGraphicsFill;
+	private _fill:IGraphicsFill;
 	
 	constructor(thickness:number = NaN, pixelHinting:boolean = false, scaleMode:string = "normal", caps:string = "none", joints:string = "round", miterLimit:number = 3.0, fill:IGraphicsFill = null){
 		super();
@@ -34,20 +31,28 @@ export class GraphicsStroke extends Object implements IGraphicsStroke, IGraphics
 		this._joints = joints;
 		this.miterLimit = miterLimit;
 		this._scaleMode = scaleMode;  // TODO implement scaleMode
-		this.fill = fill;
+		this._fill = fill ? fill : new GraphicsSolidFill(0x000000, 1);
 		
-	/*if(this._scaleMode != LineScaleMode.NORMAL && this._scaleMode != LineScaleMode.NONE && this._scaleMode != LineScaleMode.VERTICAL && this._scaleMode != LineScaleMode.HORIZONTAL)
-		{
-		Error.throwError(null,2008,"scaleMode");
-		}
-		if(this._caps != CapsStyle.NONE && this._caps != CapsStyle.ROUND && this._caps != CapsStyle.SQUARE)
-		{
-		Error.throwError(null,2008,"caps");
-		}
-		if(this._joints != JointStyle.BEVEL && this._joints != JointStyle.MITER && this._joints != JointStyle.ROUND)
-		{
-		Error.throwError(null,2008,"joints");
-		}*/
+		this.paint = this.fill.paint;
+		this.paint.setColor(FlashPort.canvasKit.Color(0, 0, 0, 0));
+		this.paint.setStyle(FlashPort.canvasKit.PaintStyle.Stroke);
+		this.paint.setStrokeWidth(thickness);
+		this.paint.setStrokeCap(FlashPort.canvasKit.StrokeCap.Square);
+		this.paint.setAntiAlias(true);
+	}
+
+	public get fill():IGraphicsFill
+	{
+		return this._fill;
+	}
+
+	public set fill(value:IGraphicsFill)
+	{
+		this._fill = value;
+		this.paint = this._fill.paint;
+		this.paint.setStyle(FlashPort.canvasKit.PaintStyle.Stroke);
+		this.paint.setStrokeWidth(this.thickness);
+		this.paint.setStrokeCap(FlashPort.canvasKit.StrokeCap.Square);
 	}
 	
 	public get caps():string
@@ -57,10 +62,6 @@ export class GraphicsStroke extends Object implements IGraphicsStroke, IGraphics
 	
 	public set caps(value:string)
 	{
-		/*if(value != CapsStyle.NONE && value != CapsStyle.ROUND && value != CapsStyle.SQUARE)
-			{
-			Error.throwError(null,2008,"caps");
-			}*/
 		this._caps = value;
 	}
 	
@@ -71,10 +72,6 @@ export class GraphicsStroke extends Object implements IGraphicsStroke, IGraphics
 	
 	public set joints(value:string)
 	{
-		/*if(value != JointStyle.BEVEL && value != JointStyle.MITER && value != JointStyle.ROUND)
-			{
-			Error.throwError(null,2008,"joints");
-			}*/
 		this._joints = value;
 	}
 	
@@ -85,10 +82,6 @@ export class GraphicsStroke extends Object implements IGraphicsStroke, IGraphics
 	
 	public set scaleMode(value:string)
 	{
-		/*if(value != LineScaleMode.NORMAL && value != LineScaleMode.NONE && value != LineScaleMode.VERTICAL && value != LineScaleMode.HORIZONTAL)
-			{
-			Error.throwError(null,2008,"scaleMode");
-			}*/
 		this._scaleMode = value;
 	}
 	
@@ -108,7 +101,7 @@ export class GraphicsStroke extends Object implements IGraphicsStroke, IGraphics
 				ctx.lineCap = this._caps as CanvasLineCap;
 				ctx.lineJoin = this._joints as CanvasLineJoin;
 				ctx.miterLimit = this.miterLimit;
-				ctx.strokeStyle = FlashPort.renderer.getCssColor(sf.color, sf.alpha,colorTransform,null).toString();//sf.getCssColor(colorTransform);
+				ctx.strokeStyle = (FlashPort.renderer as IRenderer).getCssColor(sf.color, sf.alpha,colorTransform,null).toString();
 			}
 			else if (this.fill instanceof GraphicsGradientFill)
 			{
@@ -121,21 +114,18 @@ export class GraphicsStroke extends Object implements IGraphicsStroke, IGraphics
 			}
 		}
 	}
-	
-	public gldraw(ctx:GLCanvasRenderingContext2D, colorTransform:ColorTransform):void{
-		if (isNaN(this.thickness))
+
+	public skiaDraw(ctx:Canvas, colorTransform:ColorTransform, mat?:Matrix):void
+	{
+		if (this._fill instanceof GraphicsSolidFill)
 		{
-			ctx.stroke();
+			var sf:GraphicsSolidFill = this._fill as GraphicsSolidFill;
+			var rgba:Color = (FlashPort.renderer as IRenderer).getRGBAColor(sf.color, sf.alpha, colorTransform);
+			this.paint.setColor(rgba);
 		}
 		else
 		{
-			ctx.lineWidth = this.thickness;
-			if (this.fill instanceof GraphicsSolidFill)
-			{
-				var sf:GraphicsSolidFill = (<GraphicsSolidFill>this.fill );
-				FlashPort.renderer.getCssColor(sf.color, sf.alpha,colorTransform,sf._glcolor);
-				ctx.strokeStyle = sf._glcolor.toString(); //sf.getCssColor(colorTransform);
-			}
+			this._fill.skiaDraw(ctx, colorTransform, mat);
 		}
 	}
 }
