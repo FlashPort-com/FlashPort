@@ -18,6 +18,7 @@ export class FlashPort
 	public static images:object = {};
 	public static sounds:object = {};
 	public static videos:object = {};
+	public static fonts:object = {};
 	
 	public static requestAnimationFrame:Function =
 		window["requestAnimationFrame"]       ||

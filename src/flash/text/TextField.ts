@@ -23,6 +23,7 @@ import { Canvas, EmbindEnumEntity, Font, FontMgr, Paint, Paragraph, ParagraphBui
 import { IRenderer } from "../__native/IRenderer";
 import { ColorTransform } from "../geom";
 import { BitmapFilter } from "../filters/BitmapFilter";
+import { SkiaRenderer } from "../__native/SkiaRenderer";
 
 export class TextField extends DisplayObject 
 {
@@ -69,16 +70,9 @@ export class TextField extends DisplayObject
   public tagas: any[] = [];
   private href: string;
   private _htmlText: string;
-  private robotoData:ArrayBuffer;
 
   constructor() {
     super();
-
-    fetch('https://storage.googleapis.com/skia-cdn/google-web-fonts/Roboto-Regular.ttf').then((resp) => {
-      resp.arrayBuffer().then((buffer:ArrayBuffer) => {
-        this.robotoData = buffer;
-      });
-    });
 
     this.textPaint = new FlashPort.canvasKit.Paint();
     this.textPaint.setColor(FlashPort.canvasKit.Color(40, 0, 0, 1.0));
@@ -474,6 +468,7 @@ export class TextField extends DisplayObject
   public appendText = (value: string): void => {
     FlashPort.dirtyGraphics = true;
     this.graphicsDirty = true;
+
     if (this._text != null) {
       this._text += value;
     } else {
@@ -482,9 +477,6 @@ export class TextField extends DisplayObject
 
     this.lines = this.lines || [];
     this.lines = this.lines.concat(value.split("\n"));
-
-    
-
   };
 
   private static PUSH_POOL = (key: number, da: GLDrawable): void => {
@@ -975,20 +967,13 @@ export class TextField extends DisplayObject
   {
     super.__update(ctx, offsetX, offsetY, filters);
 
-    if (this._text != null && this.visible) {
-      
-      //if (!this.paragraph)
-      //{
-        this.__draw(ctx, this.transform.concatenatedMatrix);
-        //this.paraBuilder.delete();
-        //this.paraFontMgr.delete();
-      //}
-      //console.log("dirty!!");
-      
+    if (this._text != null && this.visible)
+    {
+      this.__draw(ctx, this.transform.concatenatedMatrix);
 
       if (this.paragraph)
       {
-        if (this.robotoData) ctx.drawParagraph(this.paragraph, this.transform.concatenatedMatrix.tx, this.transform.concatenatedMatrix.ty);
+        (FlashPort.renderer as SkiaRenderer).renderParagraph(ctx, this.paragraph, this.transform.concatenatedMatrix);
       }
 
       FlashPort.drawCounter++;
@@ -1009,12 +994,13 @@ export class TextField extends DisplayObject
       //this.ApplyFilters(ctx);
     }
 
-    if (this.type == TextFieldType.DYNAMIC)
+    if (this.graphicsDirty)
     {
-      //if (!this._background) this.ApplyFilters(ctx);
-
-      if (this.robotoData)
+      if (this.type == TextFieldType.DYNAMIC)
       {
+        //if (!this._background) this.ApplyFilters(ctx);
+
+        
         let color = (FlashPort.renderer as IRenderer).getRGBAColor(this._textFormat.color, this.alpha, this.transform.colorTransform);
         let alignment:EmbindEnumEntity = this._textFormat.align == "left" ? FlashPort.canvasKit.TextAlign.Left : (this._textFormat.align == "right" ? FlashPort.canvasKit.TextAlign.Right : FlashPort.canvasKit.TextAlign.Center);
         
@@ -1022,7 +1008,7 @@ export class TextField extends DisplayObject
           {
             textStyle: {
               color: color,
-              fontFamilies:['Roboto'],
+              fontFamilies:[this._textFormat.font],
               fontSize: this._textFormat.size,
               fontStyle: {
                 weight: this._textFormat.bold ? FlashPort.canvasKit.FontWeight.Bold : FlashPort.canvasKit.FontWeight.Normal,
@@ -1034,8 +1020,8 @@ export class TextField extends DisplayObject
         );
         
         if (this.paragraph) this.paragraph.delete();
-
-        this.paraFontMgr = FlashPort.canvasKit.FontMgr.FromData(this.robotoData);
+        
+        this.paraFontMgr = FlashPort.canvasKit.FontMgr.FromData(FlashPort.fonts[this._textFormat.font]);
         this.paraBuilder = FlashPort.canvasKit.ParagraphBuilder.Make(this.paraStyle, this.paraFontMgr);
         this.paraBuilder.addText(this._text);
         this.paragraph = this.paraBuilder.build();
@@ -1043,25 +1029,26 @@ export class TextField extends DisplayObject
 
         this.paraFontMgr.delete();
         this.paraBuilder.delete();
-      }
+        
 
-      //if (!this._background) this.ApplyFilters(ctx);
-    } 
-    else 
-    {
-      this.input.style.left = m.tx + "px";
-      this.input.style.top = m.ty + "px";
-      this.input.style.width = this.width + "px";
-      this.input.style.height = this.height + "px";
-      this.input.style.fontFamily = this.defaultTextFormat.font;
-      this.input.style.fontSize = this.defaultTextFormat.size + "px";
-      this.input.style.color = this.defaultTextFormat.csscolor;
-      this.input.addEventListener("mousedown", this.handleHTMLMouseDown);
-      //input.style.textAlign = defaultTextFormat.align;
-      if (this.input.value != this.text) this.input.value = this.text;
-      
-      if (this.input.parentElement == null) {
-        this.stage.__htmlWrapper.appendChild(this.input);
+        //if (!this._background) this.ApplyFilters(ctx);
+      } 
+      else 
+      {
+        this.input.style.left = m.tx + "px";
+        this.input.style.top = m.ty + "px";
+        this.input.style.width = this.width + "px";
+        this.input.style.height = this.height + "px";
+        this.input.style.fontFamily = this.defaultTextFormat.font;
+        this.input.style.fontSize = this.defaultTextFormat.size + "px";
+        this.input.style.color = this.defaultTextFormat.csscolor;
+        this.input.addEventListener("mousedown", this.handleHTMLMouseDown);
+        //input.style.textAlign = defaultTextFormat.align;
+        if (this.input.value != this.text) this.input.value = this.text;
+        
+        if (this.input.parentElement == null) {
+          this.stage.__htmlWrapper.appendChild(this.input);
+        }
       }
     }
 

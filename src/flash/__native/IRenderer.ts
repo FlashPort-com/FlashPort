@@ -1,5 +1,5 @@
 
-import { Canvas, Color, Font, Image, Paint } from "canvaskit-wasm";
+import { Canvas, Color, Font, Image, Paint, Paragraph } from "canvaskit-wasm";
 import { IGraphicsData } from "../display";
 import { BitmapData } from "../display/BitmapData";
 import { BitmapFilter } from "../filters";
@@ -19,4 +19,6 @@ export interface IRenderer
 	renderVideo(ctx:Canvas | CanvasRenderingContext2D,video:HTMLVideoElement,m:Matrix, width:number, height:number, blendMode:string,colorTransform:ColorTransform):void;
 	
 	renderText(ctx:Canvas | CanvasRenderingContext2D,txt:string, paint:Paint, font:Font, m:Matrix, blendMode:string, colorTransform:ColorTransform,x:number,y:number):void;
+
+	renderParagraph(ctx:Canvas | CanvasRenderingContext2D,paragraph:Paragraph, m:Matrix, blendMode?:string, colorTransform?:ColorTransform):void;
 }

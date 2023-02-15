@@ -1,7 +1,7 @@
 import { IGraphicsData } from "../display/IGraphicsData";
 import { ColorTransform } from "../geom/ColorTransform";
 import { Matrix } from "../geom/Matrix";
-import { Canvas, CanvasKit, Color, Font, Image, InputMatrix, Paint, Path } from "canvaskit-wasm";
+import { Canvas, CanvasKit, Color, Font, Image, InputMatrix, Paint, Paragraph, Path } from "canvaskit-wasm";
 import { IRenderer } from "./IRenderer";
 import { IBitmapDrawable } from "../display";
 import { BitmapFilter, BlurFilter } from "../filters";
@@ -78,12 +78,13 @@ export class SkiaRenderer implements IRenderer
                     }
                 }
                 
-                if (lastFill)
+                if (lastFill && lastFill.paint)
                 {
                     if (blurFilter) blurFilter._applyFilter(ctx, null, lastFill.paint);
                     ctx.drawPath(igd.path, lastFill.paint);
-                } 
-                if (lastStroke)
+                }
+                
+                if (lastStroke && lastStroke.paint)
                 {
                     if (blurFilter) blurFilter._applyFilter(ctx, null, lastStroke.paint);
                     ctx.drawPath(igd.path, lastStroke.paint);
@@ -113,6 +114,19 @@ export class SkiaRenderer implements IRenderer
     }
 
     public renderText(ctx: Canvas, txt: string, paint:Paint, font:Font, m: Matrix, blendMode: string, colorTransform: ColorTransform, x: number, y: number): void {
-        ctx.drawText(txt, m.tx - 2, m.ty + font.getSize() - 7, paint, font);
+        let mat:InputMatrix = [m.a, m.c, m.tx, m.b, m.d, m.ty, 0, 0, 1];
+        ctx.concat(mat);
+        ctx.drawText(txt, 0, 0, paint, font);
+        let invertedMat:InputMatrix = this._canvasKit.Matrix.invert(mat) || mat;
+        ctx.concat(invertedMat);
+    }
+
+    public renderParagraph(ctx:Canvas, paragraph:Paragraph, m:Matrix, blendMode?:string, colorTransform?:ColorTransform): void
+    {
+        let mat:InputMatrix = [m.a, m.c, m.tx, m.b, m.d, m.ty, 0, 0, 1];
+        ctx.concat(mat);
+        ctx.drawParagraph(paragraph, 0, 0);
+        let invertedMat:InputMatrix = this._canvasKit.Matrix.invert(mat) || mat;
+        ctx.concat(invertedMat);
     }
 }
