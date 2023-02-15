@@ -83,7 +83,7 @@ export class SkiaRenderer implements IRenderer
                     if (blurFilter) blurFilter._applyFilter(ctx, null, lastFill.paint);
                     ctx.drawPath(igd.path, lastFill.paint);
                 }
-                
+
                 if (lastStroke && lastStroke.paint)
                 {
                     if (blurFilter) blurFilter._applyFilter(ctx, null, lastStroke.paint);
@@ -125,7 +125,7 @@ export class SkiaRenderer implements IRenderer
     {
         let mat:InputMatrix = [m.a, m.c, m.tx, m.b, m.d, m.ty, 0, 0, 1];
         ctx.concat(mat);
-        ctx.drawParagraph(paragraph, 0, 0);
+        ctx.drawParagraph(paragraph, 2, 1);
         let invertedMat:InputMatrix = this._canvasKit.Matrix.invert(mat) || mat;
         ctx.concat(invertedMat);
     }

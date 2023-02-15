@@ -999,7 +999,6 @@ export class TextField extends DisplayObject
       if (this.type == TextFieldType.DYNAMIC)
       {
         //if (!this._background) this.ApplyFilters(ctx);
-
         
         let color = (FlashPort.renderer as IRenderer).getRGBAColor(this._textFormat.color, this.alpha, this.transform.colorTransform);
         let alignment:EmbindEnumEntity = this._textFormat.align == "left" ? FlashPort.canvasKit.TextAlign.Left : (this._textFormat.align == "right" ? FlashPort.canvasKit.TextAlign.Right : FlashPort.canvasKit.TextAlign.Center);
