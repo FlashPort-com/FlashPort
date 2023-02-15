@@ -1,4 +1,4 @@
 # FlashPort
 Typescript Port of Actionscript 3.0 Flash Library
 
-![chrome_shJafmGLpi](https://user-images.githubusercontent.com/1977536/219204336-9f364545-8f8a-48c2-991f-8f7edea25860.png)
+![chrome_UOOhQEXDip](https://user-images.githubusercontent.com/1977536/219205763-f9d6784f-8ee6-411b-b443-1d81cbff1820.gif)
