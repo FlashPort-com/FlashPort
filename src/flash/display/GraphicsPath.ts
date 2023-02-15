@@ -29,10 +29,7 @@ export class GraphicsPath extends Object implements IGraphicsPath, IGraphicsData
 		if (this.data==null){
 			this.data = [];
 		}
-		/*if(winding != GraphicsPathWinding.EVEN_ODD && winding != GraphicsPathWinding.NON_ZERO)
-			{
-			Error.throwError(null,2008,"winding");
-			}*/
+		
 		this._winding = winding;
 	}
 	
@@ -49,10 +46,6 @@ export class GraphicsPath extends Object implements IGraphicsPath, IGraphicsData
 	
 	public set winding(value:string)
 	{
-		/*if(value != GraphicsPathWinding.EVEN_ODD && value != GraphicsPathWinding.NON_ZERO)
-			{
-			Error.throwError(null,2008,"winding");
-			}*/
 		this._winding = value;
 	}
 	
@@ -65,58 +58,41 @@ export class GraphicsPath extends Object implements IGraphicsPath, IGraphicsData
 	
 	public lineTo = (x:number, y:number):void =>
 	{
-		//initData();
 		this.commands.push(GraphicsPathCommand.LINE_TO);
 		this.data.push(x, y);
 	}
 	
 	public curveTo = (controlX:number, controlY:number, anchorX:number, anchorY:number):void =>
 	{
-		//initData();
 		this.commands.push(GraphicsPathCommand.CURVE_TO);
 		this.data.push(controlX, controlY, anchorX, anchorY);
 	}
 	
 	public cubicCurveTo = (controlX1:number, controlY1:number, controlX2:number, controlY2:number, anchorX:number, anchorY:number):void =>
 	{
-		//initData();
 		this.commands.push(GraphicsPathCommand.CUBIC_CURVE_TO);
 		this.data.push(controlX1, controlY1, controlX2, controlY2, anchorX, anchorY);
 	}
 	
 	public wideLineTo = (x:number, y:number):void =>
 	{
-		//initData();
 		this.commands.push(GraphicsPathCommand.WIDE_LINE_TO);
 		this.data.push(0.0, 0.0, x, y);
 	}
 	
 	public wideMoveTo = (x:number, y:number):void =>
 	{
-		//initData();
 		this.commands.push(GraphicsPathCommand.WIDE_MOVE_TO);
 		this.data.push(0.0, 0.0, x, y);
 	}
 	
 	public arc = (x:number, y:number,r:number,a0:number,a1:number):void =>
 	{
-		//initData();
 		this.commands.push(GraphicsPathCommand.ARC);
 		this.data.push(x,y,r,a0,a1);
 	}
 	
-	/*private function initData():void {
-		if (this.commands == null)
-		{
-			this.commands = new Vector.<int>();
-		}
-		if (this.data == null)
-		{
-			this.data = new Vector.<Number>();
-		}
-	}*/
-	
-	public draw = (ctx:CanvasRenderingContext2D,colorTransform:ColorTransform):void =>
+	public draw = (ctx:CanvasRenderingContext2D, colorTransform:ColorTransform):void =>
 	{
 		if (this.commands.length) {
 			ctx.beginPath();

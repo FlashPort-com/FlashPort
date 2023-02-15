@@ -17,7 +17,7 @@ import { Transform } from "../geom/Transform";
 import { Vector3D } from "../geom/Vector3D";
 import { getTimer } from "../utils/getTimer";
 import { BitmapFilter, BlurFilter } from "../filters";
-import { Canvas, Paint, Surface } from "canvaskit-wasm";
+import { Canvas, InputColor, Paint, Surface } from "canvaskit-wasm";
 
 export class DisplayObject extends EventDispatcher implements IBitmapDrawable {
   static _globalStage: Stage;
@@ -40,7 +40,8 @@ export class DisplayObject extends EventDispatcher implements IBitmapDrawable {
 	private _doubleClickEnabled:boolean = false;
   private lastMouseOverObj: DisplayObject;
   private _blendMode: string;
-  private _opaqueBackground:number;
+  private _opaqueBackground:number = -1;
+  private _clearColor:InputColor = FlashPort.canvasKit.TRANSPARENT;
   protected _cacheAsBitmap: boolean = false;
   protected _parentCached: boolean = false;
   private _loaderInfo: LoaderInfo;
@@ -348,6 +349,7 @@ export class DisplayObject extends EventDispatcher implements IBitmapDrawable {
 
   public set opaqueBackground(v: number) {
     this._opaqueBackground = v;
+    this._clearColor = FlashPort.canvasKit.Color((v >> 16 & 255), (v >> 8 & 0xff), (v & 0xff), 1);
   }
 
   public get scrollRect(): Rectangle {
@@ -535,19 +537,16 @@ export class DisplayObject extends EventDispatcher implements IBitmapDrawable {
     }
   };
 
-  public __update(
-    ctx: CanvasRenderingContext2D | Canvas,
-    offsetX: number = 0,
-    offsetY: number = 0,
-    parentIsCached: boolean = false
-  ): void {}
+  public __update(ctx: Canvas, offsetX: number = 0, offsetY: number = 0, filters: BitmapFilter[] = []): void 
+  {
+
+  }
 
   private __enterFrame = (e: Event): void => {
     if (FlashPort.dirtyGraphics && this._stage.surface) {
       FlashPort.dirtyGraphics = false;
       var ctx:Canvas = this._stage.surface.getCanvas();
-      var clearColor:Float32Array = FlashPort.canvasKit.Color((this._stage.opaqueBackground >> 16 & 255), (this._stage.opaqueBackground >> 8 & 0xff), (this._stage.opaqueBackground & 0xff), 1);
-      this.stage.skiaCanvas.clear(clearColor);
+      this.stage.skiaCanvas.clear(this._stage._clearColor);
 
       FlashPort.drawCounter = 0;
       this.__update(ctx);

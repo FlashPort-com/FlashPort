@@ -22,6 +22,7 @@ import { DisplayObject } from "../display/DisplayObject";
 import { Canvas, EmbindEnumEntity, Font, FontMgr, Paint, Paragraph, ParagraphBuilder, ParagraphStyle } from "canvaskit-wasm";
 import { IRenderer } from "../__native/IRenderer";
 import { ColorTransform } from "../geom";
+import { BitmapFilter } from "../filters/BitmapFilter";
 
 export class TextField extends DisplayObject 
 {
@@ -457,22 +458,6 @@ export class TextField extends DisplayObject
   }
 
   public set text(value: string) {
-    /*_text = txt; 
-		FlashPort.dirtyGraphics = true;
-		graphicsDirty = true;
-		
-		if (txt && txt.length > 0 && FlashPort.renderer is WebGLRenderer){
-			glDirty = true;
-			chars = [];
-			var l:number = txt.length;
-			for (var i:number = 0; i < l;i++ ){
-				var c:Char = new Char(txt.charAt(i),_textFormat.size as int,_textFormat.font,_textFormat.color as uint);//color font size etc
-				chars.push(c);
-				WebGLRenderer.textCharSet.add(c);
-			}
-		}else{
-			lines = txt.split("\n");
-		}*/
     if (value === null) {
       value = "";
     }
@@ -497,6 +482,9 @@ export class TextField extends DisplayObject
 
     this.lines = this.lines || [];
     this.lines = this.lines.concat(value.split("\n"));
+
+    
+
   };
 
   private static PUSH_POOL = (key: number, da: GLDrawable): void => {
@@ -983,18 +971,18 @@ export class TextField extends DisplayObject
   }
 
   /*override*/
-  public __update = (ctx: Canvas, offsetX: number = 0, offsetY: number = 0): void => 
+  public __update = (ctx: Canvas, offsetX: number = 0, offsetY: number = 0, filters: BitmapFilter[] = []): void => 
   {
-    super.__update(ctx, offsetX, offsetY);
+    super.__update(ctx, offsetX, offsetY, filters);
 
     if (this._text != null && this.visible) {
       
-      if (!this.paragraph)
-      {
+      //if (!this.paragraph)
+      //{
         this.__draw(ctx, this.transform.concatenatedMatrix);
         //this.paraBuilder.delete();
         //this.paraFontMgr.delete();
-      }
+      //}
       //console.log("dirty!!");
       
 
@@ -1044,16 +1032,20 @@ export class TextField extends DisplayObject
             textAlign: alignment
           }
         );
+        
+        if (this.paragraph) this.paragraph.delete();
 
         this.paraFontMgr = FlashPort.canvasKit.FontMgr.FromData(this.robotoData);
         this.paraBuilder = FlashPort.canvasKit.ParagraphBuilder.Make(this.paraStyle, this.paraFontMgr);
         this.paraBuilder.addText(this._text);
         this.paragraph = this.paraBuilder.build();
         this.paragraph.layout(this._textFormat.size * this._text.length);
+
+        this.paraFontMgr.delete();
+        this.paraBuilder.delete();
       }
 
       //if (!this._background) this.ApplyFilters(ctx);
-        
     } 
     else 
     {

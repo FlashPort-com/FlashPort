@@ -11,6 +11,7 @@ import { Rectangle } from "../geom/Rectangle";
 import { IRenderer } from "../__native/IRenderer";
 import { Canvas, Image, ImageInfo, Path } from "canvaskit-wasm";
 import { GraphicsPath } from "./GraphicsPath";
+import { BitmapFilter } from "../filters/BitmapFilter";
 	
 	export class Bitmap extends DisplayObject
 	{
@@ -57,7 +58,7 @@ import { GraphicsPath } from "./GraphicsPath";
 		}
 		
 		/*override*/
-		public __update(ctx:Canvas, offsetX:number = 0, offsetY:number = 0, parentIsCached:boolean = false):void
+		public __update(ctx:Canvas, offsetX:number = 0, offsetY:number = 0, filters: BitmapFilter[] = []):void
 		{
 			if (!this._off && this.visible)
 			{

@@ -53,7 +53,7 @@ export class Stage extends DisplayObjectContainer
 	private _contextMenu:ContextMenu;
 	private _displayContextInfo:string;
 	private _displayState:string;
-	private _focus:DisplayObjectContainer;
+	private _focus:DisplayObject;
 	private _focusRect:Object;
 	private _frameRate:number;
 	private _fullScreenHeight:number;
@@ -311,8 +311,8 @@ export class Stage extends DisplayObjectContainer
 		}
 	}
 
-	public get focus ():DisplayObjectContainer { return this._focus; }
-	public set focus (newFocus:DisplayObjectContainer) { this._focus = newFocus; }
+	public get focus ():DisplayObject { return this._focus; }
+	public set focus (newFocus:DisplayObject) { this._focus = newFocus; }
 
 	
 	public get frameRate ():number { return this._frameRate; }

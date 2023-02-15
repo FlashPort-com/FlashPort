@@ -101,7 +101,7 @@ export class GraphicsStroke extends Object implements IGraphicsStroke, IGraphics
 				ctx.lineCap = this._caps as CanvasLineCap;
 				ctx.lineJoin = this._joints as CanvasLineJoin;
 				ctx.miterLimit = this.miterLimit;
-				ctx.strokeStyle = (FlashPort.renderer as IRenderer).getCssColor(sf.color, sf.alpha,colorTransform,null).toString();//sf.getCssColor(colorTransform);
+				ctx.strokeStyle = (FlashPort.renderer as IRenderer).getCssColor(sf.color, sf.alpha,colorTransform,null).toString();
 			}
 			else if (this.fill instanceof GraphicsGradientFill)
 			{

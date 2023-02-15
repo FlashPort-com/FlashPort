@@ -696,6 +696,7 @@ export class DropShadowFilter extends BitmapFilter
 			false
 		);
 		this.paint = new FlashPort.canvasKit.Paint();
+		this.paint.setStyle(FlashPort.canvasKit.PaintStyle.Stroke);
 		this.paint.setColor((FlashPort.renderer as IRenderer).getRGBAColor(color, alpha, new ColorTransform()));
 		this.paint.setMaskFilter(maskFilter);
 

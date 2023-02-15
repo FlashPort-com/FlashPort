@@ -1,7 +1,7 @@
 import { IGraphicsData } from "../display/IGraphicsData";
 import { ColorTransform } from "../geom/ColorTransform";
 import { Matrix } from "../geom/Matrix";
-import { Canvas, CanvasKit, Color, Font, Image, InputMatrix, Paint } from "canvaskit-wasm";
+import { Canvas, CanvasKit, Color, Font, Image, InputMatrix, Paint, Path } from "canvaskit-wasm";
 import { IRenderer } from "./IRenderer";
 import { IBitmapDrawable } from "../display";
 import { BitmapFilter, BlurFilter } from "../filters";
@@ -41,6 +41,7 @@ export class SkiaRenderer implements IRenderer
         let lastStroke:IGraphicsData;
 
 		var len:number = graphicsData.length;
+        var finalPath:Path = new FlashPort.canvasKit.Path();
 		for (var i:number = 0; i < len;i++ )
 		{
 			var igd:IGraphicsData = graphicsData[i];
@@ -49,9 +50,11 @@ export class SkiaRenderer implements IRenderer
             if (igd.graphicType == 'STROKE') lastStroke = igd;
             if (igd.graphicType == 'PATH')
             {
+                finalPath.op(igd.path, FlashPort.canvasKit.PathOp.Union);
+                
                 let mat:number[] = [m.a, m.c, m.tx, m.b, m.d, m.ty, 0, 0, 1];
                 igd.path.transform(mat);
-                
+
                 for (let j:number = 0; j < filters.length; j++)
                 {
                     if (filters[j] instanceof BlurFilter)
@@ -60,6 +63,17 @@ export class SkiaRenderer implements IRenderer
                     }
                     else
                     {
+                        if (filters[j]['knockout'])
+                        {
+                            if (lastFill) lastFill.paint.setBlendMode(FlashPort.canvasKit.BlendMode.Dst);
+                            if (lastStroke) lastStroke.paint.setBlendMode(FlashPort.canvasKit.BlendMode.Dst);
+                        }
+
+                        if (filters[j]['inner'])
+                        {
+                            //if (lastFill) lastFill.paint.setBlendMode(FlashPort.canvasKit.BlendMode.DstOver);
+                            //if (lastStroke) lastStroke.paint.setBlendMode(FlashPort.canvasKit.BlendMode.Src);
+                        }
                         filters[j]._applyFilter(ctx, igd.path);
                     }
                 }
@@ -81,6 +95,7 @@ export class SkiaRenderer implements IRenderer
                 if (!igd['isMask']) igd.path.delete();  // TODO run mask before delete
             }
 		}
+
 
 
     }

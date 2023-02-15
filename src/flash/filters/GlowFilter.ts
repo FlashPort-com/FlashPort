@@ -2,7 +2,7 @@ import { DisplayObject } from "../display/DisplayObject";
 import { BitmapFilter } from "./BitmapFilter";
 import { Rectangle } from "../geom/Rectangle";
 import { TextField } from "../text/TextField";
-import { Canvas, MaskFilter, Paint, Path } from "canvaskit-wasm";
+import { Canvas, EmbindEnumEntity, MaskFilter, Paint, Path } from "canvaskit-wasm";
 import { FlashPort } from "../../FlashPort";
 import { IRenderer } from "../__native/IRenderer";
 import { ColorTransform } from "../geom/ColorTransform";
@@ -663,25 +663,33 @@ export class GlowFilter extends BitmapFilter
 		this._blue = color & 0xff;
 		this._offsetX = this._offsetY = this._blur = Math.max(blurX, blurY);
 
+		let style:EmbindEnumEntity = FlashPort.canvasKit.BlurStyle.Normal;
+		if (inner) style = FlashPort.canvasKit.BlurStyle.Inner;
+		if (knockout) style = FlashPort.canvasKit.BlurStyle.Outer;
+
 		let maskFilter:MaskFilter = FlashPort.canvasKit.MaskFilter.MakeBlur(
-			FlashPort.canvasKit.BlurStyle.Normal,
+			style,
 			this._blur,
 			false
 		);
 		this.paint = new FlashPort.canvasKit.Paint();
+		if (this._inner) this.paint.setStyle(FlashPort.canvasKit.PaintStyle.Stroke);
 		this.paint.setColor((FlashPort.renderer as IRenderer).getRGBAColor(color, alpha, new ColorTransform()));
 		this.paint.setMaskFilter(maskFilter);
 	}
 	
 	public _applyFilter = (ctx:Canvas, path:Path):void =>
 	{
-		var gco:string;
+		/* var gco:string;
 		if (this._knockout) {
 			gco = (this._inner) ? "source-in" : "source-out";
 		} else {
 			gco = (this._inner) ? "source-atop" : "destination-over";
-		}
-
+		} */
+		if (this._inner)
+		{
+			//this.paint.setBlendMode(FlashPort.canvasKit.BlendMode.Dst);
+		} 
 		ctx.drawPath(path, this.paint);
-	}
+	} 
 }

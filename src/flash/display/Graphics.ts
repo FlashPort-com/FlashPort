@@ -79,7 +79,7 @@ export class Graphics extends Object
 		{
 			if (this.lastFill)
 			{
-				var efill:GraphicsEndFill = new GraphicsEndFill;
+				var efill:GraphicsEndFill = new GraphicsEndFill();
 				efill.fill = this.lastFill;
 				this.graphicsData.push(efill);
 				this.lastFill = null;
@@ -296,8 +296,7 @@ export class Graphics extends Object
 				this.lastPath = this.pathPool[this.pathPoolPos] = new GraphicsPath();
 				isInitial = true;
 			}
-			//lastPath.commands = null;
-			//lastPath.data = null;
+			
 			this.lastPath.clear();
 			this.lastPath.gpuPath2DDirty = true;
 			if (isInitial) this.lastPath.moveTo(0, 0);
@@ -470,19 +469,10 @@ export class Graphics extends Object
 		}
 	}
 	
-	/*private function GetGraphicsData(param1:Vector.<IGraphicsData>, recurse:Boolean):void
-		{
-	
-		}*/
-	
 	public readGraphicsData = (recurse:boolean = true):IGraphicsData[] =>
 	{
-		/* var vec:Vector.<IGraphicsData> = new Vector.<IGraphicsData>();
-			this.GetGraphicsData(vec,recurse);
-			return vec;*/
 		return this.graphicsData.slice();
 	}
-	
 	
 	/**
 	 * returns rectangle of drawn graphics not including strokes

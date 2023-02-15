@@ -10,6 +10,7 @@ import { Canvas, Path } from "canvaskit-wasm";
 import { BlendMode } from "./BlendMode";
 import { GraphicsPath } from "./GraphicsPath";
 import { FlashPort } from "../../FlashPort";
+import { BitmapFilter } from "../filters/BitmapFilter";
 
 export class Shape extends DisplayObject
 {
@@ -23,7 +24,7 @@ export class Shape extends DisplayObject
 	}
 	
 	/*override*/
-	public __update = (ctx:Canvas, offsetX:number = 0, offsetY:number = 0, parentIsCached:boolean = false):void =>
+	public __update = (ctx:Canvas, offsetX:number = 0, offsetY:number = 0, filters: BitmapFilter[] = []):void =>
 	{
 		if (!this._off && this.visible && this.graphics.graphicsData.length)
 		{	
@@ -42,7 +43,8 @@ export class Shape extends DisplayObject
 				path.setFillType(FlashPort.canvasKit.FillType.Winding);
 				ctx.clipPath(path, FlashPort.canvasKit.ClipOp.Intersect, true);
 			}
-			this.graphics.draw(ctx, mat, this.blendMode, colorTrans, this.filters);
+
+			this.graphics.draw(ctx, mat, this.blendMode, colorTrans, this.filters.concat(filters));
 			
 			if (this.mask)
 			{

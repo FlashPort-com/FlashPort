@@ -13,6 +13,7 @@ import { BlendMode } from "./BlendMode";
 import { ColorTransform } from "../geom/ColorTransform";
 import { GraphicsPath } from "./GraphicsPath";
 import { FlashPort } from "../../FlashPort";
+import { BitmapFilter } from "../filters";
 
 export class Sprite extends DisplayObjectContainer
 {
@@ -105,7 +106,7 @@ export class Sprite extends DisplayObjectContainer
 		return this._cacheHeight;
 	}
 	
-	public __update(ctx:Canvas, offsetX:number = 0, offsetY:number = 0, parentIsCached:boolean = false):void
+	public __update(ctx:Canvas, offsetX:number = 0, offsetY:number = 0, filters: BitmapFilter[] = []):void
 	{
 		if (!this._off && this.visible && (this.graphics.graphicsData.length || this.numChildren))
 		{
@@ -125,9 +126,10 @@ export class Sprite extends DisplayObjectContainer
 				ctx.clipPath(path, FlashPort.canvasKit.ClipOp.Intersect, true);
 			}
 			
-			this.graphics.draw(ctx, mat, this.blendMode, this.transform.concatenatedColorTransform, this.filters);
+			var filts:BitmapFilter[] = this.filters.concat(filters);
+			this.graphics.draw(ctx, mat, this.blendMode, this.transform.concatenatedColorTransform, filts);
 			
-			super.__update(ctx, offsetX, offsetY, false);
+			super.__update(ctx, offsetX, offsetY, filts);
 			
 			if (this.mask)
 			{
