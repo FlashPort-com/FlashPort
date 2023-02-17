@@ -969,7 +969,7 @@ export class TextField extends DisplayObject
 
     if (this._text != null && this.visible)
     {
-      this.__draw(ctx, this.transform.concatenatedMatrix);
+      this.__draw(ctx, this.transform.concatenatedMatrix, filters);
 
       if (this.paragraph)
       {
@@ -981,7 +981,7 @@ export class TextField extends DisplayObject
 
   };
 
-  public __draw = (ctx: Canvas, m: Matrix): void => 
+  public __draw = (ctx: Canvas, m: Matrix, filters:BitmapFilter[]): void => 
   {
     if (this._border || this._background) 
     {
@@ -989,9 +989,8 @@ export class TextField extends DisplayObject
       if (this.border) this.graphics.lineStyle(0, this.borderColor);
       if (this.background) this.graphics.beginFill(this.backgroundColor);
       this.graphics.drawRect(-2, 0, this.width + 4, this.height + 2);
-
-      FlashPort.renderer.renderGraphics(ctx, this.graphics, m, this.blendMode, this.transform.concatenatedColorTransform);
-      //this.ApplyFilters(ctx);
+      var filts:BitmapFilter[] = this.filters.concat(filters);
+      FlashPort.renderer.renderGraphics(ctx, this.graphics.graphicsData, m, this.blendMode, this.transform.concatenatedColorTransform, filts);
     }
 
     if (this.graphicsDirty)
@@ -1044,10 +1043,13 @@ export class TextField extends DisplayObject
         this.input.addEventListener("mousedown", this.handleHTMLMouseDown);
         //input.style.textAlign = defaultTextFormat.align;
         if (this.input.value != this.text) this.input.value = this.text;
-        
-        if (this.input.parentElement == null) {
-          this.stage.__htmlWrapper.appendChild(this.input);
-        }
+      }
+    }
+
+    if (this.type == TextFieldType.INPUT)
+    {
+      if (this.input.parentElement == null) {
+        this.stage.__htmlWrapper.appendChild(this.input);
       }
     }
 
