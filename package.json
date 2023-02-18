@@ -1,13 +1,25 @@
 {
   "name": "flashport",
   "version": "0.0.1",
+  "description": "FlashPort is a TypeScript 2D graphics library that largely replicates the Flash ActionScript 3.0 library",
+  "author": "Kenny Lerma",
+  "license": "MIT",
+  "homepage": "https://flashport.org",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/FlashPort-com/FlashPort.git"
+  },
+  "bugs": {
+    "url": "https://github.com/FlashPort-com/FlashPort/issues"
+  },
+  "keywords": ["FlashPort", "TypeScript", "Flash", "ActionScript", "Canvas", "canvaskit", "Skia"],
   "type": "module",
   "main": "./dist/flashport.umd.cjs",
-  "module": "./dist/flashport.js",
+  "module": "./dist/flashport.es.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/flashport.js",
+      "import": "./dist/flashport.es.js",
       "require": "./dist/flashport.umd.cjs"
     }
   },

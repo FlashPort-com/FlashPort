@@ -2,7 +2,7 @@ export class TextFormat extends Object
 {
 	private _css:string;
 	private dirty:boolean = true;
-	private _font:string;
+	private _font:string = "Arial";
 	private _bold:boolean;
 	private _italic:boolean;
 	private _size:any=12;

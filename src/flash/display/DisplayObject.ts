@@ -41,7 +41,7 @@ export class DisplayObject extends EventDispatcher implements IBitmapDrawable {
   private lastMouseOverObj: DisplayObject;
   private _blendMode: string;
   private _opaqueBackground:number = -1;
-  private _clearColor:InputColor = FPConfig.canvasKit.TRANSPARENT;
+  private _clearColor:InputColor = [0,0,0,0];
   protected _cacheAsBitmap: boolean = false;
   protected _parentCached: boolean = false;
   private _loaderInfo: LoaderInfo;

@@ -10,6 +10,7 @@ import { CanvasKit } from "canvaskit-wasm";
 import { Shape } from "./flash/display/Shape";
 import { BlurFilter, DropShadowFilter, GlowFilter } from "./flash/filters";
 import { TextField } from "./flash/text";
+import { AssetLoader } from "./flash/__native/AssetLoader";
 
 export class Main extends Sprite
 {
@@ -23,8 +24,21 @@ export class Main extends Sprite
         FPConfig.autoSize = true;
         
         super();
-        
-        let deg:number = 0;
+
+        let assets:string[] = [
+			"assets/fonts/Arial.ttf"
+		];
+
+		let ld:AssetLoader = new AssetLoader(assets);
+		ld.addEventListener(AEvent.COMPLETE, this.onAssetsLoaded);
+		ld.load();
+		
+		
+	}
+
+	private onAssetsLoaded = (e:AEvent):void =>
+	{
+		let deg:number = 0;
         let m:Matrix = new Matrix();
         m.createGradientBox(100, 100, Math.PI / 180 * deg, 0, 0);
 
@@ -63,14 +77,14 @@ export class Main extends Sprite
 
 
         let txt:TextField = new TextField();
-        txt.text = "Hey there my little buddy!";
+        txt.text = "Hey there I'm a TextField!";
         txt.x = txt.y = 50;
         this.addChild(txt);
 
         
         
         this.addEventListener(AEvent.ENTER_FRAME, this.onUpdate);
-    }
+	}
 
     private onUpdate = (e:AEvent):void =>
     {
