@@ -695,8 +695,12 @@ export class DropShadowFilter extends BitmapFilter
 			this._blur,
 			false
 		);
+
+		
 		this.paint = new FlashPort.canvasKit.Paint();
-		this.paint.setStyle(FlashPort.canvasKit.PaintStyle.Stroke);
+		//this.paint.setBlendMode(FlashPort.canvasKit.BlendMode.DstOver);
+		
+		this.paint.setStyle(FlashPort.canvasKit.PaintStyle.Fill);  //TODO correct for Stroke or Fill
 		this.paint.setColor((FlashPort.renderer as IRenderer).getRGBAColor(color, alpha, new ColorTransform()));
 		this.paint.setMaskFilter(maskFilter);
 
@@ -704,8 +708,28 @@ export class DropShadowFilter extends BitmapFilter
 	
 	public _applyFilter(ctx:Canvas, path:Path):void
 	{
-		path.offset(this._offsetX, this._offsetY);
+		const m = FlashPort.canvasKit.Matrix.translated(this._offsetX + 1, this._offsetY + 1);
+		ctx.concat(m);
 		ctx.drawPath(path, this.paint);
-		path.offset(-this._offsetX, -this._offsetY);
+		let invertedMat = FlashPort.canvasKit.Matrix.invert(m) || m;
+        ctx.concat(invertedMat);
+
+		/* const m = FlashPort.canvasKit.Matrix.translated(this._offsetX + 1, this._offsetY + 1);
+		const lightPos = [0, 0, 100];
+		const lightRadius = 10;
+
+		ctx.concat(m);
+		ctx.drawShadow(
+			path, 
+			m,
+			lightPos, 
+			lightRadius, 
+			(FlashPort.renderer as IRenderer).getRGBAColor(this._color, this.alpha, new ColorTransform()), 
+			(FlashPort.renderer as IRenderer).getRGBAColor(this._color, this._alpha, new ColorTransform()),
+			FlashPort.canvasKit.ShadowGeometricOnly
+			)
+		
+		let invertedMat = FlashPort.canvasKit.Matrix.invert(m) || m;
+        ctx.concat(invertedMat); */
 	}
 }

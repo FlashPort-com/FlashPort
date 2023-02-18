@@ -71,8 +71,8 @@ export class SkiaRenderer implements IRenderer
 
                         if (filters[j]['inner'])
                         {
-                            //if (lastFill) lastFill.paint.setBlendMode(FlashPort.canvasKit.BlendMode.DstOver);
-                            //if (lastStroke) lastStroke.paint.setBlendMode(FlashPort.canvasKit.BlendMode.Src);
+                            if (lastFill) lastFill.paint.setBlendMode(FlashPort.canvasKit.BlendMode.DstOver);
+                            if (lastStroke) lastStroke.paint.setBlendMode(FlashPort.canvasKit.BlendMode.Src);
                         }
                         filters[j]._applyFilter(ctx, igd.path);
                     }
