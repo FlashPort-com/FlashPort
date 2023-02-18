@@ -1,6 +1,6 @@
 import { DisplayObjectContainer } from "./DisplayObjectContainer";
 import { StageQuality } from "./StageQuality";
-import { FlashPort } from "../../FlashPort";
+import { FPConfig } from "../../FPConfig";
 import { Rectangle } from "../geom/Rectangle";
 //import flash.media.StageVideo;
 import { Stage3D } from "./Stage3D";
@@ -87,14 +87,14 @@ export class Stage extends DisplayObjectContainer
 		
 		console.log("Powered by FlashPort");
 
-		FlashPort.renderer = new SkiaRenderer(FlashPort.canvasKit);
+		FPConfig.renderer = new SkiaRenderer(FPConfig.canvasKit);
 		
 		this.transform = new Transform(this as any);
 		this.prevTime = window.performance.now();
 		
-		if (FlashPort.rootHTMLElement)
+		if (FPConfig.rootHTMLElement)
 		{
-			this.__rootHtmlElement = FlashPort.rootHTMLElement;
+			this.__rootHtmlElement = FPConfig.rootHTMLElement;
 			this.__rootHtmlElement.innerHTML = '';
 		}
 		else
@@ -110,7 +110,7 @@ export class Stage extends DisplayObjectContainer
 		this.__htmlWrapper.style.zIndex = "0";
 		document.body.appendChild(this.__htmlWrapper);
 		
-		if (FlashPort.startTime===0)  FlashPort.startTime = Date.now();
+		if (FPConfig.startTime===0)  FPConfig.startTime = Date.now();
 			
 		this._frameRate = 60;
 		this._stage3Ds = Array<Stage3D>(new Stage3D, new Stage3D, new Stage3D, new Stage3D);
@@ -121,7 +121,7 @@ export class Stage extends DisplayObjectContainer
 		Equations.init();
 		
 		
-        this.createCanvas(FlashPort.canvasKit);
+        this.createCanvas(FPConfig.canvasKit);
 		this.window_resize();
 
 		//window.addEventListener('focus', handleVisibilityChange);
@@ -161,18 +161,18 @@ export class Stage extends DisplayObjectContainer
 	
 	private window_resize = (e?:any):void =>
 	{
-		if (this.origWidth == -1) this.origWidth = FlashPort.stageWidth;
-		if (this.origHeight == -1) this.origHeight = FlashPort.stageHeight;
+		if (this.origWidth == -1) this.origWidth = FPConfig.stageWidth;
+		if (this.origHeight == -1) this.origHeight = FPConfig.stageHeight;
 		
-		FlashPort.dirtyGraphics = true;
-		if (FlashPort.autoSize){
-			FlashPort.stageWidth = (FlashPort.rootHTMLElement) ? FlashPort.rootHTMLElement.clientWidth : window.innerWidth;
-			FlashPort.stageHeight = (FlashPort.rootHTMLElement) ? FlashPort.rootHTMLElement.clientHeight : window.innerHeight;
+		FPConfig.dirtyGraphics = true;
+		if (FPConfig.autoSize){
+			FPConfig.stageWidth = (FPConfig.rootHTMLElement) ? FPConfig.rootHTMLElement.clientWidth : window.innerWidth;
+			FPConfig.stageHeight = (FPConfig.rootHTMLElement) ? FPConfig.rootHTMLElement.clientHeight : window.innerHeight;
 		}
 		
 		let dpi:number = window.devicePixelRatio;
-		this._stageWidth = FlashPort.stageWidth * dpi;
-		this._stageHeight = FlashPort.stageHeight * dpi;
+		this._stageWidth = FPConfig.stageWidth * dpi;
+		this._stageHeight = FPConfig.stageHeight * dpi;
 		this._canvas.width = this._stageWidth;
 		this._canvas.height = this._stageHeight;
 		this._canvas.style.width = this._stageWidth + "px";
@@ -186,18 +186,18 @@ export class Stage extends DisplayObjectContainer
 		{
 			if (Stage._instance.scaleMode == StageScaleMode.SHOW_ALL)
 			{
-				Stage._instance.root.scaleX = FlashPort.stageWidth / this.origWidth;
+				Stage._instance.root.scaleX = FPConfig.stageWidth / this.origWidth;
 				Stage._instance.root.scaleY = Stage._instance.root.scaleX;
 				if (Stage._instance.root.scaleY * this.origHeight > this._stageHeight)
 				{
-					Stage._instance.root.scaleY = FlashPort.stageHeight / this.origHeight;
+					Stage._instance.root.scaleY = FPConfig.stageHeight / this.origHeight;
 					Stage._instance.root.scaleX = Stage._instance.root.scaleY;
 				}
 			}
 			else if (Stage._instance.scaleMode == StageScaleMode.EXACT_FIT)
 			{
-				Stage._instance.root.scaleX = FlashPort.stageWidth / this.origWidth;
-				Stage._instance.root.scaleY = FlashPort.stageHeight / this.origHeight;
+				Stage._instance.root.scaleX = FPConfig.stageWidth / this.origWidth;
+				Stage._instance.root.scaleY = FPConfig.stageHeight / this.origHeight;
 			}
 
 			
@@ -209,7 +209,7 @@ export class Stage extends DisplayObjectContainer
 	{
 		if (this._pauseRendering) return;
 		
-		if(this._stageWidth != FlashPort.stageWidth || this._stageHeight != FlashPort.stageHeight){
+		if(this._stageWidth != FPConfig.stageWidth || this._stageHeight != FPConfig.stageHeight){
 			this.window_resize(null);
 		}
 		
@@ -348,7 +348,7 @@ export class Stage extends DisplayObjectContainer
 
 	public get stageHeight ():number
 	{ 
-		if (FlashPort.autoSize) this._stageHeight = window.innerHeight;
+		if (FPConfig.autoSize) this._stageHeight = window.innerHeight;
 		return this._stageHeight; 
 	}
 	public set stageHeight (value:number) { this._stageHeight = value; }
@@ -358,7 +358,7 @@ export class Stage extends DisplayObjectContainer
 
 	public get stageWidth ():number 
 	{ 
-		if (FlashPort.autoSize) this._stageWidth = window.innerWidth;
+		if (FPConfig.autoSize) this._stageWidth = window.innerWidth;
 		return this._stageWidth; 
 	}
 	public set stageWidth (value:number) { this._stageWidth = value; }
@@ -369,7 +369,7 @@ export class Stage extends DisplayObjectContainer
 	
 	public invalidate ():void
 	{
-		FlashPort.dirtyGraphics = true;
+		FPConfig.dirtyGraphics = true;
 	}
 
 	public isFocusInaccessible ():boolean
@@ -473,8 +473,8 @@ export class Stage extends DisplayObjectContainer
 		{
 			if (e['targetTouches'].length) 
 			{
-				this._stageMouseX = e['targetTouches'][0].pageX - this._canvas.offsetLeft - (FlashPort.rootHTMLElement ?  FlashPort.rootHTMLElement.offsetLeft : 0);
-				this._stageMouseY = e['targetTouches'][0].pageY - this._canvas.offsetTop - (FlashPort.rootHTMLElement ?  FlashPort.rootHTMLElement.offsetTop : 0);
+				this._stageMouseX = e['targetTouches'][0].pageX - this._canvas.offsetLeft - (FPConfig.rootHTMLElement ?  FPConfig.rootHTMLElement.offsetLeft : 0);
+				this._stageMouseY = e['targetTouches'][0].pageY - this._canvas.offsetTop - (FPConfig.rootHTMLElement ?  FPConfig.rootHTMLElement.offsetTop : 0);
 			}
 			
 			if (this.hasEventListener(flashType))
@@ -562,8 +562,8 @@ export class Stage extends DisplayObjectContainer
 				
 		}
 		if (flashType){
-			this._stageMouseX = e['pageX'] - this._canvas.offsetLeft - (FlashPort.rootHTMLElement ?  FlashPort.rootHTMLElement.offsetLeft : 0);
-			this._stageMouseY = e['pageY'] - this._canvas.offsetTop - (FlashPort.rootHTMLElement ?  FlashPort.rootHTMLElement.offsetTop : 0);
+			this._stageMouseX = e['pageX'] - this._canvas.offsetLeft - (FPConfig.rootHTMLElement ?  FPConfig.rootHTMLElement.offsetLeft : 0);
+			this._stageMouseY = e['pageY'] - this._canvas.offsetTop - (FPConfig.rootHTMLElement ?  FPConfig.rootHTMLElement.offsetTop : 0);
 			if (this.hasEventListener(flashType)) {
 				if (flashType != MouseEvent.MOUSE_MOVE){
 					this.dispatchEvent(new MouseEvent(flashType,true,false,this._stageMouseX,this._stageMouseY,this,e['ctrlKey'],e['altKey'],e['shiftKey'],(e['buttons'] != null)?(e['buttons'] > 0):this.isButtonDown,(e['wheelDelta']/120)));

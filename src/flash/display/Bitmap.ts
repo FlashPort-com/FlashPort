@@ -1,6 +1,6 @@
 import { DisplayObject } from "./DisplayObject";
 import { BitmapData } from "./BitmapData";
-import { FlashPort } from "../../FlashPort";
+import { FPConfig } from "../../FPConfig";
 import { BlendMode } from "./BlendMode";
 
 import { MouseEvent } from "../events/MouseEvent";
@@ -43,7 +43,7 @@ import { BitmapFilter } from "../filters/BitmapFilter";
 		public set bitmapData(param1:BitmapData)
 		{
 			this._bitmapData = param1;
-			FlashPort.dirtyGraphics = true;
+			FPConfig.dirtyGraphics = true;
 		}
 		
 		public get cacheImage():BitmapData 
@@ -75,12 +75,12 @@ import { BitmapFilter } from "../filters/BitmapFilter";
 						path = (this.mask['graphics'].lastPath as GraphicsPath).path;
 						let pathMat:number[] = [maskMat.a, maskMat.c, maskMat.tx, maskMat.b, maskMat.d, maskMat.ty, 0, 0, 1];
 						path.transform(pathMat)
-						path.setFillType(FlashPort.canvasKit.FillType.Winding);
-						ctx.clipPath(path, FlashPort.canvasKit.ClipOp.Intersect, true);
+						path.setFillType(FPConfig.canvasKit.FillType.Winding);
+						ctx.clipPath(path, FPConfig.canvasKit.ClipOp.Intersect, true);
 					}
 					
-					(FlashPort.renderer as IRenderer).renderImage(ctx, this._bitmapData.image, mat, this.blendMode, this.transform.concatenatedColorTransform);
-					FlashPort.drawCounter++;
+					(FPConfig.renderer as IRenderer).renderImage(ctx, this._bitmapData.image, mat, this.blendMode, this.transform.concatenatedColorTransform);
+					FPConfig.drawCounter++;
 					if (this.mask)
 					{
 						ctx.restore();

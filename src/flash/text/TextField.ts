@@ -1,7 +1,7 @@
 import { TextFieldType } from "./TextFieldType";
 import { TextFormat } from "./TextFormat";
 import { TextFieldAutoSize } from "./TextFieldAutoSize";
-import { FlashPort } from "../../FlashPort";
+import { FPConfig } from "../../FPConfig";
 import { StyleSheet } from "./StyleSheet";
 import { TextLineMetrics } from "./TextLineMetrics";
 import { GLDrawable } from "../__native/GLDrawable";
@@ -74,10 +74,10 @@ export class TextField extends DisplayObject
   constructor() {
     super();
 
-    this.textPaint = new FlashPort.canvasKit.Paint();
-    this.textPaint.setColor(FlashPort.canvasKit.Color(40, 0, 0, 1.0));
+    this.textPaint = new FPConfig.canvasKit.Paint();
+    this.textPaint.setColor(FPConfig.canvasKit.Color(40, 0, 0, 1.0));
     this.textPaint.setAntiAlias(true);
-    this.font = new FlashPort.canvasKit.Font(null, 12);
+    this.font = new FPConfig.canvasKit.Font(null, 12);
     
     this.textColor = 0x000000;
     this.addEventListener(AEvent.REMOVED_FROM_STAGE, this.removedFromStage);
@@ -119,7 +119,7 @@ export class TextField extends DisplayObject
   public set autoSize(param1: string) {
     this._autoSize = param1;
     this.graphicsDirty = true;
-    FlashPort.dirtyGraphics = true;
+    FPConfig.dirtyGraphics = true;
   }
 
   public get background(): boolean {
@@ -129,7 +129,7 @@ export class TextField extends DisplayObject
   public set background(param1: boolean) {
     this._background = param1;
     this.graphicsDirty = true;
-    FlashPort.dirtyGraphics = true;
+    FPConfig.dirtyGraphics = true;
   }
 
   public get backgroundColor(): number {
@@ -139,7 +139,7 @@ export class TextField extends DisplayObject
   public set backgroundColor(param1: number) {
     this._backgroundColor = param1;
     this.graphicsDirty = true;
-    FlashPort.dirtyGraphics = true;
+    FPConfig.dirtyGraphics = true;
   }
 
   public get border(): boolean {
@@ -149,7 +149,7 @@ export class TextField extends DisplayObject
   public set border(param1: boolean) {
     this._border = param1;
     this.graphicsDirty = true;
-    FlashPort.dirtyGraphics = true;
+    FPConfig.dirtyGraphics = true;
   }
 
   public get borderColor(): number {
@@ -159,7 +159,7 @@ export class TextField extends DisplayObject
   public set borderColor(param1: number) {
     this._borderColor = param1;
     this.graphicsDirty = true;
-    FlashPort.dirtyGraphics = true;
+    FPConfig.dirtyGraphics = true;
   }
 
   public get bottomScrollV(): number {
@@ -185,7 +185,7 @@ export class TextField extends DisplayObject
   public set defaultTextFormat(param1: TextFormat) {
     this._textFormat = param1;
     this.graphicsDirty = true;
-    FlashPort.dirtyGraphics = true;
+    FPConfig.dirtyGraphics = true;
   }
 
   public get embedFonts(): boolean {
@@ -466,7 +466,7 @@ export class TextField extends DisplayObject
   }
 
   public appendText = (value: string): void => {
-    FlashPort.dirtyGraphics = true;
+    FPConfig.dirtyGraphics = true;
     this.graphicsDirty = true;
 
     if (this._text != null) {
@@ -722,7 +722,7 @@ export class TextField extends DisplayObject
   public set textColor(color: number) {
     this._textFormat.color = color;
     this.graphicsDirty = true;
-    FlashPort.dirtyGraphics = true;
+    FPConfig.dirtyGraphics = true;
   }
 
   public get textHeight(): number {
@@ -973,10 +973,10 @@ export class TextField extends DisplayObject
 
       if (this.paragraph)
       {
-        (FlashPort.renderer as SkiaRenderer).renderParagraph(ctx, this.paragraph, this.transform.concatenatedMatrix);
+        (FPConfig.renderer as SkiaRenderer).renderParagraph(ctx, this.paragraph, this.transform.concatenatedMatrix);
       }
 
-      FlashPort.drawCounter++;
+      FPConfig.drawCounter++;
     }
 
   };
@@ -990,7 +990,7 @@ export class TextField extends DisplayObject
       if (this.background) this.graphics.beginFill(this.backgroundColor);
       this.graphics.drawRect(-2, 0, this.width + 4, this.height + 2);
       var filts:BitmapFilter[] = this.filters.concat(filters);
-      FlashPort.renderer.renderGraphics(ctx, this.graphics.graphicsData, m, this.blendMode, this.transform.concatenatedColorTransform, filts);
+      FPConfig.renderer.renderGraphics(ctx, this.graphics.graphicsData, m, this.blendMode, this.transform.concatenatedColorTransform, filts);
     }
 
     if (this.graphicsDirty)
@@ -999,18 +999,18 @@ export class TextField extends DisplayObject
       {
         //if (!this._background) this.ApplyFilters(ctx);
         
-        let color = (FlashPort.renderer as IRenderer).getRGBAColor(this._textFormat.color, this.alpha, this.transform.colorTransform);
-        let alignment:EmbindEnumEntity = this._textFormat.align == "left" ? FlashPort.canvasKit.TextAlign.Left : (this._textFormat.align == "right" ? FlashPort.canvasKit.TextAlign.Right : FlashPort.canvasKit.TextAlign.Center);
+        let color = (FPConfig.renderer as IRenderer).getRGBAColor(this._textFormat.color, this.alpha, this.transform.colorTransform);
+        let alignment:EmbindEnumEntity = this._textFormat.align == "left" ? FPConfig.canvasKit.TextAlign.Left : (this._textFormat.align == "right" ? FPConfig.canvasKit.TextAlign.Right : FPConfig.canvasKit.TextAlign.Center);
         
-        this.paraStyle = new FlashPort.canvasKit.ParagraphStyle(
+        this.paraStyle = new FPConfig.canvasKit.ParagraphStyle(
           {
             textStyle: {
               color: color,
               fontFamilies:[this._textFormat.font],
               fontSize: this._textFormat.size,
               fontStyle: {
-                weight: this._textFormat.bold ? FlashPort.canvasKit.FontWeight.Bold : FlashPort.canvasKit.FontWeight.Normal,
-                slant: this._textFormat.italic ? FlashPort.canvasKit.FontSlant.Italic : FlashPort.canvasKit.FontSlant.Upright
+                weight: this._textFormat.bold ? FPConfig.canvasKit.FontWeight.Bold : FPConfig.canvasKit.FontWeight.Normal,
+                slant: this._textFormat.italic ? FPConfig.canvasKit.FontSlant.Italic : FPConfig.canvasKit.FontSlant.Upright
               }
             },
             textAlign: alignment
@@ -1019,8 +1019,8 @@ export class TextField extends DisplayObject
         
         if (this.paragraph) this.paragraph.delete();
         
-        this.paraFontMgr = FlashPort.canvasKit.FontMgr.FromData(FlashPort.fonts[this._textFormat.font]);
-        this.paraBuilder = FlashPort.canvasKit.ParagraphBuilder.Make(this.paraStyle, this.paraFontMgr);
+        this.paraFontMgr = FPConfig.canvasKit.FontMgr.FromData(FPConfig.fonts[this._textFormat.font]);
+        this.paraBuilder = FPConfig.canvasKit.ParagraphBuilder.Make(this.paraStyle, this.paraFontMgr);
         this.paraBuilder.addText(this._text);
         this.paragraph = this.paraBuilder.build();
         this.paragraph.layout(this._textFormat.size * this._text.length);

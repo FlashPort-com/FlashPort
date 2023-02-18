@@ -9,7 +9,7 @@ import { MouseEvent } from "../events/MouseEvent";
 import { Canvas, Path } from "canvaskit-wasm";
 import { BlendMode } from "./BlendMode";
 import { GraphicsPath } from "./GraphicsPath";
-import { FlashPort } from "../../FlashPort";
+import { FPConfig } from "../../FPConfig";
 import { BitmapFilter } from "../filters/BitmapFilter";
 
 export class Shape extends DisplayObject
@@ -40,8 +40,8 @@ export class Shape extends DisplayObject
 				path = (this.mask['graphics'].lastPath as GraphicsPath).path;
 				let pathMat:number[] = [maskMat.a, maskMat.c, maskMat.tx, maskMat.b, maskMat.d, maskMat.ty, 0, 0, 1];
 				path.transform(pathMat)
-				path.setFillType(FlashPort.canvasKit.FillType.Winding);
-				ctx.clipPath(path, FlashPort.canvasKit.ClipOp.Intersect, true);
+				path.setFillType(FPConfig.canvasKit.FillType.Winding);
+				ctx.clipPath(path, FPConfig.canvasKit.ClipOp.Intersect, true);
 			}
 
 			this.graphics.draw(ctx, mat, this.blendMode, colorTrans, this.filters.concat(filters));

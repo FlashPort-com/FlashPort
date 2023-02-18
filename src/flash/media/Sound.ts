@@ -1,7 +1,7 @@
 import { SoundTransform } from "./SoundTransform";
 import { SoundLoaderContext } from "./SoundLoaderContext";
 import { SoundChannel } from "./SoundChannel";
-import { FlashPort } from "../../FlashPort";
+import { FPConfig } from "../../FPConfig";
 import { ID3Info } from "./ID3Info";
 
 import { EventDispatcher } from "../events/EventDispatcher";
@@ -50,9 +50,9 @@ export class Sound extends EventDispatcher
 			
 			var sndContext:SoundLoaderContext = this._buildLoaderContext(this._context);
 			
-			if (FlashPort.sounds[this._stream.url] != undefined)
+			if (FPConfig.sounds[this._stream.url] != undefined)
 			{
-				var buf:ArrayBuffer = (FlashPort.sounds[stream.url] as ByteArray).dataView.buffer.slice(0);;
+				var buf:ArrayBuffer = (FPConfig.sounds[stream.url] as ByteArray).dataView.buffer.slice(0);;
 				Sound.ctx.decodeAudioData(buf, this.decodeAudioDataSuccess);
 			}
 			else

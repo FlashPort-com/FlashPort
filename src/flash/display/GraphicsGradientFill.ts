@@ -1,6 +1,6 @@
 import { IGraphicsFill } from "./IGraphicsFill";
 import { IGraphicsData } from "./IGraphicsData";
-import { FlashPort } from "../../FlashPort";
+import { FPConfig } from "../../FPConfig";
 import { GradientType } from "./GradientType";
 import { ColorTransform } from "../geom/ColorTransform";
 import { Matrix } from "../geom/Matrix";
@@ -48,9 +48,9 @@ export class GraphicsGradientFill extends Object implements IGraphicsFill, IGrap
 		this._interpolationMethod = interpolationMethod;
 		this.focalPointRatio = focalPointRatio;
 
-		this.paint = new FlashPort.canvasKit.Paint();
+		this.paint = new FPConfig.canvasKit.Paint();
 		this.paint.setAntiAlias(true);
-		this._tileMode = spreadMethod == "pad" ? FlashPort.canvasKit.TileMode.Clamp : (spreadMethod == "repeat" ? FlashPort.canvasKit.TileMode.Repeat : FlashPort.canvasKit.TileMode.Mirror);
+		this._tileMode = spreadMethod == "pad" ? FPConfig.canvasKit.TileMode.Clamp : (spreadMethod == "repeat" ? FPConfig.canvasKit.TileMode.Repeat : FPConfig.canvasKit.TileMode.Mirror);
 		
 		// convert ratios
 		this._convertedRatios = [];
@@ -67,7 +67,7 @@ export class GraphicsGradientFill extends Object implements IGraphicsFill, IGrap
 		let shaderColors:Color[] = [];
 		for (var i:number = 0; i < this.colors.length; i++) 
 		{
-			var shadColor:Color = (FlashPort.renderer as IRenderer).getRGBAColor(this.colors[i], this.alphas[i], this._colorTransform);
+			var shadColor:Color = (FPConfig.renderer as IRenderer).getRGBAColor(this.colors[i], this.alphas[i], this._colorTransform);
 			shaderColors.push(shadColor);
 		}
 		return shaderColors;
@@ -257,7 +257,7 @@ export class GraphicsGradientFill extends Object implements IGraphicsFill, IGrap
 		if (this._gradient == null || !this._colorTransform || this.colorsChanged(colorTransform))
 		{	
 			if (this.type === GradientType.LINEAR) {
-				this._shader = FlashPort.canvasKit.Shader.MakeLinearGradient(
+				this._shader = FPConfig.canvasKit.Shader.MakeLinearGradient(
 					[this._startPoint.x, this._startPoint.y],
 					[this._endPoint.x, this._endPoint.y],
 					this.getShaderColors(),
@@ -266,7 +266,7 @@ export class GraphicsGradientFill extends Object implements IGraphicsFill, IGrap
 					m
 				);
 			}else {
-				this._shader = FlashPort.canvasKit.Shader.MakeRadialGradient(
+				this._shader = FPConfig.canvasKit.Shader.MakeRadialGradient(
 					[this._startPoint.x, this._startPoint.y],
 					this._radius2 >= this._radius1 ? (this._radius2 / 2) : (this._radius1 / 2),
 					this.getShaderColors(),

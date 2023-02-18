@@ -1,6 +1,6 @@
-import { FlashPort } from "../../FlashPort";
+import { FPConfig } from "../../FPConfig";
 	
 export function getTimer():number
 {
-	return Date.now() - FlashPort.startTime;
+	return Date.now() - FPConfig.startTime;
 }

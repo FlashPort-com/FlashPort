@@ -1,6 +1,6 @@
 import { CanvasKit } from "canvaskit-wasm";
 
-export class FlashPort 
+export class FPConfig 
 {
 	public static stageWidth:number = 800;
 	public static stageHeight:number = 600;

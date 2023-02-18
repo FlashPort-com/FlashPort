@@ -1,4 +1,4 @@
-import { FlashPort } from "../../FlashPort";
+import { FPConfig } from "../../FPConfig";
 
 import { DisplayObject } from "../display/DisplayObject";
 import { ActivityEvent } from "../events/ActivityEvent";
@@ -368,10 +368,10 @@ export class Video extends DisplayObject
 		if (this._videoElement && this.visible)
 		{
 			var m:Matrix = this.transform.concatenatedMatrix;
-			(FlashPort.renderer as IRenderer).renderVideo(ctx, this._videoElement, m, this._videoElement.width, this._videoElement.height, this.blendMode, this.transform.concatenatedColorTransform);
-			FlashPort.drawCounter++;
+			(FPConfig.renderer as IRenderer).renderVideo(ctx, this._videoElement, m, this._videoElement.width, this._videoElement.height, this.blendMode, this.transform.concatenatedColorTransform);
+			FPConfig.drawCounter++;
 		}
 		
-		FlashPort.dirtyGraphics = true;
+		FPConfig.dirtyGraphics = true;
 	}
 }

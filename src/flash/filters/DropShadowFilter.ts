@@ -1,5 +1,5 @@
 import { Canvas, MaskFilter, Paint, Path } from "canvaskit-wasm";
-import { FlashPort } from "../../FlashPort";
+import { FPConfig } from "../../FPConfig";
 import { ColorTransform, Rectangle } from "../geom";
 import { IRenderer } from "../__native/IRenderer";
 import { BitmapFilter } from "./BitmapFilter";
@@ -690,31 +690,31 @@ export class DropShadowFilter extends BitmapFilter
 		this._offsetY = (distance - 1) * Math.sin(radians);
 		this._blur = Math.max(blurX, blurY);
 
-		let maskFilter:MaskFilter = FlashPort.canvasKit.MaskFilter.MakeBlur(
-			FlashPort.canvasKit.BlurStyle.Normal,
+		let maskFilter:MaskFilter = FPConfig.canvasKit.MaskFilter.MakeBlur(
+			FPConfig.canvasKit.BlurStyle.Normal,
 			this._blur,
 			false
 		);
 
 		
-		this.paint = new FlashPort.canvasKit.Paint();
-		//this.paint.setBlendMode(FlashPort.canvasKit.BlendMode.DstOver);
+		this.paint = new FPConfig.canvasKit.Paint();
+		//this.paint.setBlendMode(FPConfig.canvasKit.BlendMode.DstOver);
 		
-		this.paint.setStyle(FlashPort.canvasKit.PaintStyle.Fill);  //TODO correct for Stroke or Fill
-		this.paint.setColor((FlashPort.renderer as IRenderer).getRGBAColor(color, alpha, new ColorTransform()));
+		this.paint.setStyle(FPConfig.canvasKit.PaintStyle.Fill);  //TODO correct for Stroke or Fill
+		this.paint.setColor((FPConfig.renderer as IRenderer).getRGBAColor(color, alpha, new ColorTransform()));
 		this.paint.setMaskFilter(maskFilter);
 
 	}
 	
 	public _applyFilter(ctx:Canvas, path:Path):void
 	{
-		const m = FlashPort.canvasKit.Matrix.translated(this._offsetX + 1, this._offsetY + 1);
+		const m = FPConfig.canvasKit.Matrix.translated(this._offsetX + 1, this._offsetY + 1);
 		ctx.concat(m);
 		ctx.drawPath(path, this.paint);
-		let invertedMat = FlashPort.canvasKit.Matrix.invert(m) || m;
+		let invertedMat = FPConfig.canvasKit.Matrix.invert(m) || m;
         ctx.concat(invertedMat);
 
-		/* const m = FlashPort.canvasKit.Matrix.translated(this._offsetX + 1, this._offsetY + 1);
+		/* const m = FPConfig.canvasKit.Matrix.translated(this._offsetX + 1, this._offsetY + 1);
 		const lightPos = [0, 0, 100];
 		const lightRadius = 10;
 
@@ -724,12 +724,12 @@ export class DropShadowFilter extends BitmapFilter
 			m,
 			lightPos, 
 			lightRadius, 
-			(FlashPort.renderer as IRenderer).getRGBAColor(this._color, this.alpha, new ColorTransform()), 
-			(FlashPort.renderer as IRenderer).getRGBAColor(this._color, this._alpha, new ColorTransform()),
-			FlashPort.canvasKit.ShadowGeometricOnly
+			(FPConfig.renderer as IRenderer).getRGBAColor(this._color, this.alpha, new ColorTransform()), 
+			(FPConfig.renderer as IRenderer).getRGBAColor(this._color, this._alpha, new ColorTransform()),
+			FPConfig.canvasKit.ShadowGeometricOnly
 			)
 		
-		let invertedMat = FlashPort.canvasKit.Matrix.invert(m) || m;
+		let invertedMat = FPConfig.canvasKit.Matrix.invert(m) || m;
         ctx.concat(invertedMat); */
 	}
 }

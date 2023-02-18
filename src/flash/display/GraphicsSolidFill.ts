@@ -1,6 +1,6 @@
 import { IGraphicsFill } from "./IGraphicsFill";
 import { IGraphicsData } from "./IGraphicsData";
-import { FlashPort } from "../../FlashPort";
+import { FPConfig } from "../../FPConfig";
 import { ColorTransform } from "../geom/ColorTransform";
 import { Canvas, Color, Paint, Path } from "canvaskit-wasm";
 import { Matrix } from "../geom";
@@ -22,20 +22,20 @@ export class GraphicsSolidFill extends Object implements IGraphicsFill, IGraphic
 		this.color = color;
 		this.alpha = alpha;
 		
-		this.paint = new FlashPort.canvasKit.Paint();
+		this.paint = new FPConfig.canvasKit.Paint();
 		this.paint.setAntiAlias(true);
-		var rgba:Color = (FlashPort.renderer as IRenderer).getRGBAColor(this.color, this.alpha, new ColorTransform());
+		var rgba:Color = (FPConfig.renderer as IRenderer).getRGBAColor(this.color, this.alpha, new ColorTransform());
 		this.paint.setColor(rgba);
 	}
 	
 	public draw(ctx:CanvasRenderingContext2D,colorTransform:ColorTransform):void
 	{
-		ctx.fillStyle = (FlashPort.renderer as IRenderer).getCssColor(this.color,this.alpha, colorTransform,null).toString();
+		ctx.fillStyle = (FPConfig.renderer as IRenderer).getCssColor(this.color,this.alpha, colorTransform,null).toString();
 	}
 
 	public skiaDraw(ctx:Canvas, colorTransform:ColorTransform, mat?:Matrix):void
 	{
-		var rgba:Color = (FlashPort.renderer as IRenderer).getRGBAColor(this.color, this.alpha, colorTransform);
+		var rgba:Color = (FPConfig.renderer as IRenderer).getRGBAColor(this.color, this.alpha, colorTransform);
 		this.paint.setColor(rgba);
 	}
 }

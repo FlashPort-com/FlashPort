@@ -3,7 +3,7 @@ import { BitmapFilter } from "./BitmapFilter";
 import { Rectangle } from "../geom/Rectangle";
 import { TextField } from "../text/TextField";
 import { Canvas, EmbindEnumEntity, MaskFilter, Paint, Path } from "canvaskit-wasm";
-import { FlashPort } from "../../FlashPort";
+import { FPConfig } from "../../FPConfig";
 import { IRenderer } from "../__native/IRenderer";
 import { ColorTransform } from "../geom/ColorTransform";
 
@@ -663,18 +663,18 @@ export class GlowFilter extends BitmapFilter
 		this._blue = color & 0xff;
 		this._offsetX = this._offsetY = this._blur = Math.max(blurX, blurY);
 
-		let style:EmbindEnumEntity = FlashPort.canvasKit.BlurStyle.Normal;
-		if (inner) style = FlashPort.canvasKit.BlurStyle.Inner;
-		if (knockout) style = FlashPort.canvasKit.BlurStyle.Outer;
+		let style:EmbindEnumEntity = FPConfig.canvasKit.BlurStyle.Normal;
+		if (inner) style = FPConfig.canvasKit.BlurStyle.Inner;
+		if (knockout) style = FPConfig.canvasKit.BlurStyle.Outer;
 
-		let maskFilter:MaskFilter = FlashPort.canvasKit.MaskFilter.MakeBlur(
+		let maskFilter:MaskFilter = FPConfig.canvasKit.MaskFilter.MakeBlur(
 			style,
 			this._blur,
 			false
 		);
-		this.paint = new FlashPort.canvasKit.Paint();
-		if (this._inner) this.paint.setStyle(FlashPort.canvasKit.PaintStyle.Stroke);
-		this.paint.setColor((FlashPort.renderer as IRenderer).getRGBAColor(color, alpha, new ColorTransform()));
+		this.paint = new FPConfig.canvasKit.Paint();
+		if (this._inner) this.paint.setStyle(FPConfig.canvasKit.PaintStyle.Stroke);
+		this.paint.setColor((FPConfig.renderer as IRenderer).getRGBAColor(color, alpha, new ColorTransform()));
 		this.paint.setMaskFilter(maskFilter);
 	}
 	
@@ -688,7 +688,7 @@ export class GlowFilter extends BitmapFilter
 		} */
 		if (this._inner)
 		{
-			//this.paint.setBlendMode(FlashPort.canvasKit.BlendMode.Dst);
+			//this.paint.setBlendMode(FPConfig.canvasKit.BlendMode.Dst);
 		} 
 		ctx.drawPath(path, this.paint);
 	} 

@@ -3,7 +3,7 @@ import { StageAlign } from "./flash/display/StageAlign";
 import { StageScaleMode } from "./flash/display/StageScaleMode";
 import { AEvent } from "./flash/events";
 import { Matrix } from "./flash/geom";
-import { FlashPort } from "./FlashPort";
+import { FPConfig } from "./FPConfig";
 import CanvasKitInit from "canvaskit-wasm/bin/canvaskit.js";
 import CanvasKitWasm from "canvaskit-wasm/bin/canvaskit.wasm?url";
 import { CanvasKit } from "canvaskit-wasm";
@@ -20,7 +20,7 @@ export class Main extends Sprite
 
     constructor()
     {
-        FlashPort.autoSize = true;
+        FPConfig.autoSize = true;
         
         super();
         
@@ -84,6 +84,6 @@ export class Main extends Sprite
 CanvasKitInit({
     locateFile: (file) => '/node_modules/canvaskit-wasm/bin/'+file,
 }).then((canvasKit:CanvasKit) => {
-    FlashPort.canvasKit = canvasKit;
+    FPConfig.canvasKit = canvasKit;
     new Main();
 });

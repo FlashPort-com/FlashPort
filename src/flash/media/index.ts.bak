@@ -12,5 +12,4 @@ export * from './SoundMixer';
 export * from './SoundTransform';
 export * from './Video';
 export * from './VideoCodec';
-export * from './VideoPlayer';
 export * from './VideoStreamSettings';

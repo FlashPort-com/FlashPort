@@ -3,7 +3,7 @@ import { Stage } from "./Stage";
 import { DisplayObjectContainer } from "./DisplayObjectContainer";
 import { LoaderInfo } from "./LoaderInfo";
 import { BlendMode } from "./BlendMode";
-import { FlashPort } from "../../FlashPort";
+import { FPConfig } from "../../FPConfig";
 import { Graphics } from "./Graphics";
 
 import { AEvent } from "../events/AEvent";
@@ -41,7 +41,7 @@ export class DisplayObject extends EventDispatcher implements IBitmapDrawable {
   private lastMouseOverObj: DisplayObject;
   private _blendMode: string;
   private _opaqueBackground:number = -1;
-  private _clearColor:InputColor = FlashPort.canvasKit.TRANSPARENT;
+  private _clearColor:InputColor = FPConfig.canvasKit.TRANSPARENT;
   protected _cacheAsBitmap: boolean = false;
   protected _parentCached: boolean = false;
   private _loaderInfo: LoaderInfo;
@@ -103,7 +103,7 @@ export class DisplayObject extends EventDispatcher implements IBitmapDrawable {
     if (this._stage && v !== null) {
       this.dispatchEvent(new AEvent(AEvent.ADDED_TO_STAGE));
     } else {
-      FlashPort.dirtyGraphics = true;
+      FPConfig.dirtyGraphics = true;
       this.dispatchEvent(new AEvent(AEvent.REMOVED_FROM_STAGE));
     }
   }
@@ -273,7 +273,7 @@ export class DisplayObject extends EventDispatcher implements IBitmapDrawable {
 
   public updateTransforms(): void {
     this.transform.updateTransforms();
-    FlashPort.dirtyGraphics = true;
+    FPConfig.dirtyGraphics = true;
   }
 
   public get alpha(): number {
@@ -294,7 +294,7 @@ export class DisplayObject extends EventDispatcher implements IBitmapDrawable {
       }
     }
 
-    FlashPort.dirtyGraphics = true;
+    FPConfig.dirtyGraphics = true;
   }
 
   public get width(): number {
@@ -349,7 +349,7 @@ export class DisplayObject extends EventDispatcher implements IBitmapDrawable {
 
   public set opaqueBackground(v: number) {
     this._opaqueBackground = v;
-    this._clearColor = FlashPort.canvasKit.Color((v >> 16 & 255), (v >> 8 & 0xff), (v & 0xff), 1);
+    this._clearColor = FPConfig.canvasKit.Color((v >> 16 & 255), (v >> 8 & 0xff), (v & 0xff), 1);
   }
 
   public get scrollRect(): Rectangle {
@@ -543,12 +543,12 @@ export class DisplayObject extends EventDispatcher implements IBitmapDrawable {
   }
 
   private __enterFrame = (e: Event): void => {
-    if (FlashPort.dirtyGraphics && this._stage.surface) {
-      FlashPort.dirtyGraphics = false;
+    if (FPConfig.dirtyGraphics && this._stage.surface) {
+      FPConfig.dirtyGraphics = false;
       var ctx:Canvas = this._stage.surface.getCanvas();
       this.stage.skiaCanvas.clear(this._stage._clearColor);
 
-      FlashPort.drawCounter = 0;
+      FPConfig.drawCounter = 0;
       this.__update(ctx);
     }
   };

@@ -12,7 +12,7 @@ import { Canvas, Path } from "canvaskit-wasm";
 import { BlendMode } from "./BlendMode";
 import { ColorTransform } from "../geom/ColorTransform";
 import { GraphicsPath } from "./GraphicsPath";
-import { FlashPort } from "../../FlashPort";
+import { FPConfig } from "../../FPConfig";
 import { BitmapFilter } from "../filters";
 
 export class Sprite extends DisplayObjectContainer
@@ -122,8 +122,8 @@ export class Sprite extends DisplayObjectContainer
 				path = (this.mask['graphics'].lastPath as GraphicsPath).path;
 				let pathMat:number[] = [maskMat.a, maskMat.c, maskMat.tx, maskMat.b, maskMat.d, maskMat.ty, 0, 0, 1];
 				path.transform(pathMat)
-				path.setFillType(FlashPort.canvasKit.FillType.Winding);
-				ctx.clipPath(path, FlashPort.canvasKit.ClipOp.Intersect, true);
+				path.setFillType(FPConfig.canvasKit.FillType.Winding);
+				ctx.clipPath(path, FPConfig.canvasKit.ClipOp.Intersect, true);
 			}
 			
 			var filts:BitmapFilter[] = this.filters.concat(filters);

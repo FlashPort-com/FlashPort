@@ -1,4 +1,4 @@
-import { FlashPort } from "../../FlashPort";
+import { FPConfig } from "../../FPConfig";
 import { Bitmap } from "../display/Bitmap";
 import { Loader } from "../display/Loader";
 import { LoaderInfo } from "../display/LoaderInfo";
@@ -82,11 +82,11 @@ export class AssetLoader extends EventDispatcher
 		if (extLC == ".png" || extLC == ".jpg" || extLC == ".webp")
 		{
 			var bm:Bitmap = (loaderInfo.content as Bitmap);
-			FlashPort.images[name] = bm.bitmapData;
+			FPConfig.images[name] = bm.bitmapData;
 		}
 		else if (extLC == ".mp3" || extLC == ".wav")
 		{
-			FlashPort.sounds[name] = this.urlLD.data;
+			FPConfig.sounds[name] = this.urlLD.data;
 		}
 		
 		this.load();
@@ -101,7 +101,7 @@ export class AssetLoader extends EventDispatcher
 	{
 		if (buffer)
 		{		
-			FlashPort.fonts[fontName] = buffer;
+			FPConfig.fonts[fontName] = buffer;
 		}
 		this.load();
 	}

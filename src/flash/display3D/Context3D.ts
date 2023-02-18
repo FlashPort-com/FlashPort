@@ -1,5 +1,5 @@
 import { Program3D } from "./Program3D";
-import { FlashPort } from "../../FlashPort";
+import { FPConfig } from "../../FPConfig";
 import { IndexBuffer3D } from "./IndexBuffer3D";
 import { Context3DProgramType } from "./Context3DProgramType";
 import { VertexBuffer3D } from "./VertexBuffer3D";
@@ -64,7 +64,7 @@ export class Context3D extends EventDispatcher
 	
 	public clear(red:number = 0, green:number = 0, blue:number = 0, alpha:number = 1, depth:number = 1, stencil:number = 0, mask:number = 4294967295):void
 	{
-		FlashPort.dirtyGraphics = true;
+		FPConfig.dirtyGraphics = true;
 		this.gl.clearColor(red, green, blue, alpha);
 		this.gl.clearDepth(depth);
 		this.gl.clearStencil(stencil);
@@ -79,7 +79,7 @@ export class Context3D extends EventDispatcher
 	
 	public present():void
 	{
-		FlashPort.dirtyGraphics = true;
+		FPConfig.dirtyGraphics = true;
 	}
 	
 	public setProgram(program:Program3D):void

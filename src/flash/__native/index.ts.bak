@@ -9,6 +9,4 @@ export * from './GLGraphicsPath';
 export * from './GLIndexBufferSet';
 export * from './GLPath2D';
 export * from './GLVertexBufferSet';
-export * from './IRenderer';
 export * from './MemArray';
-export * from './SkiaRenderer';

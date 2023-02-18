@@ -3,7 +3,7 @@ import { IGraphicsData } from "./IGraphicsData";
 import { GraphicsPathCommand } from "./GraphicsPathCommand";
 import { ColorTransform } from "../geom/ColorTransform";
 import { Canvas, Paint, Path } from "canvaskit-wasm";
-import { FlashPort } from "../../FlashPort";
+import { FPConfig } from "../../FPConfig";
 import { Matrix } from "../geom";
 	
 export class GraphicsPath extends Object implements IGraphicsPath, IGraphicsData
@@ -140,7 +140,7 @@ export class GraphicsPath extends Object implements IGraphicsPath, IGraphicsData
 	public skiaDraw = (ctx:Canvas, colorTransform:ColorTransform, mat?:Matrix):void =>
 	{
 		if (this.commands.length) {
-			this.path = new FlashPort.canvasKit.Path();
+			this.path = new FPConfig.canvasKit.Path();
 			
 			var p:number = 0;
 			var trip:number = 0;

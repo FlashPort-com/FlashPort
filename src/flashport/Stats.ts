@@ -4,7 +4,7 @@ import { TextField } from "../flash/text/TextField";
 import { TextFieldAutoSize } from "../flash/text/TextFieldAutoSize";
 import { TextFormat } from "../flash/text/TextFormat";
 import { getTimer } from "../flash/utils/getTimer";
-import { FlashPort } from "../FlashPort";
+import { FPConfig } from "../FPConfig";
 
 export class Stats extends Sprite
 {
@@ -44,9 +44,9 @@ export class Stats extends Sprite
         }
         
         
-        text += "\ndraws: " + FlashPort.drawCounter;
-        if (FlashPort.batDrawCounter>0){
-            text += "\nb-draws: " + FlashPort.batDrawCounter;
+        text += "\ndraws: " + FPConfig.drawCounter;
+        if (FPConfig.batDrawCounter>0){
+            text += "\nb-draws: " + FPConfig.batDrawCounter;
         }
         
         if(this.tf.text != text)

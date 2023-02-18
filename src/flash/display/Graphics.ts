@@ -3,7 +3,7 @@ import { GraphicsGradientFill } from "./GraphicsGradientFill";
 import { GraphicsStroke } from "./GraphicsStroke";
 import { IGraphicsFill } from "./IGraphicsFill";
 import { GraphicsPath } from "./GraphicsPath";
-import { FlashPort } from "../../FlashPort";
+import { FPConfig } from "../../FPConfig";
 import { GraphicsSolidFill } from "./GraphicsSolidFill";
 import { BitmapData } from "./BitmapData";
 import { GraphicsBitmapFill } from "./GraphicsBitmapFill";
@@ -48,7 +48,7 @@ export class Graphics extends Object
 		this.pathPoolPos = 0;
 		this.graphicsData = [];
 		this._bound = null;
-		FlashPort.dirtyGraphics = true;
+		FPConfig.dirtyGraphics = true;
 	}
 	
 	public beginFill = (color:number, alpha:number = 1.0):void =>
@@ -305,7 +305,7 @@ export class Graphics extends Object
 			this.graphicsData.push(this.lastPath);
 		}
 		
-		FlashPort.dirtyGraphics = true;
+		FPConfig.dirtyGraphics = true;
 	}
 	
 	public endFill = ():void =>
@@ -494,9 +494,9 @@ export class Graphics extends Object
 	{
 		if (this.graphicsData.length)
 		{
-			(FlashPort.renderer as IRenderer).renderGraphics(ctx, this.graphicsData, m, blendMode, colorTransform, filters);
+			(FPConfig.renderer as IRenderer).renderGraphics(ctx, this.graphicsData, m, blendMode, colorTransform, filters);
 			
-			FlashPort.drawCounter++;
+			FPConfig.drawCounter++;
 		}
 	}
 }

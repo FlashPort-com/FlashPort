@@ -5,7 +5,7 @@ import { Canvas, CanvasKit, Color, Font, Image, InputMatrix, Paint, Paragraph, P
 import { IRenderer } from "./IRenderer";
 import { IBitmapDrawable } from "../display";
 import { BitmapFilter, BlurFilter } from "../filters";
-import { FlashPort } from "../../FlashPort";
+import { FPConfig } from "../../FPConfig";
 
 
 export class SkiaRenderer implements IRenderer
@@ -41,7 +41,7 @@ export class SkiaRenderer implements IRenderer
         let lastStroke:IGraphicsData;
 
 		var len:number = graphicsData.length;
-        var finalPath:Path = new FlashPort.canvasKit.Path();
+        var finalPath:Path = new FPConfig.canvasKit.Path();
 		for (var i:number = 0; i < len;i++ )
 		{
 			var igd:IGraphicsData = graphicsData[i];
@@ -50,7 +50,7 @@ export class SkiaRenderer implements IRenderer
             if (igd.graphicType == 'STROKE') lastStroke = igd;
             if (igd.graphicType == 'PATH')
             {
-                finalPath.op(igd.path, FlashPort.canvasKit.PathOp.Union);
+                finalPath.op(igd.path, FPConfig.canvasKit.PathOp.Union);
                 
                 let mat:number[] = [m.a, m.c, m.tx, m.b, m.d, m.ty, 0, 0, 1];
                 igd.path.transform(mat);
@@ -65,14 +65,14 @@ export class SkiaRenderer implements IRenderer
                     {
                         if (filters[j]['knockout'])
                         {
-                            if (lastFill) lastFill.paint.setBlendMode(FlashPort.canvasKit.BlendMode.Dst);
-                            if (lastStroke) lastStroke.paint.setBlendMode(FlashPort.canvasKit.BlendMode.Dst);
+                            if (lastFill) lastFill.paint.setBlendMode(FPConfig.canvasKit.BlendMode.Dst);
+                            if (lastStroke) lastStroke.paint.setBlendMode(FPConfig.canvasKit.BlendMode.Dst);
                         }
 
                         if (filters[j]['inner'])
                         {
-                            if (lastFill) lastFill.paint.setBlendMode(FlashPort.canvasKit.BlendMode.DstOver);
-                            if (lastStroke) lastStroke.paint.setBlendMode(FlashPort.canvasKit.BlendMode.Src);
+                            if (lastFill) lastFill.paint.setBlendMode(FPConfig.canvasKit.BlendMode.DstOver);
+                            if (lastStroke) lastStroke.paint.setBlendMode(FPConfig.canvasKit.BlendMode.Src);
                         }
                         filters[j]._applyFilter(ctx, igd.path);
                     }
@@ -104,7 +104,7 @@ export class SkiaRenderer implements IRenderer
     public renderImage(ctx: Canvas, img: Image, m: Matrix, blendMode: string, colorTransform: ColorTransform, offsetX?: number, offsetY?: number): void {
         let mat:InputMatrix = [m.a, m.c, m.tx, m.b, m.d, m.ty, 0, 0, 1];
         ctx.concat(mat);
-        ctx.drawImageOptions(img, 0, 0, FlashPort.canvasKit.FilterMode.Linear, FlashPort.canvasKit.MipmapMode.Linear);
+        ctx.drawImageOptions(img, 0, 0, FPConfig.canvasKit.FilterMode.Linear, FPConfig.canvasKit.MipmapMode.Linear);
         let invertedMat:InputMatrix = this._canvasKit.Matrix.invert(mat) || mat;
         ctx.concat(invertedMat);
     }

@@ -1,6 +1,6 @@
 {
   "name": "flashport",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "type": "module",
   "main": "./dist/flashport.umd.cjs",
   "module": "./dist/flashport.js",
@@ -11,6 +11,9 @@
       "require": "./dist/flashport.umd.cjs"
     }
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",

@@ -1,7 +1,7 @@
 import { Sprite } from "./Sprite";
 import { FrameLabel } from "./FrameLabel";
 import { DisplayObject } from "./DisplayObject";
-import { FlashPort } from "../../FlashPort";
+import { FPConfig } from "../../FPConfig";
 
 import { Scene } from "./Scene";
 import { AEvent } from "../events/AEvent";
@@ -137,7 +137,7 @@ export class MovieClip extends Sprite
 			
 			this._prevKeyframe = this._currentKeyFrame;
 			this.updateTweens(this._frame);
-			FlashPort.dirtyGraphics = true;
+			FPConfig.dirtyGraphics = true;
 			
 			// play timeline sounds
 			if (this._frameSounds[this._currentKeyFrame] != undefined && this._isPlaying)

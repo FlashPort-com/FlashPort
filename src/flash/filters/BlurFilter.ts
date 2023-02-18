@@ -1,5 +1,5 @@
 import { Canvas, MaskFilter, Paint, Path } from "canvaskit-wasm";
-import { FlashPort } from "../../FlashPort";
+import { FPConfig } from "../../FPConfig";
 import { BitmapFilter } from "./BitmapFilter";
 
 /**
@@ -282,8 +282,8 @@ export class BlurFilter extends BitmapFilter
 		this._blurY = blurY;
 		this._quality = quality;
 
-		this.maskFilter = FlashPort.canvasKit.MaskFilter.MakeBlur(
-			FlashPort.canvasKit.BlurStyle.Normal,
+		this.maskFilter = FPConfig.canvasKit.MaskFilter.MakeBlur(
+			FPConfig.canvasKit.BlurStyle.Normal,
 			Math.max(this._blurX, this._blurY),
 			false
 		);

@@ -2,7 +2,7 @@ import { IGraphicsStroke } from "./IGraphicsStroke";
 import { IGraphicsData } from "./IGraphicsData";
 import { IGraphicsFill } from "./IGraphicsFill";
 import { GraphicsSolidFill } from "./GraphicsSolidFill";
-import { FlashPort } from "../../FlashPort";
+import { FPConfig } from "../../FPConfig";
 import { GraphicsGradientFill } from "./GraphicsGradientFill";
 import { ColorTransform } from "../geom/ColorTransform";
 import { JointStyle } from "./JointStyle";
@@ -34,10 +34,10 @@ export class GraphicsStroke extends Object implements IGraphicsStroke, IGraphics
 		this._fill = fill ? fill : new GraphicsSolidFill(0x000000, 1);
 		
 		this.paint = this.fill.paint;
-		this.paint.setColor(FlashPort.canvasKit.Color(0, 0, 0, 0));
-		this.paint.setStyle(FlashPort.canvasKit.PaintStyle.Stroke);
+		this.paint.setColor(FPConfig.canvasKit.Color(0, 0, 0, 0));
+		this.paint.setStyle(FPConfig.canvasKit.PaintStyle.Stroke);
 		this.paint.setStrokeWidth(thickness);
-		this.paint.setStrokeCap(FlashPort.canvasKit.StrokeCap.Square);
+		this.paint.setStrokeCap(FPConfig.canvasKit.StrokeCap.Square);
 		this.paint.setAntiAlias(true);
 	}
 
@@ -50,9 +50,9 @@ export class GraphicsStroke extends Object implements IGraphicsStroke, IGraphics
 	{
 		this._fill = value;
 		this.paint = this._fill.paint;
-		this.paint.setStyle(FlashPort.canvasKit.PaintStyle.Stroke);
+		this.paint.setStyle(FPConfig.canvasKit.PaintStyle.Stroke);
 		this.paint.setStrokeWidth(this.thickness);
-		this.paint.setStrokeCap(FlashPort.canvasKit.StrokeCap.Square);
+		this.paint.setStrokeCap(FPConfig.canvasKit.StrokeCap.Square);
 	}
 	
 	public get caps():string
@@ -101,7 +101,7 @@ export class GraphicsStroke extends Object implements IGraphicsStroke, IGraphics
 				ctx.lineCap = this._caps as CanvasLineCap;
 				ctx.lineJoin = this._joints as CanvasLineJoin;
 				ctx.miterLimit = this.miterLimit;
-				ctx.strokeStyle = (FlashPort.renderer as IRenderer).getCssColor(sf.color, sf.alpha,colorTransform,null).toString();
+				ctx.strokeStyle = (FPConfig.renderer as IRenderer).getCssColor(sf.color, sf.alpha,colorTransform,null).toString();
 			}
 			else if (this.fill instanceof GraphicsGradientFill)
 			{
@@ -120,7 +120,7 @@ export class GraphicsStroke extends Object implements IGraphicsStroke, IGraphics
 		if (this._fill instanceof GraphicsSolidFill)
 		{
 			var sf:GraphicsSolidFill = this._fill as GraphicsSolidFill;
-			var rgba:Color = (FlashPort.renderer as IRenderer).getRGBAColor(sf.color, sf.alpha, colorTransform);
+			var rgba:Color = (FPConfig.renderer as IRenderer).getRGBAColor(sf.color, sf.alpha, colorTransform);
 			this.paint.setColor(rgba);
 		}
 		else

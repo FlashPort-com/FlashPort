@@ -1,5 +1,5 @@
 import { IBitmapDrawable } from "./IBitmapDrawable";
-import { FlashPort } from "../../FlashPort";
+import { FPConfig } from "../../FPConfig";
 import { BitmapDataChannel } from "./BitmapDataChannel";
 import { ColorTransform } from "../geom/ColorTransform";
 import { Matrix } from "../geom/Matrix";
@@ -39,10 +39,10 @@ export class BitmapData implements IBitmapDrawable
 	
 	public fromImage(img:any,dx:number=0,dy:number=0,opt_dw:number=0,opt_dy:number=0):void {
 		this.ctx.drawImage(img, dx, dy);
-		FlashPort.dirtyGraphics = true;
+		FPConfig.dirtyGraphics = true;
 		this.imageData = this.ctx.getImageData(0, 0, this._width, this._height);
 		this.__data = this.imageData.data;
-		this.image = FlashPort.canvasKit.MakeImageFromCanvasImageSource(this.imageSource);
+		this.image = FPConfig.canvasKit.MakeImageFromCanvasImageSource(this.imageSource);
 	}
 	
 	public clone():BitmapData  
@@ -88,8 +88,8 @@ export class BitmapData implements IBitmapDrawable
 		data32[p] = 0xff000000 | color;*/
 		if (!this._lock) {
 			this.ctx.putImageData(this.imageData, 0, 0);
-			this.image = FlashPort.canvasKit.MakeImageFromCanvasImageSource(this.imageSource);
-			FlashPort.dirtyGraphics = true;
+			this.image = FPConfig.canvasKit.MakeImageFromCanvasImageSource(this.imageSource);
+			FPConfig.dirtyGraphics = true;
 		}
 	}
 	
@@ -103,8 +103,8 @@ export class BitmapData implements IBitmapDrawable
 		data32[p] = color;*/
 		if (!this._lock) {
 			this.ctx.putImageData(this.imageData,0,0);
-			this.image = FlashPort.canvasKit.MakeImageFromCanvasImageSource(this.imageSource);
-			FlashPort.dirtyGraphics = true;
+			this.image = FPConfig.canvasKit.MakeImageFromCanvasImageSource(this.imageSource);
+			FPConfig.dirtyGraphics = true;
 		}
 	}
 	
@@ -307,7 +307,7 @@ export class BitmapData implements IBitmapDrawable
 		this._lock = nowlock;
 		if (!this._lock) {
 			this.ctx.putImageData(this.imageData,0,0);
-			FlashPort.dirtyGraphics = true;
+			FPConfig.dirtyGraphics = true;
 		}
 		//setVector(rect, vec);
 	}
@@ -337,8 +337,8 @@ export class BitmapData implements IBitmapDrawable
 	public unlock(param1:Rectangle = null):void  {
 		this._lock = false;
 		this.ctx.putImageData(this.imageData, 0, 0);
-		this.image = FlashPort.canvasKit.MakeImageFromCanvasImageSource(this.imageSource);
-		FlashPort.dirtyGraphics = true;
+		this.image = FPConfig.canvasKit.MakeImageFromCanvasImageSource(this.imageSource);
+		FPConfig.dirtyGraphics = true;
 	}
 	
 	public histogram(param1:Rectangle = null):any[]  { return null }
