@@ -8,6 +8,8 @@ import { NetStream } from "../net/NetStream";
 import { Camera } from "./Camera";
 import { Bitmap } from "../display/Bitmap"; 
 import { IRenderer } from "../__native/IRenderer";
+import { Canvas } from "canvaskit-wasm";
+import { BitmapFilter } from "../filters/BitmapFilter";
 
 /**
  * The Video class displays live or recorded video in an application 
@@ -361,7 +363,7 @@ export class Video extends DisplayObject
 		this._rect = new Rectangle(0, 0, width, height);
 	}
 	
-	/*override*/ public __update = (ctx:CanvasRenderingContext2D, offsetX:number = 0, offsetY:number = 0, parentIsCached:boolean = false):void =>
+	/*override*/ public __update = (ctx:Canvas, offsetX:number = 0, offsetY:number = 0, filters: BitmapFilter[] = []):void =>
 	{
 		if (this._videoElement && this.visible)
 		{

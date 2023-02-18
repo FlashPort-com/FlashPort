@@ -14,7 +14,7 @@ export class BitmapData implements IBitmapDrawable
 	public image:Image;
 	//private var data32:Uint32Array;
 	private imageData:ImageData;
-	private imageSource:CanvasImageSource;
+	public imageSource:CanvasImageSource;
 
 	private _lock:boolean = false;
 	public ctx:CanvasRenderingContext2D;

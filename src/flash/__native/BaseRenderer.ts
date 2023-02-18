@@ -62,8 +62,8 @@ export class BaseRenderer
 		if (hasColorTransform)
 		{
 			// fill buffer canvas with colorTransorm color
-			this.buffer.width = img.image.width;
-			this.buffer.height = img.image.height;
+			this.buffer.width = img.width;
+			this.buffer.height = img.height;
 			let bCTX:CanvasRenderingContext2D = this.buffer.getContext('2d');
 			bCTX.fillStyle = "rgba(" + colorTransform.redOffset + "," + colorTransform.greenOffset + "," + colorTransform.blueOffset + "," + colorTransform.alphaMultiplier + ")";
 			bCTX.globalCompositeOperation = "color";
@@ -71,13 +71,13 @@ export class BaseRenderer
 
 			// use drawing as mask
 			bCTX.globalCompositeOperation = "destination-in";
-			bCTX.drawImage(img.image, 0, 0); 
+			bCTX.drawImage(img.imageSource, 0, 0); 
 		}
 		
 		ctx.globalAlpha = colorTransform.alphaMultiplier;
 		ctx.globalCompositeOperation = <any>blendMode;
 		ctx.setTransform(m.a, m.b, m.c, m.d, m.tx, m.ty);
-		ctx.drawImage(hasColorTransform ? this.buffer : img.image, offsetX, offsetY);
+		ctx.drawImage(hasColorTransform ? this.buffer : img.imageSource, offsetX, offsetY);
 	}
 	
 	/*override*/ public renderVideo = (ctx:CanvasRenderingContext2D,video:HTMLVideoElement,m:Matrix, width:number, height:number, blendMode:string, colorTransform:ColorTransform):void =>
@@ -102,6 +102,6 @@ export class BaseRenderer
 	
 	/*override*/ public renderRichText = (ctx:CanvasRenderingContext2D, t:TextField, offsetX:number = 0, offsetY:number = 0):void =>
 	{
-		t.__updateCanvas(ctx, offsetX, offsetY);
+		//t.__updateCanvas(ctx, offsetX, offsetY);
 	}
 }

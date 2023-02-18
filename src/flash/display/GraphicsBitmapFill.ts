@@ -31,7 +31,7 @@ export class GraphicsBitmapFill extends Object implements IGraphicsFill, IGraphi
 	public draw(ctx:CanvasRenderingContext2D,colorTransform:ColorTransform):void
 	{
 		if (!this.pattern && this.bitmapData) {
-			this.pattern = ctx.createPattern(this.bitmapData.image, this.repeat ? "repeat" : "no-repeat");
+			this.pattern = ctx.createPattern(this.bitmapData.imageSource as HTMLCanvasElement, this.repeat ? "repeat" : "no-repeat");
 		}
 		
 		ctx.fillStyle = this.pattern;

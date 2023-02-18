@@ -15,7 +15,7 @@ export class Texture extends TextureBase
 	
 	public uploadFromBitmapData(bitmapData:BitmapData, maplevel:number = 0):void
 	{
-		this.uploadFromImg(bitmapData.image, maplevel);
+		this.uploadFromImg(bitmapData.imageSource as HTMLCanvasElement, maplevel);
 	}
 	
 	public uploadFromImg(img:HTMLCanvasElement, maplevel:number = 0):void
