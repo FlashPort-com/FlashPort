@@ -170,17 +170,20 @@ export class Stage extends DisplayObjectContainer
 			FPConfig.stageHeight = (FPConfig.rootHTMLElement) ? FPConfig.rootHTMLElement.clientHeight : window.innerHeight;
 		}
 		
-		let dpi:number = window.devicePixelRatio;
+		let dpi:number = FPConfig.highDPI ? window.devicePixelRatio : 1;
 		this._stageWidth = FPConfig.stageWidth * dpi;
 		this._stageHeight = FPConfig.stageHeight * dpi;
 		this._canvas.width = this._stageWidth;
 		this._canvas.height = this._stageHeight;
-		this._canvas.style.width = this._stageWidth + "px";
-		this._canvas.style.height = this._stageHeight + "px";
+		this._canvas.style.width = this._stageWidth/dpi + "px";
+		this._canvas.style.height = this._stageHeight/dpi + "px";
 		this._stage3Ds[0].canvas.width = this._stageWidth;
 		this._stage3Ds[0].canvas.height = this._stageHeight;
-		this._stage3Ds[0].canvas.style.width = this._stageWidth + "px";
-		this._stage3Ds[0].canvas.style.height = this._stageHeight + "px";
+		this._stage3Ds[0].canvas.style.width = this._stageWidth/dpi + "px";
+		this._stage3Ds[0].canvas.style.height = this._stageHeight/dpi + "px";
+
+		this._surface = FPConfig.canvasKit.MakeCanvasSurface("flashportcanvas");
+		this._skiaCanvas = this._surface.getCanvas();
 
 		if (Stage._instance && Stage._instance.root)
 		{
@@ -209,7 +212,7 @@ export class Stage extends DisplayObjectContainer
 	{
 		if (this._pauseRendering) return;
 		
-		if(this._stageWidth != FPConfig.stageWidth || this._stageHeight != FPConfig.stageHeight){
+		if(Stage._instance.stageWidth != FPConfig.stageWidth || Stage._instance.stageHeight != FPConfig.stageHeight){
 			this.window_resize(null);
 		}
 		
@@ -233,20 +236,6 @@ export class Stage extends DisplayObjectContainer
 			
 			this.prevTime = now - (elapsed % fpsInterval);
 			this.dispatchEvent(new AEvent(AEvent.ENTER_FRAME, true));
-			
-			/* //this._mat.translate(1, 1);
-			//this._mat.rotate(.01);
-			let mat:number[] = [this._mat.a, this._mat.c, this._mat.tx, this._mat.b, this._mat.d, this._mat.ty, 0, 0, 1];
-			
-			// apply current matrix for path
-			this._thePath.transform(mat);
-			
-			canvas.drawPath(this._thePath, this._fillPaint);
-			canvas.drawPath(this._thePath, this._strokePaint);
-
-			// reset matrix
-			let invertedMat:number[] = this._canvasKit.Matrix.invert(mat);
-			this._thePath.transform(invertedMat); */
 		}
 
 		this._surface.requestAnimationFrame(this._updateStage);
@@ -348,8 +337,11 @@ export class Stage extends DisplayObjectContainer
 
 	public get stageHeight ():number
 	{ 
-		if (FPConfig.autoSize) this._stageHeight = window.innerHeight;
-		return this._stageHeight; 
+		if (FPConfig.autoSize)
+		{
+			return window.innerHeight * (FPConfig.highDPI ? window.devicePixelRatio : 1);
+		} 
+		return this._stageHeight * (FPConfig.highDPI ? window.devicePixelRatio : 1); 
 	}
 	public set stageHeight (value:number) { this._stageHeight = value; }
 
@@ -358,8 +350,12 @@ export class Stage extends DisplayObjectContainer
 
 	public get stageWidth ():number 
 	{ 
-		if (FPConfig.autoSize) this._stageWidth = window.innerWidth;
-		return this._stageWidth; 
+		if (FPConfig.autoSize) 
+		{
+			return window.innerWidth * (FPConfig.highDPI ? window.devicePixelRatio : 1);
+		}
+		
+		return this._stageWidth * (FPConfig.highDPI ? window.devicePixelRatio : 1);
 	}
 	public set stageWidth (value:number) { this._stageWidth = value; }
 

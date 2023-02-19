@@ -13,6 +13,7 @@ export class FPConfig
 	public static renderer:any;
 	public static canvasKit:CanvasKit;
 	public static dirtyGraphics:Boolean = true;
+	public static highDPI:Boolean = false;
 	
 	// assets
 	public static images:object = {};

@@ -11,6 +11,7 @@ import { Shape } from "./flash/display/Shape";
 import { BlurFilter, DropShadowFilter, GlowFilter } from "./flash/filters";
 import { TextField } from "./flash/text";
 import { AssetLoader } from "./flash/__native/AssetLoader";
+import { Header } from "./Header";
 
 export class Main extends Sprite
 {
@@ -22,6 +23,7 @@ export class Main extends Sprite
     constructor()
     {
         FPConfig.autoSize = true;
+        FPConfig.highDPI = false;
         
         super();
 
@@ -81,7 +83,8 @@ export class Main extends Sprite
         txt.x = txt.y = 50;
         this.addChild(txt);
 
-        
+        let header:Header = new Header();
+        this.addChild(header);
         
         this.addEventListener(AEvent.ENTER_FRAME, this.onUpdate);
 	}
