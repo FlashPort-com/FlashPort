@@ -83,13 +83,11 @@ import { BitmapFilter } from "./BitmapFilter";
  */
 export class BlurFilter extends BitmapFilter
 {
-	private paint:Paint;
 	private maskFilter:MaskFilter;
 	private _blurX:number = 0;
 	private _blurY:number = 0;
 	private _quality:number = 1;
-
-	private paints:any = {};
+	private _isDirty:boolean = true;
 	
 	/**
 	 * The amount of horizontal blur. Valid values are from 0 to 255 (floating point). The
@@ -133,6 +131,7 @@ export class BlurFilter extends BitmapFilter
 	}
 	public set blurX (value:number){
 		this._blurX = value;
+		this._isDirty = true;
 	}
 
 	/**
@@ -177,6 +176,7 @@ export class BlurFilter extends BitmapFilter
 	}
 	public set blurY (value:number){
 		this._blurY = value;
+		this._isDirty = true;
 	}
 
 	/**
@@ -230,6 +230,7 @@ export class BlurFilter extends BitmapFilter
 	}
 	public set quality (value:number){
 		this._quality = value;
+		this._isDirty = true;
 	}
 
 	/**
@@ -353,6 +354,10 @@ export class BlurFilter extends BitmapFilter
 
 	public _applyFilter(ctx:Canvas, path:Path, blurPaint:Paint):void
 	{
-		blurPaint.setMaskFilter(this.maskFilter);
+		if (this._isDirty)
+		{
+			blurPaint.setMaskFilter(this.maskFilter);
+			this._isDirty = false;
+		}
 	}
 }
