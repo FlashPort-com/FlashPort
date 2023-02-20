@@ -110,7 +110,7 @@ export class GraphicsStroke extends Object implements IGraphicsStroke, IGraphics
 				ctx.lineCap = this._caps as CanvasLineCap;
 				ctx.lineJoin = this._joints as CanvasLineJoin;
 				ctx.miterLimit = this.miterLimit;
-				ctx.strokeStyle = gf.gradient;
+				//ctx.strokeStyle = gf.gradient;
 			}
 		}
 	}
