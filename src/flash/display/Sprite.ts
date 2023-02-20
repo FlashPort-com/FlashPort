@@ -124,6 +124,8 @@ export class Sprite extends DisplayObjectContainer
 				path.transform(pathMat)
 				path.setFillType(FPConfig.canvasKit.FillType.Winding);
 				ctx.clipPath(path, FPConfig.canvasKit.ClipOp.Intersect, true);
+				let invertedMat:number[] = FPConfig.canvasKit.Matrix.invert(pathMat) || pathMat;
+			    path.transform(invertedMat);
 			}
 			
 			var filts:BitmapFilter[] = this.filters.concat(filters);
@@ -134,7 +136,6 @@ export class Sprite extends DisplayObjectContainer
 			if (this.mask)
 			{
 				ctx.restore();
-				path.delete();
 			} 
 		}
 	}

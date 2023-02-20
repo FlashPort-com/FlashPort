@@ -77,6 +77,8 @@ import { BitmapFilter } from "../filters/BitmapFilter";
 						path.transform(pathMat)
 						path.setFillType(FPConfig.canvasKit.FillType.Winding);
 						ctx.clipPath(path, FPConfig.canvasKit.ClipOp.Intersect, true);
+						let invertedMat:number[] = FPConfig.canvasKit.Matrix.invert(pathMat) || pathMat;
+			    		path.transform(invertedMat);
 					}
 					
 					(FPConfig.renderer as IRenderer).renderImage(ctx, this._bitmapData.image, mat, this.blendMode, this.transform.concatenatedColorTransform);
@@ -84,7 +86,6 @@ import { BitmapFilter } from "../filters/BitmapFilter";
 					if (this.mask)
 					{
 						ctx.restore();
-						path.delete();
 					} 
 					
 				}

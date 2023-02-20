@@ -42,6 +42,8 @@ export class Shape extends DisplayObject
 				path.transform(pathMat)
 				path.setFillType(FPConfig.canvasKit.FillType.Winding);
 				ctx.clipPath(path, FPConfig.canvasKit.ClipOp.Intersect, true);
+				let invertedMat:number[] = FPConfig.canvasKit.Matrix.invert(pathMat) || pathMat;
+			    path.transform(invertedMat);
 			}
 
 			this.graphics.draw(ctx, mat, this.blendMode, colorTrans, this.filters.concat(filters));
@@ -49,7 +51,6 @@ export class Shape extends DisplayObject
 			if (this.mask)
 			{
 				ctx.restore();
-				path.delete();
 			} 
 		}
 	}
