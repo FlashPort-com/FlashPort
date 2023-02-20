@@ -6,7 +6,7 @@ import { Matrix } from "../geom/Matrix";
 import { Point } from "../geom/Point";
 import { Rectangle } from "../geom/Rectangle";
 import { ByteArray } from "../utils/ByteArray";
-import { Image } from "canvaskit-wasm";
+import { Color, Image } from "canvaskit-wasm";
 
 export class BitmapData implements IBitmapDrawable
 {
@@ -22,6 +22,8 @@ export class BitmapData implements IBitmapDrawable
 	private _fillColor:number;
 	private _width:number;
 	private _height:number;
+
+	private _rgba:Color;
 	
 	constructor(width:number, height:number, transparent:boolean = true, fillColor:number = 0xffffffff){
 		
@@ -131,7 +133,11 @@ export class BitmapData implements IBitmapDrawable
 	}
 	
 	public draw(source:IBitmapDrawable, matrix:Matrix = null, colorTransform:ColorTransform = null, blendMode:string = null, clipRect:Rectangle = null, smoothing:boolean = false):void  {
-		this.drawWithQuality(source, matrix, colorTransform, blendMode, clipRect, smoothing);
+		if (!this.image || (colorTransform && this._rgba != colorTransform.rgba))
+		{
+			if (colorTransform) this._rgba = colorTransform.rgba;
+			this.drawWithQuality(source, matrix, colorTransform, blendMode, clipRect, smoothing);
+		}
 	}
 	
 	public drawWithQuality(source:IBitmapDrawable, matrix:Matrix=null, colorTransform:ColorTransform=null, blendMode:string=null, clipRect:Rectangle=null, smoothing:boolean=false, quality:string=null):void  {
