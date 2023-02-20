@@ -12,7 +12,7 @@ export class GraphicsPath extends Object implements IGraphicsPath, IGraphicsData
 	public path: Path;
 	public isMask:Boolean = false;
 	public graphicType:string = "PATH";
-	public gpuPath2DDirty:boolean = true;
+	public pathDirty:boolean = false;
 	public commands:any[] = [];
 	public data:any[] = [];
 	public tris:any[] = [];
@@ -31,12 +31,14 @@ export class GraphicsPath extends Object implements IGraphicsPath, IGraphicsData
 		}
 		
 		this._winding = winding;
+		this.path = new FPConfig.canvasKit.Path();
 	}
 	
 	public clear = ():void => {
 		this.commands.length = 0;
 		this.data.length = 0;
 		this.tris.length = 0;
+		this.pathDirty = true;
 	}
 	
 	public get winding():string
@@ -51,45 +53,51 @@ export class GraphicsPath extends Object implements IGraphicsPath, IGraphicsData
 	
 	public moveTo = (x:number, y:number):void =>
 	{
-		//initData();
 		this.commands.push(GraphicsPathCommand.MOVE_TO);
 		this.data.push(x, y);
+		this.pathDirty = true;
 	}
 	
 	public lineTo = (x:number, y:number):void =>
 	{
 		this.commands.push(GraphicsPathCommand.LINE_TO);
 		this.data.push(x, y);
+		this.pathDirty = true;
 	}
 	
 	public curveTo = (controlX:number, controlY:number, anchorX:number, anchorY:number):void =>
 	{
 		this.commands.push(GraphicsPathCommand.CURVE_TO);
 		this.data.push(controlX, controlY, anchorX, anchorY);
+		this.pathDirty = true;
 	}
 	
 	public cubicCurveTo = (controlX1:number, controlY1:number, controlX2:number, controlY2:number, anchorX:number, anchorY:number):void =>
 	{
 		this.commands.push(GraphicsPathCommand.CUBIC_CURVE_TO);
 		this.data.push(controlX1, controlY1, controlX2, controlY2, anchorX, anchorY);
+		this.pathDirty = true;
 	}
 	
 	public wideLineTo = (x:number, y:number):void =>
 	{
 		this.commands.push(GraphicsPathCommand.WIDE_LINE_TO);
 		this.data.push(0.0, 0.0, x, y);
+		this.pathDirty = true;
 	}
 	
 	public wideMoveTo = (x:number, y:number):void =>
 	{
 		this.commands.push(GraphicsPathCommand.WIDE_MOVE_TO);
 		this.data.push(0.0, 0.0, x, y);
+		this.pathDirty = true;
 	}
 	
 	public arc = (x:number, y:number,r:number,a0:number,a1:number):void =>
 	{
 		this.commands.push(GraphicsPathCommand.ARC);
 		this.data.push(x,y,r,a0,a1);
+		this.pathDirty = true;
 	}
 	
 	public draw = (ctx:CanvasRenderingContext2D, colorTransform:ColorTransform):void =>
@@ -139,8 +147,10 @@ export class GraphicsPath extends Object implements IGraphicsPath, IGraphicsData
 	
 	public skiaDraw = (ctx:Canvas, colorTransform:ColorTransform, mat?:Matrix):void =>
 	{
-		if (this.commands.length) {
-			this.path = new FPConfig.canvasKit.Path();
+		if (this.pathDirty && this.commands.length) 
+		{
+			this.path.reset();
+			this.pathDirty = false;
 			
 			var p:number = 0;
 			var trip:number = 0;
@@ -182,14 +192,15 @@ export class GraphicsPath extends Object implements IGraphicsPath, IGraphicsData
 	
 	public closePath = ():void =>
 	{
-		//initData();
 		this.commands.push(GraphicsPathCommand.CLOSE_PATH);
+		this.pathDirty = true;
 	}
 	
 	public drawTriangles = (vertices:number[], indices:number[], uvtData:number[]):void =>
 	{
 		this.tris.push([vertices, indices, uvtData]);
 		this.commands.push(GraphicsPathCommand.DRAW_TRIANGLES);
+		this.pathDirty = true;
 	}
 	
 	private doDrawTriangles = (tri:any[],ctx:CanvasRenderingContext2D):void =>

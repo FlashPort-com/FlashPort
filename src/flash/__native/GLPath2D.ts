@@ -22,8 +22,8 @@ export class GLPath2D
     }
     
     public get drawable():GLDrawable{
-        if (this.path.gpuPath2DDirty){
-            this.path.gpuPath2DDirty = false;
+        if (this.path.pathDirty){
+            this.path.pathDirty = false;
             
             var polys:MemArray = this.path.polys;
             

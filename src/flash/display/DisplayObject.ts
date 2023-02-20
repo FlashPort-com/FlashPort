@@ -545,11 +545,11 @@ export class DisplayObject extends EventDispatcher implements IBitmapDrawable {
   private __enterFrame = (e: Event): void => {
     if (FPConfig.dirtyGraphics && this._stage.surface) {
       FPConfig.dirtyGraphics = false;
-      var ctx:Canvas = this._stage.surface.getCanvas();
-      this.stage.skiaCanvas.clear(this._stage._clearColor);
+      var skiaCanvas:Canvas = this.stage.skiaCanvas;
+      skiaCanvas.clear(this._stage._clearColor);
 
       FPConfig.drawCounter = 0;
-      this.__update(ctx);
+      this.__update(skiaCanvas);
     }
   };
 

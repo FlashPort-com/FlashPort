@@ -441,7 +441,7 @@ export class Stage extends DisplayObjectContainer
 		var jsType:string = e.type;
 		var flashType:string = '';
 		var flashType2:string = '';
-
+		console.log("touchy? " + jsType);
 		switch(jsType) {
 			case "touchcancel":
 				flashType = TouchEvent.TOUCH_END;

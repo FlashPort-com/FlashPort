@@ -27,7 +27,6 @@ export class GraphicsGradientFill extends Object implements IGraphicsFill, IGrap
 	private _spreadMethod:string;
 	private _tileMode:TileMode;
 	private _interpolationMethod:string;
-	private _gradient:CanvasGradient;
 	private _startPoint:Point;
 	private _endPoint:Point;
 	private _radius1:number = 0;
@@ -35,6 +34,7 @@ export class GraphicsGradientFill extends Object implements IGraphicsFill, IGrap
 	private _convertedColors:any[];
 	private _convertedRatios:any[];
 	private _colorTransform:ColorTransform;
+	private _isDirty:boolean = true;
 	
 	constructor(type:string = "linear", colors:any[] = null, alphas:any[] = null, ratios:any[] = null, bounds:Rectangle = null, matrix:Matrix = null, spreadMethod:any = "pad", interpolationMethod:string = "rgb", focalPointRatio:number = 0.0){
 		super();
@@ -47,6 +47,7 @@ export class GraphicsGradientFill extends Object implements IGraphicsFill, IGrap
 		this._spreadMethod = spreadMethod;
 		this._interpolationMethod = interpolationMethod;
 		this.focalPointRatio = focalPointRatio;
+		this._colorTransform = new ColorTransform();
 
 		this.paint = new FPConfig.canvasKit.Paint();
 		this.paint.setAntiAlias(true);
@@ -169,8 +170,6 @@ export class GraphicsGradientFill extends Object implements IGraphicsFill, IGrap
 	
 	private colorsChanged(ct:ColorTransform):boolean 
 	{
-		if (!this._colorTransform) return false;
-		
 		if (this._colorTransform.alphaMultiplier === ct.alphaMultiplier &&
 			this._colorTransform.alphaOffset === ct.alphaOffset &&
 			this._colorTransform.blueMultiplier === ct.blueMultiplier &&
@@ -229,9 +228,9 @@ export class GraphicsGradientFill extends Object implements IGraphicsFill, IGrap
 		this.transformGradient();
 	}
 	
-	public get gradient():CanvasGradient 
+	public get shader():Shader 
 	{
-		return this._gradient;
+		return this._shader;
 	}
 	
 	public get startPoint():Point 
@@ -249,13 +248,16 @@ export class GraphicsGradientFill extends Object implements IGraphicsFill, IGrap
 		
 	}
 
-	public skiaDraw(ctx:Canvas, colorTransform:ColorTransform, mat?:Matrix):void
+	public skiaDraw = (ctx:Canvas, colorTransform:ColorTransform, mat?:Matrix):void =>
 	{
-		this._colorTransform = colorTransform;
 		let m:number[] = [mat.a, mat.c, mat.tx, mat.b, mat.d, mat.ty, 0, 0, 1];
-		//console.log(this.getShaderColorPoints());
-		if (this._gradient == null || !this._colorTransform || this.colorsChanged(colorTransform))
+		
+		if (this._isDirty || this.colorsChanged(colorTransform))
 		{	
+			//console.log("dirty", this._isDirty);
+			
+			this._colorTransform = this._colorTransform;
+			
 			if (this.type === GradientType.LINEAR) {
 				this._shader = FPConfig.canvasKit.Shader.MakeLinearGradient(
 					[this._startPoint.x, this._startPoint.y],
@@ -278,5 +280,6 @@ export class GraphicsGradientFill extends Object implements IGraphicsFill, IGrap
 		}
 
 		this.paint.setShader(this._shader);
+		this._isDirty = false;
 	}
 }

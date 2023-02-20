@@ -41,7 +41,7 @@ export class SkiaRenderer implements IRenderer
         let lastStroke:IGraphicsData;
 
 		var len:number = graphicsData.length;
-        var finalPath:Path = new FPConfig.canvasKit.Path();
+        //var finalPath:Path = new FPConfig.canvasKit.Path();
 		for (var i:number = 0; i < len;i++ )
 		{
 			var igd:IGraphicsData = graphicsData[i];
@@ -50,7 +50,7 @@ export class SkiaRenderer implements IRenderer
             if (igd.graphicType == 'STROKE') lastStroke = igd;
             if (igd.graphicType == 'PATH')
             {
-                finalPath.op(igd.path, FPConfig.canvasKit.PathOp.Union);
+                //finalPath.op(igd.path, FPConfig.canvasKit.PathOp.Union);
                 
                 let mat:number[] = [m.a, m.c, m.tx, m.b, m.d, m.ty, 0, 0, 1];
                 igd.path.transform(mat);
@@ -93,7 +93,6 @@ export class SkiaRenderer implements IRenderer
                 // reset matrix
 			    let invertedMat:number[] = this._canvasKit.Matrix.invert(mat) || mat;
 			    igd.path.transform(invertedMat);
-                if (!igd['isMask']) igd.path.delete();  // TODO run mask before delete
             }
 		}
 

@@ -298,7 +298,6 @@ export class Graphics extends Object
 			}
 			
 			this.lastPath.clear();
-			this.lastPath.gpuPath2DDirty = true;
 			if (isInitial) this.lastPath.moveTo(0, 0);
 			
 			this.pathPoolPos++;
