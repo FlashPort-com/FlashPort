@@ -338,7 +338,7 @@ export class Stage extends DisplayObjectContainer
 	{ 
 		if (FPConfig.autoSize)
 		{
-			return Math.min(screen.height, innerWidth) * (FPConfig.highDPI ? window.devicePixelRatio : 1);
+			return Math.min(screen.height, innerHeight) * (FPConfig.highDPI ? window.devicePixelRatio : 1);
 		} 
 		return this._stageHeight * (FPConfig.highDPI ? window.devicePixelRatio : 1); 
 	}

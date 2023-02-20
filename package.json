@@ -1,6 +1,6 @@
 {
   "name": "@flashport/flashport",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "FlashPort is a TypeScript 2D graphics library that largely replicates the Flash ActionScript 3.0 library",
   "author": "Kenny Lerma",
   "license": "MIT",
