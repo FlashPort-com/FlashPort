@@ -35,7 +35,10 @@ export class GraphicsSolidFill extends Object implements IGraphicsFill, IGraphic
 
 	public skiaDraw(ctx:Canvas, colorTransform:ColorTransform, mat?:Matrix):void
 	{
-		var rgba:Color = (FPConfig.renderer as IRenderer).getRGBAColor(this.color, this.alpha, colorTransform);
-		if (this.rgba != rgba) this.paint.setColor(rgba);
+		if (this.rgba != colorTransform.rgba)
+		{
+			var rgba:Color = (FPConfig.renderer as IRenderer).getRGBAColor(this.color, this.alpha, colorTransform);
+			this.paint.setColor(rgba);
+		} 
 	}
 }

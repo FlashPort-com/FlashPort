@@ -1,3 +1,6 @@
+import { Color } from "canvaskit-wasm";
+import { FPConfig } from "../../FPConfig";
+
 export class ColorTransform extends Object
 {
 	private _hexColor:number;
@@ -5,6 +8,7 @@ export class ColorTransform extends Object
 	private _greenMultiplier:number;
 	private _blueMultiplier:number;
 	private _alphaMultiplier:number;
+	private _rgba:Color;
 	public redOffset:number;
 	public greenOffset:number;
 	public blueOffset:number;
@@ -22,6 +26,8 @@ export class ColorTransform extends Object
 		this.greenOffset = greenOffset;
 		this.blueOffset = blueOffset;
 		this.alphaOffset = alphaOffset;
+
+		this.updateRGBA();
 	}
 	
 	public get color():number
@@ -35,6 +41,12 @@ export class ColorTransform extends Object
 		this.redOffset = newColor >> 16 & 255;
 		this.greenOffset = newColor >> 8 & 255;
 		this.blueOffset = newColor & 255;
+		this.updateRGBA();
+	}
+
+	public get rgba():Color
+	{
+		return this._rgba;
 	}
 	
 	public get redMultiplier():number 
@@ -46,7 +58,7 @@ export class ColorTransform extends Object
 	{
 		this._redMultiplier = value;
 		this.tint = ((this._redMultiplier*0xff) << 0)|((this._greenMultiplier*0xff) << 8)|((this._blueMultiplier*0xff) << 16) | ((this._alphaMultiplier*0xff) << 24);
-		//_glColorArr[0] = value;
+		this.updateRGBA();
 	}
 	
 	public get greenMultiplier():number 
@@ -57,8 +69,8 @@ export class ColorTransform extends Object
 	public set greenMultiplier(value:number) 
 	{
 		this._greenMultiplier = value;
-		//_glColorArr[1] = value;
 		this.tint = ((this._redMultiplier*0xff) << 0)|((this._greenMultiplier*0xff) << 8)|((this._blueMultiplier*0xff) << 16) | ((this._alphaMultiplier*0xff) << 24);
+		this.updateRGBA();
 	}
 	
 	public get blueMultiplier():number 
@@ -69,8 +81,8 @@ export class ColorTransform extends Object
 	public set blueMultiplier(value:number) 
 	{
 		this._blueMultiplier = value;
-		//_glColorArr[2] = value;
 		this.tint = ((this._redMultiplier*0xff) << 0)|((this._greenMultiplier*0xff) << 8)|((this._blueMultiplier*0xff) << 16) | ((this._alphaMultiplier*0xff) << 24);
+		this.updateRGBA();
 	}
 	
 	public get alphaMultiplier():number 
@@ -81,8 +93,8 @@ export class ColorTransform extends Object
 	public set alphaMultiplier(value:number) 
 	{
 		this._alphaMultiplier = value;
-		//_glColorArr[3] = value;
 		this.tint = ((this._redMultiplier*0xff) << 0)|((this._greenMultiplier*0xff) << 8)|((this._blueMultiplier*0xff) << 16) | ((this._alphaMultiplier*0xff) << 24);
+		this.updateRGBA();
 	}
 	
 	public concat(second:ColorTransform):void
@@ -95,10 +107,22 @@ export class ColorTransform extends Object
 		this.greenMultiplier = this.greenMultiplier * second.greenMultiplier;
 		this.blueOffset = this.blueOffset + this.blueMultiplier * second.blueOffset;
 		this.blueMultiplier = this.blueMultiplier * second.blueMultiplier;
+
+		this.updateRGBA();
 	}
 	
 	public toString():string
 	{
 		return "(redMultiplier=" + this.redMultiplier + ", greenMultiplier=" + this.greenMultiplier + ", blueMultiplier=" + this.blueMultiplier + ", alphaMultiplier=" + this.alphaMultiplier + ", redOffset=" + this.redOffset + ", greenOffset=" + this.greenOffset + ", blueOffset=" + this.blueOffset + ", alphaOffset=" + this.alphaOffset + ")";
+	}
+
+	private updateRGBA = ():void =>
+	{
+		this._rgba  = FPConfig.canvasKit.Color(
+            (this.color >> 16 & 0xff), 
+            (this.color >> 8 & 0xff), 
+            (this.color & 0xff), 
+            (this.alphaOffset)
+        ); 
 	}
 }

@@ -166,8 +166,8 @@ export class Stage extends DisplayObjectContainer
 		
 		FPConfig.dirtyGraphics = true;
 		if (FPConfig.autoSize){
-			FPConfig.stageWidth = (FPConfig.rootHTMLElement) ? FPConfig.rootHTMLElement.clientWidth : window.innerWidth;
-			FPConfig.stageHeight = (FPConfig.rootHTMLElement) ? FPConfig.rootHTMLElement.clientHeight : window.innerHeight;
+			FPConfig.stageWidth = (FPConfig.rootHTMLElement) ? FPConfig.rootHTMLElement.clientWidth : Math.min(screen.width, innerWidth);
+			FPConfig.stageHeight = (FPConfig.rootHTMLElement) ? FPConfig.rootHTMLElement.clientHeight : Math.min(screen.height, innerHeight);
 		}
 		
 		let dpi:number = FPConfig.highDPI ? window.devicePixelRatio : 1;
@@ -184,7 +184,7 @@ export class Stage extends DisplayObjectContainer
 
 		this._surface = FPConfig.canvasKit.MakeCanvasSurface("flashportcanvas");
 		this._skiaCanvas = this._surface.getCanvas();
-
+		
 		if (Stage._instance && Stage._instance.root)
 		{
 			if (Stage._instance.scaleMode == StageScaleMode.SHOW_ALL)
@@ -202,19 +202,18 @@ export class Stage extends DisplayObjectContainer
 				Stage._instance.root.scaleX = FPConfig.stageWidth / this.origWidth;
 				Stage._instance.root.scaleY = FPConfig.stageHeight / this.origHeight;
 			}
-
-			
-			Stage._instance.dispatchEvent(new AEvent(AEvent.RESIZE));
 		}
+
+		Stage._instance.dispatchEvent(new AEvent(AEvent.RESIZE));
 	}
 	
 	private _updateStage = (canvas:Canvas):void =>
 	{
 		if (this._pauseRendering) return;
 		
-		if(Stage._instance.stageWidth != FPConfig.stageWidth || Stage._instance.stageHeight != FPConfig.stageHeight){
+		/* if(Stage._instance.stageWidth != FPConfig.stageWidth || Stage._instance.stageHeight != FPConfig.stageHeight){
 			this.window_resize(null);
-		}
+		} */
 		
 		if (this.needSendMouseMove) {
 			this.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_MOVE, true, false, this._stageMouseX, this._stageMouseY,null,this.needSendMouseMove['ctrlKey'],this.needSendMouseMove['altKey'],this.needSendMouseMove['shiftKey'],(this.needSendMouseMove['buttons'] != null)?(this.needSendMouseMove['buttons'] > 0):this.isButtonDown));
@@ -339,7 +338,7 @@ export class Stage extends DisplayObjectContainer
 	{ 
 		if (FPConfig.autoSize)
 		{
-			return window.innerHeight * (FPConfig.highDPI ? window.devicePixelRatio : 1);
+			return Math.min(screen.height, innerWidth) * (FPConfig.highDPI ? window.devicePixelRatio : 1);
 		} 
 		return this._stageHeight * (FPConfig.highDPI ? window.devicePixelRatio : 1); 
 	}
@@ -352,7 +351,7 @@ export class Stage extends DisplayObjectContainer
 	{ 
 		if (FPConfig.autoSize) 
 		{
-			return window.innerWidth * (FPConfig.highDPI ? window.devicePixelRatio : 1);
+			return Math.min(screen.width, innerWidth) * (FPConfig.highDPI ? window.devicePixelRatio : 1);
 		}
 		
 		return this._stageWidth * (FPConfig.highDPI ? window.devicePixelRatio : 1);
@@ -441,7 +440,7 @@ export class Stage extends DisplayObjectContainer
 		var jsType:string = e.type;
 		var flashType:string = '';
 		var flashType2:string = '';
-		console.log("touchy? " + jsType);
+		
 		switch(jsType) {
 			case "touchcancel":
 				flashType = TouchEvent.TOUCH_END;
