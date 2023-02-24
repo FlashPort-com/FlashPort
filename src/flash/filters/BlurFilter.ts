@@ -130,7 +130,6 @@ export class BlurFilter extends BitmapFilter
 	}
 	public set blurX (value:number){
 		this._blurX = value;
-		this._isDirty = true;
 	}
 
 	/**
@@ -175,7 +174,6 @@ export class BlurFilter extends BitmapFilter
 	}
 	public set blurY (value:number){
 		this._blurY = value;
-		this._isDirty = true;
 	}
 
 	/**
@@ -229,7 +227,6 @@ export class BlurFilter extends BitmapFilter
 	}
 	public set quality (value:number){
 		this._quality = value;
-		this._isDirty = true;
 	}
 
 	/**
@@ -354,6 +351,5 @@ export class BlurFilter extends BitmapFilter
 	public _applyFilter(ctx:Canvas, path:Path, blurPaint:Paint):void
 	{
 		blurPaint.setMaskFilter(this.maskFilter);
-		this._isDirty = false;
 	}
 }
