@@ -87,7 +87,6 @@ export class BlurFilter extends BitmapFilter
 	private _blurX:number = 0;
 	private _blurY:number = 0;
 	private _quality:number = 1;
-	private _isDirty:boolean = true;
 	
 	/**
 	 * The amount of horizontal blur. Valid values are from 0 to 255 (floating point). The
@@ -354,10 +353,7 @@ export class BlurFilter extends BitmapFilter
 
 	public _applyFilter(ctx:Canvas, path:Path, blurPaint:Paint):void
 	{
-		if (this._isDirty)
-		{
-			blurPaint.setMaskFilter(this.maskFilter);
-			this._isDirty = false;
-		}
+		blurPaint.setMaskFilter(this.maskFilter);
+		this._isDirty = false;
 	}
 }

@@ -1033,12 +1033,13 @@ export class TextField extends DisplayObject
       } 
       else 
       {
+        let mat:Matrix = this.transform.concatenatedMatrix;
         this.input.style.left = m.tx + "px";
         this.input.style.top = m.ty + "px";
-        this.input.style.width = this.width + "px";
-        this.input.style.height = this.height + "px";
+        this.input.style.width = (this.width * mat.a) + "px";
+        this.input.style.height = (this.height * mat.d) + "px";
         this.input.style.fontFamily = this.defaultTextFormat.font;
-        this.input.style.fontSize = this.defaultTextFormat.size + "px";
+        this.input.style.fontSize = (this.defaultTextFormat.size * mat.a) + "px";
         this.input.style.color = this.defaultTextFormat.csscolor;
         this.input.addEventListener("mousedown", this.handleHTMLMouseDown);
         //input.style.textAlign = defaultTextFormat.align;
