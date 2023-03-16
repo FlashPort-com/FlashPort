@@ -81,7 +81,8 @@ import { BitmapFilter } from "../filters/BitmapFilter";
 			    		path.transform(invertedMat);
 					}
 					
-					(FPConfig.renderer as IRenderer).renderImage(ctx, this._bitmapData.image, mat, this.blendMode, this.transform.concatenatedColorTransform);
+					var filts:BitmapFilter[] = this.filters.concat(filters);
+					(FPConfig.renderer as IRenderer).renderImage(ctx, this._bitmapData.image, mat, this.blendMode, this.transform.concatenatedColorTransform, this._bitmapData.rect, filts, this._bitmapData.imageSource);
 					FPConfig.drawCounter++;
 					if (this.mask)
 					{

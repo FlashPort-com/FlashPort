@@ -2,7 +2,7 @@ import { DisplayObject } from "../display/DisplayObject";
 import { BitmapFilter } from "./BitmapFilter";
 import { Rectangle } from "../geom/Rectangle";
 import { TextField } from "../text/TextField";
-import { Canvas, EmbindEnumEntity, MaskFilter, Paint, Path } from "canvaskit-wasm";
+import { Canvas, EmbindEnumEntity, MaskFilter, Paint, Paragraph, ParagraphBuilder, Path, TextStyle } from "canvaskit-wasm";
 import { FPConfig } from "../../FPConfig";
 import { IRenderer } from "../__native/IRenderer";
 import { ColorTransform } from "../geom/ColorTransform";
@@ -678,7 +678,7 @@ export class GlowFilter extends BitmapFilter
 		this.paint.setMaskFilter(maskFilter);
 	}
 	
-	public _applyFilter = (ctx:Canvas, path:Path):void =>
+	public _applyFilter(ctx:Canvas, path:Path | CanvasImageSource | Paragraph, blurPaint?:Paint, paragraphBuilder?:ParagraphBuilder, textStyle?:TextStyle, paraText?:string):Paragraph | Paint
 	{
 		/* var gco:string;
 		if (this._knockout) {
@@ -690,6 +690,8 @@ export class GlowFilter extends BitmapFilter
 		{
 			//this.paint.setBlendMode(FPConfig.canvasKit.BlendMode.Dst);
 		} 
-		ctx.drawPath(path, this.paint);
+		ctx.drawPath(path as Path, this.paint);
+
+		return null;
 	} 
 }

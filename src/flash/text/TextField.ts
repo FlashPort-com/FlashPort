@@ -19,15 +19,19 @@ import { FocusEvent } from "../events/FocusEvent";
 import { Matrix } from "../geom/Matrix";
 import { Rectangle } from "../geom/Rectangle";
 import { DisplayObject } from "../display/DisplayObject";
-import { Canvas, EmbindEnumEntity, Font, FontMgr, Paint, Paragraph, ParagraphBuilder, ParagraphStyle } from "canvaskit-wasm";
+import { Canvas, EmbindEnumEntity, Font, FontMgr, Paint, Paragraph, ParagraphBuilder, ParagraphStyle, TextStyle } from "canvaskit-wasm";
 import { IRenderer } from "../__native/IRenderer";
 import { ColorTransform } from "../geom";
 import { BitmapFilter } from "../filters/BitmapFilter";
 import { SkiaRenderer } from "../__native/SkiaRenderer";
+import { BlurFilter, DropShadowFilter } from "../filters";
 
 export class TextField extends DisplayObject 
 {
   private paragraph:Paragraph;
+  private shadowParagraph:Paragraph;
+  private shadowOffsetX:number = 0;
+  private shadowOffsetY:number = 0;
   private paraBuilder:ParagraphBuilder;
   private paraStyle:ParagraphStyle;
   private paraFontMgr:FontMgr;
@@ -969,13 +973,21 @@ export class TextField extends DisplayObject
 
     if (this._text != null && this.visible)
     {
-      this.__draw(ctx, this.transform.concatenatedMatrix, filters);
+      const mat:Matrix = this.transform.concatenatedMatrix;
+      const filts:BitmapFilter[] = this.filters.concat(filters);
+      this.__draw(ctx, mat, filts);
 
       if (this.paragraph)
       {
-        (FPConfig.renderer as SkiaRenderer).renderParagraph(ctx, this.paragraph, this.transform.concatenatedMatrix);
+        if (this.shadowParagraph)
+        {
+          const shadowMat:Matrix = mat.clone();
+          shadowMat.translate(this.shadowOffsetX, this.shadowOffsetY);
+          (FPConfig.renderer as SkiaRenderer).renderParagraph(ctx, this.shadowParagraph, shadowMat, this.blendMode, this.transform.concatenatedColorTransform);
+        }
+        (FPConfig.renderer as SkiaRenderer).renderParagraph(ctx, this.paragraph, mat, this.blendMode, this.transform.concatenatedColorTransform);
       }
-
+      
       FPConfig.drawCounter++;
     }
 
@@ -989,47 +1001,81 @@ export class TextField extends DisplayObject
       if (this.border) this.graphics.lineStyle(0, this.borderColor);
       if (this.background) this.graphics.beginFill(this.backgroundColor);
       this.graphics.drawRect(-2, 0, this.width + 4, this.height + 2);
-      var filts:BitmapFilter[] = this.filters.concat(filters);
-      FPConfig.renderer.renderGraphics(ctx, this.graphics.graphicsData, m, this.blendMode, this.transform.concatenatedColorTransform, filts);
+      FPConfig.renderer.renderGraphics(ctx, this.graphics.graphicsData, m, this.blendMode, this.transform.concatenatedColorTransform, filters);
     }
 
     if (this.graphicsDirty)
     {
       if (this.type == TextFieldType.DYNAMIC)
       {
-        //if (!this._background) this.ApplyFilters(ctx);
-        
         let color = (FPConfig.renderer as IRenderer).getRGBAColor(this._textFormat.color, this.alpha, this.transform.colorTransform);
         let alignment:EmbindEnumEntity = this._textFormat.align == "left" ? FPConfig.canvasKit.TextAlign.Left : (this._textFormat.align == "right" ? FPConfig.canvasKit.TextAlign.Right : FPConfig.canvasKit.TextAlign.Center);
         
+        const textStyle:TextStyle = {
+          color: color,
+          fontFamilies:[this._textFormat.font],
+          fontSize: this._textFormat.size,
+          fontStyle: {
+            weight: this._textFormat.bold ? FPConfig.canvasKit.FontWeight.Bold : FPConfig.canvasKit.FontWeight.Normal,
+            slant: this._textFormat.italic ? FPConfig.canvasKit.FontSlant.Italic : FPConfig.canvasKit.FontSlant.Upright,
+            width: FPConfig.canvasKit.FontWidth.Normal // expanded, condensed, semi-condensed, etc.
+          },
+          decoration:0,
+          decorationThickness:0,
+          decorationColor:[0,0,0],
+          decorationStyle: FPConfig.canvasKit.DecorationStyle.Solid,
+          letterSpacing: 1,
+          wordSpacing: 1,
+          heightMultiplier: 1,
+          halfLeading: false,
+        }
+
         this.paraStyle = new FPConfig.canvasKit.ParagraphStyle(
           {
-            textStyle: {
-              color: color,
-              fontFamilies:[this._textFormat.font],
-              fontSize: this._textFormat.size,
-              fontStyle: {
-                weight: this._textFormat.bold ? FPConfig.canvasKit.FontWeight.Bold : FPConfig.canvasKit.FontWeight.Normal,
-                slant: this._textFormat.italic ? FPConfig.canvasKit.FontSlant.Italic : FPConfig.canvasKit.FontSlant.Upright
-              }
-            },
+            textStyle: textStyle,
             textAlign: alignment
           }
         );
         
         if (this.paragraph) this.paragraph.delete();
+        if (this.shadowParagraph) this.shadowParagraph.delete();
         
         this.paraFontMgr = FPConfig.canvasKit.FontMgr.FromData(FPConfig.fonts[this._textFormat.font]);
         this.paraBuilder = FPConfig.canvasKit.ParagraphBuilder.Make(this.paraStyle, this.paraFontMgr);
+
+        const fg:Paint = new FPConfig.canvasKit.Paint();
+        const bg:Paint = new FPConfig.canvasKit.Paint();
+        fg.setColor(color);
+        bg.setColor([0, 0, 0, 0]);
+
+        // apply filters
+        if (!this._background) 
+        {
+          for (let i:number = 0; i < filters.length; i++) {
+            const filter:BitmapFilter = filters[i];
+            const filterP:Paragraph | Paint = filter._applyFilter(ctx, null, fg, this.paraBuilder.clone(), textStyle, this._text);
+            
+            if (filterP && filter instanceof DropShadowFilter)
+            {  
+              this.shadowParagraph = filterP as Paragraph;
+              this.shadowOffsetX = filter.offsetX;
+              this.shadowOffsetY = filter.offsetY;
+            } 
+          }
+        }
+        
+        this.paraBuilder.reset();
+        this.paraBuilder.pushPaintStyle(
+          textStyle,
+          fg,
+          bg
+        );
         this.paraBuilder.addText(this._text);
         this.paragraph = this.paraBuilder.build();
         this.paragraph.layout(this._textFormat.size * this._text.length);
-
+        
         this.paraFontMgr.delete();
         this.paraBuilder.delete();
-        
-
-        //if (!this._background) this.ApplyFilters(ctx);
       } 
       else 
       {
@@ -1042,7 +1088,7 @@ export class TextField extends DisplayObject
         this.input.style.fontSize = (this.defaultTextFormat.size * mat.a) + "px";
         this.input.style.color = this.defaultTextFormat.csscolor;
         this.input.addEventListener("mousedown", this.handleHTMLMouseDown);
-        //input.style.textAlign = defaultTextFormat.align;
+        this.input.style.textAlign = this.defaultTextFormat.align;
         if (this.input.value != this.text) this.input.value = this.text;
       }
     }

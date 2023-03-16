@@ -16,7 +16,7 @@ import { ColorTransform } from "../geom/ColorTransform";
 import { Matrix } from "../geom/Matrix";
 import { Rectangle } from "../geom/Rectangle";
 import { Vector3D } from "../geom/Vector3D";
-import { Canvas } from "canvaskit-wasm";
+import { Canvas, Paint, Path } from "canvaskit-wasm";
 import { IRenderer } from "../__native/IRenderer";
 import { BitmapFilter } from "../filters";
 
@@ -36,9 +36,14 @@ export class Graphics extends Object
 	private _rect:Rectangle;
 	private lockBound:boolean = false;
 	public _worldMatrix:Matrix = new Matrix;
+
+	public graphicsGroup:Path;
+	public graphicsGroupPaint:Paint;
 	
 	constructor(){
 		super();
+
+		this.graphicsGroup = new FPConfig.canvasKit.Path();
 	}
 	
 	public clear = ():void =>
@@ -56,7 +61,6 @@ export class Graphics extends Object
 		this.endStrokAndFill();
 		this.lastFill = new GraphicsSolidFill(color, alpha);
 		this.graphicsData.push(this.lastFill as GraphicsSolidFill);
-		
 	}
 	
 	public beginGradientFill = (type:string, colors:any[], alphas:any[], ratios:any[], matrix:Matrix = null, spreadMethod:string = "pad", interpolationMethod:string = "rgb", focalPointRatio:number = 0):void =>
@@ -82,14 +86,25 @@ export class Graphics extends Object
 				var efill:GraphicsEndFill = new GraphicsEndFill();
 				efill.fill = this.lastFill;
 				this.graphicsData.push(efill);
+
+				this.graphicsGroup.addPath(this.lastPath.path, this.lastFill.paint);
+
 				this.lastFill = null;
 			}
-			if (this.lastStroke && !isNaN(this.lastStroke.thickness))
+
+			if (this.lastStroke)
 			{
-				this.lastStroke = new GraphicsStroke(NaN);
-				this.lastHalfThickness = Math.ceil(this.lastStroke.thickness / 2);
-				this.graphicsData.push(this.lastStroke);
+				if (!isNaN(this.lastStroke.thickness))
+				{
+					this.lastStroke = new GraphicsStroke(NaN);
+					this.lastHalfThickness = Math.ceil(this.lastStroke.thickness / 2);
+					this.graphicsData.push(this.lastStroke);
+				}
+
+				this.graphicsGroup.addPath(this.lastPath.path, this.lastStroke.paint);
+				this.graphicsGroupPaint = this.lastStroke.paint;
 			}
+
 			this.lastPath = null;
 		}
 	}
@@ -493,7 +508,7 @@ export class Graphics extends Object
 	{
 		if (this.graphicsData.length)
 		{
-			(FPConfig.renderer as IRenderer).renderGraphics(ctx, this.graphicsData, m, blendMode, colorTransform, filters);
+			(FPConfig.renderer as IRenderer).renderGraphics(ctx, this.graphicsData, this.graphicsGroup, this.graphicsGroupPaint, m, blendMode, colorTransform, filters);
 			
 			FPConfig.drawCounter++;
 		}

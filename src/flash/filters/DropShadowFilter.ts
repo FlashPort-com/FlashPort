@@ -1,4 +1,5 @@
-import { Canvas, MaskFilter, Paint, Path } from "canvaskit-wasm";
+import { Canvas, Image, MaskFilter, Paint, Paragraph, ParagraphBuilder, Path, TextStyle } from "canvaskit-wasm";
+import { config } from "process";
 import { FPConfig } from "../../FPConfig";
 import { ColorTransform, Rectangle } from "../geom";
 import { IRenderer } from "../__native/IRenderer";
@@ -101,6 +102,7 @@ import { BitmapFilter } from "./BitmapFilter";
 export class DropShadowFilter extends BitmapFilter
 {
 	private paint:Paint;
+	private clearPaint:Paint;
 	private _alpha:number = 1;
 	private _angle:number = 0;
 	private _blurX:number = 0;
@@ -113,6 +115,7 @@ export class DropShadowFilter extends BitmapFilter
 	private _quality:number = 1;
 	private _strength:number = 1;
 	private _blur:number;
+	private _rgba:string;
 
 	/**
 	 * The alpha transparency value for the shadow color. Valid values are 0.0 to 1.0. 
@@ -689,6 +692,7 @@ export class DropShadowFilter extends BitmapFilter
 		this._offsetX = (distance - 1) * Math.cos(radians);
 		this._offsetY = (distance - 1) * Math.sin(radians);
 		this._blur = Math.max(blurX, blurY);
+		this._rgba = "rgba(" + (color >> 16 & 0xff) + "," + (color >> 8 & 0xff) + "," + (color & 0xff) + "," + alpha + ")";
 
 		let maskFilter:MaskFilter = FPConfig.canvasKit.MaskFilter.MakeBlur(
 			FPConfig.canvasKit.BlurStyle.Normal,
@@ -699,6 +703,9 @@ export class DropShadowFilter extends BitmapFilter
 		
 		this.paint = new FPConfig.canvasKit.Paint();
 		//this.paint.setBlendMode(FPConfig.canvasKit.BlendMode.DstOver);
+
+		this.clearPaint = new FPConfig.canvasKit.Paint();
+		this.clearPaint.setColor([0, 0, 0, 0]);
 		
 		this.paint.setStyle(FPConfig.canvasKit.PaintStyle.Fill);  //TODO correct for Stroke or Fill
 		this.paint.setColor((FPConfig.renderer as IRenderer).getRGBAColor(color, alpha, new ColorTransform()));
@@ -706,21 +713,65 @@ export class DropShadowFilter extends BitmapFilter
 
 	}
 	
-	public _applyFilter(ctx:Canvas, path:Path):void
+	public _applyFilter(ctx:Canvas, path:Path | CanvasImageSource | Paragraph, blurPaint?:Paint, paragraphBuilder?:ParagraphBuilder, textStyle?:TextStyle, paraText?:string):Paragraph
 	{
 		const m = FPConfig.canvasKit.Matrix.translated(this._offsetX + 1, this._offsetY + 1);
-		ctx.concat(m);
-		ctx.drawPath(path, this.paint);
-		let invertedMat = FPConfig.canvasKit.Matrix.invert(m) || m;
-        ctx.concat(invertedMat);
+		let filterParagraph:Paragraph;
 
+		ctx.concat(m);
+		
+		if (path instanceof FPConfig.canvasKit.Path)
+		{
+			ctx.drawPath(path as Path, this.paint);
+		}
+		else if (path instanceof HTMLCanvasElement)
+		{
+			const padding:number = 40; // TODO adjust by filter size
+			const halfPad:number = padding / 2;
+			// created padded canvas
+			const copyCanvas = document.createElement('canvas') as HTMLCanvasElement;
+			copyCanvas.width = (path as HTMLCanvasElement).width + padding;
+			copyCanvas.height = (path as HTMLCanvasElement).height + padding;
+			const copyCtx = copyCanvas.getContext('2d');
+			// fill canvas with solid color
+			copyCtx.fillStyle = this._rgba;
+			copyCtx.globalCompositeOperation = "color";
+			copyCtx.fillRect(0, 0, copyCanvas.width, copyCanvas.height);
+			// blur canvas and crop to image
+			copyCtx.globalCompositeOperation = "destination-in";
+			copyCtx.filter = 'blur(' + this.blur + 'px)';
+			copyCtx.drawImage(path as HTMLCanvasElement, halfPad, halfPad);
+			copyCtx.globalCompositeOperation = "source-over";
+			// draw final shadow image
+			const newImg:Image = FPConfig.canvasKit.MakeImageFromCanvasImageSource(copyCanvas);
+			ctx.drawImage(newImg, -halfPad, -halfPad);
+			newImg.delete();
+		}
+		else
+		{
+			paragraphBuilder.reset();
+			paragraphBuilder.pushPaintStyle(
+                textStyle,
+                this.paint,
+                this.clearPaint
+            );
+			
+			paragraphBuilder.addText(paraText);
+			filterParagraph = paragraphBuilder.build();
+			filterParagraph.layout(textStyle.fontSize * paraText.length);
+		}
+		let invertedMat = FPConfig.canvasKit.Matrix.invert(m) || m;
+		ctx.concat(invertedMat);
+
+		return filterParagraph;
+		
 		/* const m = FPConfig.canvasKit.Matrix.translated(this._offsetX + 1, this._offsetY + 1);
 		const lightPos = [0, 0, 100];
 		const lightRadius = 10;
 
 		ctx.concat(m);
 		ctx.drawShadow(
-			path, 
+			path as Path, 
 			m,
 			lightPos, 
 			lightRadius, 

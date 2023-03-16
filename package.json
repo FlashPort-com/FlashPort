@@ -1,6 +1,6 @@
 {
   "name": "@flashport/flashport",
-  "version": "0.0.7",
+  "version": "0.0.9",
   "description": "FlashPort is a TypeScript 2D graphics library that largely replicates the Flash ActionScript 3.0 library",
   "author": "Kenny Lerma",
   "license": "MIT",
@@ -29,7 +29,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "publish": "npm publish --access public"
   },
   "devDependencies": {
     "@types/node": "^18.14.0",

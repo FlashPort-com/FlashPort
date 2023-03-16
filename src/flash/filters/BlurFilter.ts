@@ -1,4 +1,4 @@
-import { Canvas, MaskFilter, Paint, Path } from "canvaskit-wasm";
+import { Canvas, ImageFilter, MaskFilter, Paint, Paragraph, ParagraphBuilder, Path, TextStyle } from "canvaskit-wasm";
 import { FPConfig } from "../../FPConfig";
 import { BitmapFilter } from "./BitmapFilter";
 
@@ -84,6 +84,7 @@ import { BitmapFilter } from "./BitmapFilter";
 export class BlurFilter extends BitmapFilter
 {
 	private maskFilter:MaskFilter;
+	private imageFilter:ImageFilter;
 	private _blurX:number = 0;
 	private _blurY:number = 0;
 	private _quality:number = 1;
@@ -284,6 +285,13 @@ export class BlurFilter extends BitmapFilter
 			Math.max(this._blurX, this._blurY),
 			false
 		);
+
+		this.imageFilter = FPConfig.canvasKit.ImageFilter.MakeBlur(
+			this._blurX,
+			this._blurY,
+			FPConfig.canvasKit.BlurStyle.Inner,
+			null
+		)
 	}
 
 	/**
@@ -348,8 +356,17 @@ export class BlurFilter extends BitmapFilter
 	/*public function clone () : flash.filters.BitmapFilter;*/
 
 
-	public _applyFilter(ctx:Canvas, path:Path, blurPaint:Paint):void
+	public _applyFilter(ctx:Canvas, path:Path | CanvasImageSource | Paragraph, blurPaint?:Paint, paragraphBuilder?:ParagraphBuilder, textStyle?:TextStyle, paraText?:string):Paragraph | Paint
 	{
-		blurPaint.setMaskFilter(this.maskFilter);
+		if (path instanceof HTMLCanvasElement)
+		{
+			blurPaint.setImageFilter(this.imageFilter);
+		}
+		else
+		{
+			blurPaint.setMaskFilter(this.maskFilter);
+		}
+
+		return blurPaint;
 	}
 }
