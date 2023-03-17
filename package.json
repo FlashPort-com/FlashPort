@@ -1,5 +1,5 @@
 {
-  "name": "@flashport/flashport",
+  "name": "@flashport-org/flashport",
   "version": "0.0.9",
   "description": "FlashPort is a TypeScript 2D graphics library that largely replicates the Flash ActionScript 3.0 library",
   "author": "Kenny Lerma",
@@ -10,7 +10,7 @@
     "url": "git://github.com/FlashPort-org/FlashPort.git"
   },
   "publishConfig": {
-    "@flashport:registry": "https://npm.pkg.github.com"
+    "@flashport-org:registry": "https://npm.pkg.github.com"
   },
   "bugs": {
     "url": "https://github.com/FlashPort-org/FlashPort/issues"
