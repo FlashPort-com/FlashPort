@@ -46,9 +46,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@flashport-org/flashport@workspace:.":
+"@flashport/flashport@workspace:.":
   version: 0.0.0-use.local
-  resolution: "@flashport-org/flashport@workspace:."
+  resolution: "@flashport/flashport@workspace:."
   dependencies:
     "@types/css-font-loading-module": ^0.0.7
     "@types/node": ^18.14.0
