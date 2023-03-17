@@ -7,12 +7,23 @@
   "homepage": "https://flashport.org",
   "repository": {
     "type": "git",
-    "url": "https://github.com/FlashPort-com/FlashPort.git"
+    "url": "git://github.com/FlashPort-org/FlashPort.git"
+  },
+  "publishConfig": {
+    "@flashport:registry": "https://npm.pkg.github.com"
   },
   "bugs": {
-    "url": "https://github.com/FlashPort-com/FlashPort/issues"
+    "url": "https://github.com/FlashPort-org/FlashPort/issues"
   },
-  "keywords": ["FlashPort", "TypeScript", "Flash", "ActionScript", "Canvas", "canvaskit", "Skia"],
+  "keywords": [
+    "FlashPort",
+    "TypeScript",
+    "Flash",
+    "ActionScript",
+    "Canvas",
+    "canvaskit",
+    "Skia"
+  ],
   "type": "module",
   "main": "./dist/flashport.umd.cjs",
   "module": "./dist/flashport.es.js",
