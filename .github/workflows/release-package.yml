@@ -11,8 +11,8 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
-      - run: npm ci
+          node-version: 18.12.1
+      - run: yarn install --immutable --immutable-cache --check-cache
       #- run: npm test
 
   publish-gpr:
