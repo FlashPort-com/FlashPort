@@ -12,7 +12,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18.12.1
-      - run: yarn i -D esbuild
+      - run: yarn add esbuild
       - run: yarn install --immutable --immutable-cache --check-cache
       #- run: npm test
 
@@ -28,7 +28,7 @@ jobs:
         with:
           node-version: 18.12.1
           registry-url: https://npm.pkg.github.com/
-      - run: yarn i -D esbuild
+      - run: yarn add esbuild
       - run: yarn install --immutable --immutable-cache --check-cache
       - run: npm publish
         env:
